@@ -1,0 +1,159 @@
+
+* { 
+
+}
+
+html,body{
+margin:0;
+padding:0;
+height:100%;
+/* border:solid; */
+min-width:100%;
+    max-width:100%;
+	min-height:100%;
+	max-height:100%;
+
+}
+
+.timetable {
+	color:red;
+	height:100%;
+	margin:0;
+	padding:0;
+}
+
+.no-overflow:{
+overflow-x:none;
+overflow-y:none;
+}
+
+.fullspace{
+position:absolute;
+margin:0;
+	min-width:100%;
+	max-width:100%;
+	min-height:100%;
+	max-height:100%;
+	/* width:auto; */
+	/* height:auto; */
+}
+.absolute{
+position:absolute;
+}
+.no-margin-x{
+margin-left:0;
+	margin-right:0;
+}
+
+.no-margin-y{
+margin-top:0;
+margin-bottom:0;
+}
+.fullspace-y{
+	margin-bottom:0;
+	margin-top:0;
+	min-height:100%;
+	max-height:100%;
+}
+
+.fullspace-x{
+margin-left:0;
+	margin-right:0;
+	min-width:100%;
+	max-width:100%;
+}
+
+#wrap{
+overflow:hidden;
+margin:0;
+padding:0;
+}
+
+#frame_timetable {
+	position:absolute;
+	background-color:gray;
+	min-width:80%;
+    max-width:80%;
+	min-height:85%;
+	max-height:85%;
+	margin:0;
+    left:15%;
+	right:0%;
+	padding:0%;
+	top:10%; 
+	
+	overflow:hidden;
+
+}
+
+tbody{
+min-width:100%;
+min-height:100%;
+max-height:100%;
+max-width:100%;
+}
+
+#frame_calendar_main_table{
+display:initial;
+}
+
+#frame_calendar_controls_row{
+top:0;
+position:absolute;
+max-height:7%;
+min-height:7%;
+overflow:hidden;
+}
+
+#frame_calendar_controls_row>div:first-child{
+width:80%;
+position:absolute;
+overflow:hidden;
+}
+#frame_calendar_controls_row>div:first-child+div{
+margin-left:80%;
+width:20%;
+position:absolute;
+overflow:hidden;
+}
+
+#frame_calendar_controls_row+div{
+	position:absolute;
+	top:7%;
+	min-height:93%;
+	max-height:93%;
+	overflow-y:auto;
+}
+#frame_calendar_core_table {
+
+}
+#frame_calendar_core_table>tbody {
+
+}
+#frame_calendar_core_table tr{
+
+
+
+
+}
+#frame_calendar_core_table td{
+border:solid;
+border-width:1px;
+padding:0;
+margin:0;
+overflow-y:visible;
+
+}
+
+#frame_calendar_core_table td+td{
+width:18%;
+}
+
+#frame_calendar_core_table td>div{
+margin:0;
+border:dotted;
+border-width:1px;
+min-height:20px;
+max-height:20px;
+}
+

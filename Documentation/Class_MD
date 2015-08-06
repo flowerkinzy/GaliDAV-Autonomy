@@ -1,0 +1,415 @@
+___________________________________________________________________________
+class Cours
+	Attributs
+		−sqlid:Integer
+		−number: Integer
+		−begin: Integer
+		−end: Integer
+		−room: String
+		−courseType: Type_cours
+		−subject: Matiere
+	Constructeurs
+		+__construct(Matiere m, Integer begin, Integer end)
+	Accesseurs
+		+getSqlid(): Integer
+		+getNumber(): Integer
+		+getBegin(): Integer
+		+getBegin_string: String
+		+getEnd(): Integer
+		+getEnd_string: String
+		+getRoom(): String
+		+getCourseType(): Type_cours
+		+getSubject(): Matiere
+	Mutateurs
+		+setNumber(Integer newNumber)
+		+setBegin(Integer newBegin)
+		+setEnd(Integer newEnd)
+		+setRoom(String newRoom)
+		+setTypeOfCourse(Type_cours newType)
+		+setSubject(Matiere newSubject)
+	Autres fonctions
+		+integrateInTimetable(EDT timetable)
+		+remove()
+		+toHTML: String
+___________________________________________________________________________
+Type_cours
+	Attributs
+		−LECTURE
+		−TC	
+		−PRACTICAL
+		−CONFERENCE
+		−EXAM
+		−RESIT
+___________________________________________________________________________
+
+class Matière
+	Attributs
+		−name: String
+		−teachedBy: Array (of Personne)
+		−timetable : EDT
+		−group: Groupe
+		-sqlid:integer
+	Constantes
+		const TABLENAME
+		const SQLcolumns
+	Constructeurs
+		+__construct(String newName)
+	Accesseurs
+		+getName(): String
+		+getTeachedBy(): Array (of Personne)
+		+getTimetable():EDT
+		+getGroup():Groupe
+		+getSqlid(): Integer
+	Mutateurs
+		+setName(String newName)
+		+setTeachedBy(Array (of Personne) newTeachedBy)
+	Autres fonctions
+		+isTeachedBy(Personne P): Boolean
+		+addTeacher(Personne P)
+		+removeTeacher(Enseignant E)
+		+loadTeacherFromRessource(ressource)
+		+loadGroupFromRessource(ressource)
+		+loadTimetableFromRessource(ressource)
+		+loadFromDB()
+		+loadFromRessource(ressource)
+		+removeFromDB()
+___________________________________________________________________________
+class Element_de_maquette
+	Associations
+		–subject: Matiere
+	Attributs
+		−typeOfCourse: Type_cours
+		−numHours: Integer
+	Constructeurs
+		+__construct(Matiere newSubject, Type_cours newTypeOfCourse, Integer newNumHours)
+	Accesseurs
+		+getSubject(): Matiere
+		+getTypeOfCourse(): String
+		+getNumHours(): Integer
+	Mutateurs
+		+setSubject(Matiere newSubject)
+		+setTypeOfCourse(Type_cours newTypeOfCourse)
+		+setNumHours(Integer newNumHours)
+
+___________________________________________________________________________
+class Maquette
+	Associations
+		–listOfElemOfClassesModel: Array (of Element_de_maquette)
+	Constructeurs
+		+__construct(Array (of Element_de_maquette) newListOfElemOfClassesModel)
+	Accesseurs
+		+getListOfElemOfClassesModel(): Array (of Element_de_maquette)
+	Mutateurs
+		+setListOfElemOfClassesModel(Array (of Element_de_maquette) newListOfElemOfClassesModel)
+	Autres fonctions
+		+addElemOfClassesModel(Element_de_maquette newElem)
+		+removeElemOfClassesModel(Element_de_maquette elemToRemove)
+___________________________________________________________________________
+class EDT
+	Attributs
+		#sqlid: Integer
+		#modifiedBy: Personne
+		#listCourses: Array (of Cours)
+		#listModif: Array (of Modifications)
+		#group: Groupe
+		#teacherOwner: Personne
+		#subject: Matiere
+		#idcollection : Integer
+	Constructeur
+		+__construct(Integer newIdTimetable, Personne newModifiedBy, Groupe newGroup, Enseignant newTeacherOwner = null)
+	Accesseurs
+		+getId(): Integer
+		+getModifiedBy(): Personne
+		+getListCourses(): Array (of Cours)
+		+getListModif(): Array (of )
+		+getGroup(): Groupe
+		+getTeacherOwner(): Personne
+		+getSubject(): Matiere
+		+getIdCollection(): Integer
+		
+	Mutateurs
+		#setIdTimetable(Integer newIdTimetable)
+		+setModifiedBy(Personne newModifiedBy=null)
+		+setListCourses(Array (of Type_cours) newListCourses=null)
+		+setListModif(Array (of ) newListModif=null)
+		#setGroup(Groupe newGroup=null)
+		-setTeacherOwner(Enseignant teacherOwner=null)
+		-setSubject(Matiere M=null)
+		#setIdCollection(Integer newId)
+	Autres fonctions
+		+hasModification(Modification M):Boolean
+		+containsCourse(Cours c): Boolean
+		+addModification(Modification M)
+		#removeModification(Modification M)
+		+extractExams(): Array (of Type_cours)
+		+addCourse(Cours newCourse)
+		+removeCourse(Cours courseToRemove)
+		+clearModifications()
+		+loadCourseFromRessource(ressource)
+		+loadModificationFromRessource(ressource)
+		+loadFromDB()
+		+loadFromRessource(ressource)
+		+removeFromDB()
+		+shareWith(Utilisateur U,write=false)
+		+autoShare()
+static	+autoShareAllCalendars()
+___________________________________________________________________________
+class EdT_Classe extends EDT
+	Constructeur
+		+__construct(Integer newIdTimetable, Personne newModifiedBy, Groupe newGroup, Enseignant newTeacherOwner = null)
+	Autres fonctions
+		+generatePDF()
+___________________________________________________________________________
+class Modification
+	Attributs
+		−date: Integer
+		−madeBy: Utilisateur
+		−courseModified: Cours
+	Constructeur
+		+__construct(Integer newDate, Utilisateur newMadeBy, Cours newCourseModified)
+	Accesseurs		
+		+getDate(): Integer
+		+getMadeBy(): Utilisateur
+		+getCourseModified(): Cours
+	Mutateurs
+		+setDate(Integer newDate)
+		+setMadeBy(Utilisateur newMadeBy)
+		+setCourseModified(Cours newCourseModified)
+		+removeFromDB()
+___________________________________________________________________________
+class BaseDeDonnées
+	Attributs
+		—save: Boolean	
+		—location
+		-dbname
+		-user
+		-password
+		-host
+	    —(static) current_db: BaseDeDonnees
+	Accesseurs
+		+getSave(): Boolean
+		+getLocation()
+	Mutateurs
+		+setSave(Boolean newSave)
+		+setLocation(newLocation)
+	Autres fonctions
+		+connect
+		+close
+		+executeQuery(query, params)
+		+initialize()
+		+clear() //EFFACE TOUTES LES DONNEES
+		+dropAll()//EFFACE TOUTES LES TABLES
+	Fonctions statiques
+		+currentDB(): BaseDeDonnees
+		
+___________________________________________________________________________
+class Système
+	Attributs
+		−database: BaseDeDonnees
+	Constructeur
+		+__construct(BaseDeDonnees newDatabase)
+	Accesseurs
+		+getDatabase(): BaseDeDonnees
+	Mutateurs
+		+setDatabase(BaseDeDonnees newDatabase)
+	Autres fonctions
+		+blockTimetable(EDT edt)
+		+sendEmail(Personne P)
+		+generateTimetable_PDF(EDTClasse edt)
+		+autoSave(BaseDeDonnees database)
+		+recoverData(location): BaseDeDonnees
+		+generateExamList(EDT edt)
+___________________________________________________________________________
+class Groupe
+	
+		
+	Attributes
+		#name: String
+		#isAClass: Boolean
+		#timetable: EDT
+		#sqlid: Integer
+		#listOfStudents: Array (of Personne)
+		#listOfLinkedGroups: Array (of Groupe)
+	Constantes
+		const TABLENAME
+		const SQLcolumns
+		const composedOfTABLENAME
+		const composedOfSQLcolumns
+		const linkedToTABLENAME
+		const linkedToSQLcolumns
+	Constructeur
+		+__construct(String newName, Boolean newIsAClass)
+	Accesseurs
+		+getListOfStudents(): Array (of Personne)
+		+getListOfLinkedGroups(): Array (of Group)
+		+getName(): String
+		+getIsAClass(): Boolean
+		+getId():int
+		+getTimetable():EDT
+		
+	Mutateurs
+		+setListOfStudents(Array (of Personne) newListOfStudents=null)
+		+setListOfLinkedGroups(Array (of Group) newListOfGroup=null)
+		#setName(String newName)
+		-setIsAClass(Boolean newIsAClass)
+		
+	Autres fonctions
+		+containsStudent(Personne student): Boolean
+		+isLinkedTo(Group G): Boolean
+		+getTimetable(): EDT
+		+addStudent(Personne newStudent)
+		+removeStudent(Personne studentToRemove)
+		+addLinkedGroup(Groupe G)
+		+removeLinkedGroup(Groupe G)
+		+loadFromDB(Integer id = null, Boolean can_be_user=true)
+		+loadFromRessource(ressource)
+		+loadStudentFromRessource(ressource)
+		+loadLinkedGroupFromRessource(ressource)
+___________________________________________________________________________
+class Classe extends Groupe
+	Associations
+		–coursesModel: Maquette
+	Constructeurs
+		+__construct(String newName)
+	Accesseurs
+		+getCoursesModel(): Maquette
+	Mutateurs
+		+setCoursesModel(Maquette newCoursesModel)
+	Autres fonctions
+		+getTimetableOfClass(): EDT
+___________________________________________________________________________
+class Personne
+	Associations
+		#status: Array (of Statut_personne)
+	Attributs
+		#familyName: String
+		#firstName: String
+		#emailAddress1: String
+		#emailAddress2: String
+	Constantes
+		const TABLENAME
+		const SQLcolumns
+	Constructeurs
+		+__construct(String newFamilyName = null, String newFirstName = null, String email1 = null)
+	Accesseurs
+		+getAllStatus(): Array (of Statut_personne)
+		+getSqlid(): Integer
+		+getFamilyName(): String
+		+getFirstName(): String
+		+getFullName():String
+		+getEmailAddress1(): String
+		+getEmailAddress2(): String
+	Mutateurs
+		#setSqlid(Integer newSqlid)
+		+setFamilyName(String newFamilyName)
+		+setFirstName(String newFirsNameName)
+		+setEmailAddress1(String newEmailAddress1)
+		+setEmailAddress2(String newtEmailAddress1)
+		+setAllStatus(Array (of Statut_personne) arrayOfStatus)
+	Autres fonctions
+		+addStatus(Statut_personne s)
+		+removeStatus(Statut_personne s)
+		+hasStatus(Statut_personne s): Boolean
+		+loadFromDB(Integer id = null, Boolean can_be_user=true)
+		+loadFromRessource(ressource)
+		+loadStatusFromRessource(ressource)
+		+removeFromDB()
+		+toHTML(): String
+___________________________________________________________________________
+class Utilisateur (extends Personne)
+	Attributs
+		#login: String
+		#passwd: String
+	Constantes
+		const TABLENAME
+		const SQLcolumns
+	Constructeurs
+		+__construct(String familyName = null, String firstName = null, String login = null, String passwd = null, String email1 = null)
+	Accesseurs
+		+getLogin(): String
+		+getPasswd(): String
+	Fonctions statiques
+		+convertPersonToUser(Personne P, String login, String passwd)
+	Autres fonctions
+		+isPassword(String givenPassword): Boolean
+		+setPassword(String givenPassword)
+		+logIn()
+		+logOut()
+		+loadFromDB(login = null, notuseful = null)
+		+removeFromDB()
+		+readTimeTable(EDT e): Boolean
+		+toHTML(): String
+___________________________________________________________
+class Administrateur extends Utilisateur
+	Constructeur
+		+__construct(String familyName, String firstName, Integer id, String passwd, String email1 = null)
+	Autres fonctions
+		+addUser(String familyName, String firstName, Integer id, String passwd, String email = null): Utilisateur
+		+convertPersonToUser(Personne p): Utilisateur
+		+addUserCAS(unknownData)
+		+changeUserStatus(Utilisateur u, Statut_personne s, operation)
+		+deleteUser(Utilisateur u)
+		+deletePerson(Personne p)
+		+addClass(String name): Classe
+		+modifyClass(Classe c, Personne etu, String operation)
+______________________________________________________________________________
+class Secrétaire extends Utilisateur
+	Constructeur
+		+__construct(String familyName, String firstName, Integer id, String passwd)
+	Autres fonctions
+		+modifyTimeTable(EDT e, Cours c, operation)
+		+addGroup(String name): Groupe
+		+modifyGroup_Members(Group group, Personne etu, operation)
+		+modifyGroup_LinkedClasses(Classe c, Personne etu operation)
+		+compareTimetables(listOfTimetable, begin, end)
+		+validateTimetable(EDT e)
+		+modifyClass_CoursesModel(Classe c, Element_de_maquette elem, String operation)
+________________________________________________________________________________________________________________________________________
+class Enseignant (extends Utilisateur)
+	Attributs
+		−personalTimetable: EDT
+	Constructeur
+		+__construct(String familyName=null, String firstName=null, Integer id=null, String passwd=null)
+	Accesseurs
+		+getPersonalTimetable(): EDT
+	Autres fonctions
+		+readPersonalTimetable()
+___________________________________________________________________________
+class Responsable (extends Utilisateur)
+	Attributs
+		−type: Type_responsable
+	Constructeurs
+		+__construct(String familyName, String firstName, Integer id, String passwd)
+	Autres fonctions
+		+modifyTimetable(EDT e, Cours c, operation)
+		+addGroup(String name): Groupe
+		+modifyGroup_Members(Group group, Personne etu, operation)
+		+modifyGroup_LinkedClasses(Classe c, Personne etu operation)
+		+compareTimetables(listOfTimetable, begin, end)
+		+validateTimetable(EDT e)
+		+modifyClass_CoursesModel(Classe c, Element_de_maquette elem, String operation)
+___________________________________________________________________________
+Type_responsable
+	Constantes
+		−RESP_ANNEE
+		−RESP_FILIERE
+		−DIR_ETUDE
+___________________________________________________________________________
+Statut_personne
+	Constantes de classe
+		+STUDENT
+		+SPEAKER
+		+TEACHER
+		+SECRETARY
+		+HEAD
+		+ADMINISTRATOR
+		+OTHER
+	Attributs
+		~value
+	Constructeurs
+		+__construct($value)
+	Fonctions
+		+toString()
+		+toInt()
+	Fonctions statiques
+		+getValue($statut);
