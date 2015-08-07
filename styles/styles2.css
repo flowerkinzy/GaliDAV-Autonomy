@@ -137,7 +137,8 @@ overflow:hidden;
 
 }
 #frame_calendar_core_table td{
-border:solid;
+
+border-left:solid;
 border-width:1px;
 padding:0;
 margin:0;
@@ -151,9 +152,15 @@ width:18%;
 
 #frame_calendar_core_table td>div{
 margin:0;
-border:dotted;
-border-width:1px;
+/* border:dotted;
+border-width:1px; */
 min-height:20px;
 max-height:20px;
 }
 
+#frame_calendar_core_table td.hourcolumn{
+font-size:small;
+padding:auto;
+padding-top:0;
+border:none;
+}

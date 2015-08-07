@@ -10,7 +10,7 @@
 	<div id="wrap" class='fullspace'>
 
 	<div class="timetable fullspace" id="frame_timetable">
-		<?php error_reporting(E_ALL); include("./object_views/calendar_frame3.php"); ?>
+		<?php error_reporting(E_ALL); //include("./object_views/calendar_frame3.php"); ?>
 	</div>
 	</div>
 </body>

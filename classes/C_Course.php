@@ -52,7 +52,7 @@ class Course
 
 		if (!is_int($newEnd))
 		{
-			$newEnd = time();
+			$newEnd = time();//+90*60;
 		}
 
 		$this->subject = $newSubject;
