@@ -125,16 +125,13 @@ overflow:hidden;
 	overflow-y:auto;
 }
 #frame_calendar_core_table {
-
+cursor:default;
 }
 #frame_calendar_core_table>tbody {
 
 }
 #frame_calendar_core_table tr{
-
-
-
-
+background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
 }
 #frame_calendar_core_table td{
 

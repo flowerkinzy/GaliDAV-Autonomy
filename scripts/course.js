@@ -2,18 +2,13 @@ var hourmin=8;
 var hourmax=19;
 var timeintervalinmin=15;
 var timeintervaldisplayinmin=30;
+ $( document ).ready(function() {
+	$("tr.calendar").on("click","td.hourcolumn",function (){
+			$(this).parent().slideUp();
+			//alert("clickon"+$(this).html());
+		});
 
-$("td.hourcolumn>div").click(
-	function (){
-		$(this).hide();
-		alert("clickon"+$(this).html());
-	});
-	$("#wrap").click(
-	function (){
-		alert("clickon wrap");
-	});
-
-	
+ });	
 function getTypeName(type){
 	
 	switch(type){
