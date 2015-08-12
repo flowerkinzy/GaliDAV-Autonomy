@@ -1,6 +1,6 @@
 
 * { 
-
+overflow-x:auto;
 }
 
 html,body{
@@ -16,14 +16,14 @@ min-width:100%;
 }
 
 .timetable {
-	color:red;
+
 	height:100%;
 	margin:0;
 	padding:0;
 }
 
 .no-overflow:{
-overflow-x:none;
+/*overflow-x:none;*/
 overflow-y:none;
 }
 
@@ -132,11 +132,9 @@ cursor:default;
 }
 #frame_calendar_core_table tr{
 background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
+border-width:5px;
 }
 #frame_calendar_core_table td{
-
-border-left:solid;
-border-width:1px;
 padding:0;
 margin:0;
 overflow-y:visible;

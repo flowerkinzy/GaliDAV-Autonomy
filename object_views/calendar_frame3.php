@@ -41,11 +41,12 @@ error_reporting(E_ALL);
 	$timeintervaldisplayinmin=30;
 	echo "<table id='frame_calendar_core_table' class='calendar fullspace'>";
 	for ($i = 1 ; $i <= (($hourmax-$hourmin)*60/$timeintervalinmin) -1 ; $i++){
-		echo "<tr class='calendar fullspace-x'>";
 		$Begin_H=$hourmin+floor($i*$timeintervalinmin/60);
 		$Begin_M=($i*$timeintervalinmin)%60;
 		$End_M=$Begin_M+$timeintervalinmin-1;
 		$finalres=sprintf('%02d', $Begin_H)." : ".sprintf('%02d', $Begin_M);
+		echo "<tr class='calendar fullspace-x' begin_hour=$Begin_H begin_min=$Begin_M end_min=$End_M >";
+		
 		echo "<td class='fullspace-y hourcolumn' begin_hour=$Begin_H begin_min=$Begin_M end_min=$End_M><div> $finalres</div></td>";
 		for ($j_day=0; $j_day <= 4; $j_day++){
 			echo "<td class='fullspace-y daycolumn' weekday=$j_day begin_hour=$Begin_H begin_min=$Begin_M end_min=$End_M>

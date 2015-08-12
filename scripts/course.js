@@ -4,11 +4,21 @@ var timeintervalinmin=15;
 var timeintervaldisplayinmin=30;
  $( document ).ready(function() {
 	$("tr.calendar").on("click","td.hourcolumn",function (){
-			$(this).parent().slideUp();
-			//alert("clickon"+$(this).html());
-		});
+			$("#wrap").append("<button style='padding:0;position:absolute;cursor:default' begin_hour=10...> \> </button>");
+			
+			$( "button" ).position({
+				my: "right",
+				at: "left top",
+				of: "tr.calendar[begin_hour=10][begin_min=0]"
+			});
+			$(this).parent().children().children().slideUp(1000);
+	});
 
- });	
+	
+//FIN documentReady
+	});
+	
+	
 function getTypeName(type){
 	
 	switch(type){

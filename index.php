@@ -2,7 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<link rel="stylesheet" type="text/css" href="./styles/styles2.css">
-	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+	<!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>-->
+	<script src="scripts/jquery-ui/external/jquery/jquery.js"></script>
+	<script src="scripts/jquery-ui/jquery-ui.js"></script>
 	<script src="scripts/course.js"></script>
 	<title>Style2/Frame3</title>
 </head>
