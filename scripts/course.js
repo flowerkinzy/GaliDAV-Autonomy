@@ -9,11 +9,15 @@ var timeintervaldisplayinmin=30;
 			$button=$button+"begin_min="+$(this).attr("begin_min")+" ";
 			$button=$button+"end_min="+$(this).attr("end_min")+" ";
 			$button=$button+"> \> </button>";
-			$("#wrap").append($button);
+			$("#frame_calendar_core_table").append($button);
 			$( "button[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]" ).position({
 				my: "right",
 				at: "left top",
 				of: "tr.calendar[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]"
+			});
+			$( "button[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]" ).on("click",function(){
+				$("tr.calendar[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]").children().children().slideDown(1000);
+				$(this).remove();
 			});
 			$(this).parent().children().children().slideUp(1000);
 	});

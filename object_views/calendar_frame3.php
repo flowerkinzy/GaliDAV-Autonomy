@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 		<div class='fullspace-y'><p class='fullspace'> précédent /suivant </p></div>
 	</div>
 	
-	<div class='fullspace-x'>
+	<div id='frame_calendar_core_table' class='fullspace-x'>
 	<?php
 	/* 
 	$hourmin=8;
@@ -39,7 +39,7 @@ error_reporting(E_ALL);
 	$hourmax=19;
 	$timeintervalinmin=15;
 	$timeintervaldisplayinmin=30;
-	echo "<table id='frame_calendar_core_table' class='calendar fullspace'>";
+	echo "<table id='calendar_core_table' class='calendar fullspace-y'>";
 	for ($i = 1 ; $i <= (($hourmax-$hourmin)*60/$timeintervalinmin) -1 ; $i++){
 		$Begin_H=$hourmin+floor($i*$timeintervalinmin/60);
 		$Begin_M=($i*$timeintervalinmin)%60;
