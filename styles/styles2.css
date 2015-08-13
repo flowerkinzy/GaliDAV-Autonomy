@@ -126,25 +126,30 @@ overflow:hidden;
 }
 #frame_calendar_core_table {
 cursor:default;
-}
-#frame_calendar_core_table>tbody {
 
 }
-#frame_calendar_core_table tr{
+#calendar_core_table{
+width:98%;
+margin-left:2%;
+}
+#calendar_core_table>tbody {
+
+}
+#calendar_core_table tr{
 background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
 border-width:5px;
 }
-#frame_calendar_core_table td{
+#calendar_core_table td{
 padding:0;
 margin:0;
 overflow-y:visible;
 }
 
-#frame_calendar_core_table td+td{
+#calendar_core_table td+td{
 width:18%;
 }
 
-#frame_calendar_core_table td>div{
+#calendar_core_table td>div{
 margin:0;
 /* border:dotted;
 border-width:1px; */
@@ -152,7 +157,7 @@ min-height:20px;
 max-height:20px;
 }
 
-#frame_calendar_core_table td.hourcolumn{
+#calendar_core_table td.hourcolumn{
 font-size:small;
 padding:auto;
 padding-top:0;

@@ -1,32 +1,6 @@
-<<<<<<< HEAD
-var hourmin=8;
-var hourmax=19;
-var timeintervalinmin=15;
-var timeintervaldisplayinmin=30;
- $( document ).ready(function() {
-	$("tr.calendar").on("click","td.hourcolumn",function (){
-			$button="<button style='padding:0;position:absolute;cursor:default' ";
-			$button=$button+"begin_hour="+$(this).attr("begin_hour")+" ";
-			$button=$button+"begin_min="+$(this).attr("begin_min")+" ";
-			$button=$button+"end_min="+$(this).attr("end_min")+" ";
-			$button=$button+"> \> </button>";
-			$("#wrap").append($button);
-			$( "button[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]" ).position({
-				my: "right",
-				at: "left top",
-				of: "tr.calendar[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]"
-			});
-			$(this).parent().children().children().slideUp(1000);
-	});
-	
-	
-//FIN documentReady
-	});
-	
-	
-=======
+
 var timeintervalinmin=15;	
->>>>>>> parent of 2cfb996... Revert "Evolution defilement (non fonctionnel)"
+
 function getTypeName(type){
 	
 	switch(type){
