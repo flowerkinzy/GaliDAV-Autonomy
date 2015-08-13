@@ -26,12 +26,24 @@ function createNewCourseElementClass(Course) {
 	var beginDate=new Date(Course.begin*1000);
 	var endDate=new Date(Course.end*1000);
 	var durationInMin=Math.floor((Course.end-Course.begin)/60);
-	console.log("tr.calendar height="+$("tr.calendar").height());
-	console.log("duration="+durationInMin);
-	var height=$("tr.calendar").height()*durationInMin/timeintervalinmin;
+	console.log("TOP:tr.calendar[begin_hour="+beginDate.getHours()
+		+"][begin_min="+timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin)
+		+"]");
+	var top=$("tr.calendar[begin_hour="+beginDate.getHours()
+		+"][begin_min="+timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin)
+		+"]").offset().top;
+	console.log("BOTTOM:tr.calendar[begin_hour="+endDate.getHours()
+		+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+		+"]");
+	var bottom=$("tr.calendar[begin_hour="+endDate.getHours()
+		+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+		+"]").offset().top+$("tr.calendar[begin_hour="+endDate.getHours()
+		+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+		+"]").height();
+	var height=bottom-top;
 	
-        var res="<div class='courses' style='background-color:white;z-index:2;position:absolute;min-height:"+
-			height+"px; '"+
+        var res="<div class='course fullspace-x' style='background-color:white;z-index:2;position:absolute;min-height:"+
+			height+"px; max-height:"+height+"px'"+
 			" begin_hour="+beginDate.getHours()+
 			" begin_min="+beginDate.getMinutes()+
 			" end_hour="+endDate.getHours()+

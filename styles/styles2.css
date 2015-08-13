@@ -143,6 +143,7 @@ border-width:5px;
 padding:0;
 margin:0;
 overflow-y:visible;
+overflow-x:hidden;
 }
 
 #calendar_core_table td+td{
@@ -162,4 +163,8 @@ font-size:small;
 padding:auto;
 padding-top:0;
 border:none;
+}
+div.course{
+
+overflow-x:hidden;
 }
