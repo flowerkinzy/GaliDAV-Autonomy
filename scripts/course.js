@@ -35,15 +35,27 @@ function createNewCourseElementClass(Course) {
 	console.log("BOTTOM:tr.calendar[begin_hour="+endDate.getHours()
 		+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
 		+"]");
-	var bottom=$("tr.calendar[begin_hour="+endDate.getHours()
-		+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
-		+"]").offset().top+$("tr.calendar[begin_hour="+endDate.getHours()
-		+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
-		+"]").height();
+		var endmin=timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin);
+		if(endmin==60){
+			var bottom=$("tr.calendar[begin_hour="+endDate.getHours()
+				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+				+"]").offset().top+$("tr.calendar[begin_hour="+endDate.getHours()-1
+				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+				+"]").height();
+		}else{
+			var bottom=$("tr.calendar[begin_hour="+endDate.getHours()
+				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+				+"]").offset().top+$("tr.calendar[begin_hour="+endDate.getHours()
+				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+				+"]").height();
+		}
 	var height=bottom-top;
-	
+	console.dir($("td.daycolumn")[0]);
+	var width=$($("td.daycolumn")[0]).width();
+	console.log("width="+width);
         var res="<div class='course fullspace-x' style='background-color:white;z-index:2;position:absolute;min-height:"+
-			height+"px; max-height:"+height+"px'"+
+			height+"px; max-height:"+height+"px; "+
+			"max-width:"+width+"px; width:"+width+"px;min-width:"+Math.floor(width/3)+"px'"+
 			" begin_hour="+beginDate.getHours()+
 			" begin_min="+beginDate.getMinutes()+
 			" end_hour="+endDate.getHours()+
@@ -78,3 +90,4 @@ function displayNewCourseElementClass(Course) {
 		(weekday-1)%7+"]>div")
 		.append(createNewCourseElementClass(Course));
 }
+

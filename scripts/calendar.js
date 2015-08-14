@@ -18,6 +18,7 @@ var timeintervaldisplayinmin=30;
 			$( "button[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]" ).on("click",function(){
 				$("tr.calendar[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]").children().children().show();
 				$(this).remove();
+				adapt_button_position();
 			});
 		}
 	});
@@ -39,4 +40,51 @@ function adapt_button_position(){
 			});
 		}
 	
+}
+
+function getCoursesOfDayHappeningAt(weekday,beginH,beginM,endM){
+	//criteria1="[weekday="+weekday+"]";
+	coursesOfDayList=$("td.calendar[weekday="+weekday+"] div.course");
+	resultingList=[];
+	ok=false;
+	for(i=0;i<coursesOfDayList.length;i++){
+		ibeginH=parseInt($(coursesOfDayList[i]).attr("begin_hour"));
+		iendH=parseInt($(coursesOfDayList[i]).attr("end_hour"));
+		ibeginM=parseInt($(coursesOfDayList[i]).attr("begin_min"));
+		iendM=parseInt($(coursesOfDayList[i]).attr("end_min"));
+		if(ibeginH<=beginH){
+			if(iendH>=beginH){
+				if(ibeginH==beginH){
+					if(ibeginM==beginM)
+						ok=true;
+					else if(ibeginM<beginM){
+						if(iendH>beginH)
+							ok=true;
+						else if(iendM>=endM)
+							ok=true;
+					}
+				}
+				else{
+					if(iendH>beginH)
+						ok=true;
+					else if(iendH==beginH){
+						 if(iendM>=endM)
+							ok=true;
+					}
+				}
+			}
+		}
+		if(ok){
+			resultingList.push($(coursesOfDayList[i]));
+		}
+	}
+	return resultingList;
+}
+
+function getCoursesOfWeekHappeningAt(beginH,beginM,endM){
+	resultingList=[];
+	for(j_day=0;jday<=4;j_day++){
+		resultingList.concat(getCoursesOfDayHappeningAt(j_day,beginH,beginM,endM));
+	}
+	return resultingList;
 }

@@ -1,14 +1,14 @@
 
 * { 
-overflow-x:auto;
+
 }
 
 html,body{
-margin:0;
-padding:0;
-height:100%;
-/* border:solid; */
-min-width:100%;
+	margin:0;
+	padding:0;
+	height:100%;
+	/* border:solid; */
+	min-width:100%;
     max-width:100%;
 	min-height:100%;
 	max-height:100%;
@@ -23,7 +23,7 @@ min-width:100%;
 }
 
 .no-overflow:{
-/*overflow-x:none;*/
+overflow-x:none;
 overflow-y:none;
 }
 
@@ -87,10 +87,10 @@ padding:0;
 }
 
 tbody{
-min-width:100%;
-min-height:100%;
-max-height:100%;
-max-width:100%;
+	min-width:100%;
+	min-height:100%;
+	max-height:100%;
+	max-width:100%;
 }
 
 #frame_calendar_main_table{
@@ -98,23 +98,23 @@ display:initial;
 }
 
 #frame_calendar_controls_row{
-top:0;
-position:absolute;
-max-height:7%;
-min-height:7%;
-overflow:hidden;
+	top:0;
+	position:absolute;
+	max-height:7%;
+	min-height:7%;
+	overflow:hidden;
 }
 
 #frame_calendar_controls_row>div:first-child{
-width:80%;
-position:absolute;
-overflow:hidden;
+	width:80%;
+	position:absolute;
+	overflow:hidden;
 }
 #frame_calendar_controls_row>div:first-child+div{
-margin-left:80%;
-width:20%;
-position:absolute;
-overflow:hidden;
+	margin-left:80%;
+	width:20%;
+	position:absolute;
+	overflow:hidden;
 }
 
 #frame_calendar_controls_row+div{
@@ -125,25 +125,25 @@ overflow:hidden;
 	overflow-y:auto;
 }
 #frame_calendar_core_table {
-cursor:default;
+	cursor:default;
 
 }
 #calendar_core_table{
-width:98%;
-margin-left:2%;
+	width:98%;
+	margin-left:2%;
 }
 #calendar_core_table>tbody {
 
 }
 #calendar_core_table tr{
-background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
-border-width:5px;
+	background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%);
+	border-width:5px;
 }
 #calendar_core_table td{
-padding:0;
-margin:0;
-overflow-y:visible;
-overflow-x:hidden;
+	padding:0;
+	margin:0;
+	overflow-y:visible;
+	overflow-x:hidden;
 }
 
 #calendar_core_table td+td{
@@ -151,20 +151,22 @@ width:18%;
 }
 
 #calendar_core_table td>div{
-margin:0;
-/* border:dotted;
-border-width:1px; */
-min-height:20px;
-max-height:20px;
+	margin:0;
+	/* border:dotted;
+	border-width:1px; */
+	min-height:20px;
+	max-height:20px;
 }
 
 #calendar_core_table td.hourcolumn{
-font-size:small;
-padding:auto;
-padding-top:0;
-border:none;
+	font-size:small;
+	padding:auto;
+	padding-top:0;
+	border:none;
 }
-div.course{
 
-overflow-x:hidden;
+div.course{
+	display:inline;
+	overflow-x:hidden;
+	font-size:x-small;
 }
