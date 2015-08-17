@@ -32,7 +32,10 @@ var timeintervaldisplayinmin=30;
 		$(this).children().toggle();
 	});
 	
-	
+	$("td.daycolumn>div").on("click",function(){
+		console.log("new event");
+		displayFormNewEvent($(this).attr("begin_hour"),$(this).attr("begin_min"));
+	});
 //FIN documentReady
 	});
 	
@@ -150,4 +153,14 @@ function adaptCoursesHeightAfterShowingRow(beginH,beginM,endM, rowHeight){
 		$(list[i]).css("min-height",finalHeight+"px");
 	
 	}
+}
+
+function displayFormNewEvent(BeginH,BeginM){
+	$("#wrap").append(createFormNewEvent(BeginH,BeginM));
+}
+
+function createFormNewEvent(BeginH,BeginM){
+	var $form=$("<form style='z-index:2;position:absolute;'></form>"); //attributes To complete
+	$form.append("<input type='submit'/>");
+	return $form;
 }

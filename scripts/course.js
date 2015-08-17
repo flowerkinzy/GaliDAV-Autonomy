@@ -71,7 +71,8 @@ function createNewCourseElementClass(Course) {
     return res;
 }
 
-
+//Note: par défaut, les cours concernent tous les élèves affiliés à lEDT. Il faudra préciser un évènement de groupe pour
+//avoir 2+ cours sur la même plage horaires. (Et donc empêcher le cours de prendre toute la place);
 function displayNewCourseElementClass(Course) {
 	console.log("displayNewCourseElementClass/@param="+Course);	
 	Course=jQuery.parseJSON(Course);
