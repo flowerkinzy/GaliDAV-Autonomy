@@ -33,15 +33,14 @@ function createNewCourseElementClass(Course) {
 		+"][begin_min="+timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin)
 		+"]").offset().top;
 	console.log("BOTTOM:tr.calendar[begin_hour="+endDate.getHours()
-		+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+		+"][begin_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
 		+"]");
 		var endmin=timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin);
-		if(endmin==60){
-			var bottom=$("tr.calendar[begin_hour="+endDate.getHours()
-				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
-				+"]").offset().top+$("tr.calendar[begin_hour="+endDate.getHours()-1
-				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
-				+"]").height();
+		
+		if(endmin==0){
+			var bottom=$("tr.calendar[begin_hour="+endDate.getHours()-1
+				+"][end_min=60]").offset().top+$("tr.calendar[begin_hour="+endDate.getHours()-1
+				+"][end_min=60]").height();
 		}else{
 			var bottom=$("tr.calendar[begin_hour="+endDate.getHours()
 				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
@@ -50,16 +49,15 @@ function createNewCourseElementClass(Course) {
 				+"]").height();
 		}
 	var height=bottom-top;
-	console.dir($("td.daycolumn")[0]);
 	var width=$($("td.daycolumn")[0]).width();
-	console.log("width="+width);
         var res="<div class='course fullspace-x' style='background-color:white;z-index:2;position:absolute;min-height:"+
 			height+"px; max-height:"+height+"px; "+
 			"max-width:"+width+"px; width:"+width+"px;min-width:"+Math.floor(width/3)+"px'"+
 			" begin_hour="+beginDate.getHours()+
-			" begin_min="+beginDate.getMinutes()+
+			" begin_min="+timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin)+
 			" end_hour="+endDate.getHours()+
-			" end_min="+endDate.getMinutes()+
+			" end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)+
+			" weekday="+(beginDate.getDay()-1)%7+
 			" id="+
 			Course.sqlId+"><p><b>"+
 			Course.subject.name;
@@ -80,8 +78,6 @@ function displayNewCourseElementClass(Course) {
 	var beginDate=new Date(Course.begin*1000);
 	var endDate=new Date(Course.end*1000);
 	var weekday=beginDate.getDay(); //0 is for Sunday and so on
-	console.log(beginDate.toUTCString()+" -> "+endDate.toUTCString());
-	console.log("weekday="+weekday);
     $("td.daycolumn[begin_hour="
 		+beginDate.getHours()+
 		"][begin_min="
