@@ -1,5 +1,7 @@
 var hourmin=8;
 var hourmax=19;
+var beginmin=30;
+var endmin=45;
 var timeintervalinmin=15;
 var timeintervaldisplayinmin=30;
  $( document ).ready(function() {
@@ -34,7 +36,7 @@ var timeintervaldisplayinmin=30;
 	
 	$("td.daycolumn>div").on("click",function(){
 		console.log("new event");
-		displayFormNewEvent($(this).attr("begin_hour"),$(this).attr("begin_min"));
+		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"));
 	});
 //FIN documentReady
 	});
@@ -156,11 +158,46 @@ function adaptCoursesHeightAfterShowingRow(beginH,beginM,endM, rowHeight){
 }
 
 function displayFormNewEvent(BeginH,BeginM){
-	$("#wrap").append(createFormNewEvent(BeginH,BeginM));
+	$("#newOrModifyCourse").remove();
+	
+	$(createFormNewEvent(BeginH,BeginM)).appendTo("#wrap");
+	
+	$("#newOrModifyCourse").dialog();
+	$("#newOrModifyCourse").parent().css("z-index",3);
+	//$("#datepicker").datepicker();
+	//$("#newOrModifyCourse").open();
 }
 
 function createFormNewEvent(BeginH,BeginM){
-	var $form=$("<form style='z-index:2;position:absolute;'></form>"); //attributes To complete
-	$form.append("<input type='submit'/>");
-	return $form;
+	var div=$("<div id=newOrModifyCourse style=></div>"); //attributes To complete
+	var form=$("<form></form>");
+	
+	var divBegin=$("<div></div>");
+	var hourpickerB=$("<input type='number' max="+hourmax+" min="+hourmin+" value="+BeginH+" >");
+	var minpickerB=$("<input type='number' max=45 min=0 value="+BeginM+" >");
+	$(hourpickerB).spinner();
+	$(divBegin).append(hourpickerB);
+	$(minpickerB).spinner({
+		step:15,
+		incremental:false
+	});
+	$(divBegin).append(minpickerB);
+	$(form).append(divBegin);
+	
+	var divEnd=$("<div></div>");
+	var hourpickerE=$("<input type='number' max="+hourmax+" min="+hourmin+" value="+(parseInt(BeginH)+1)+" >");
+	var minpickerE=$("<input type='number' max=45 min=0 value="+(parseInt(BeginM)+30)+" >");
+	$(hourpickerE).spinner();
+	$(divEnd).append(hourpickerE);
+	$(minpickerE).spinner({
+		step:15,
+		incremental:false
+	});
+	$(divEnd).append(minpickerE);
+	$(form).append(divEnd);
+	
+	$(form).append("<input type='submit'/>");
+	$(div).append(form);
+	//$form.append("<input type='submit'/>");
+	return div;
 }

@@ -56,7 +56,7 @@ error_reporting(E_ALL);
 	//$begin2=get_date(time()/($timeintervalinmin*60));
 	//$end2=get_date((time()/($timeintervalinmin*60))+90*60);
 	$begin=(int)floor(time()/($timeintervalinmin*60));
-	$begin=time()-180*60;
+	//$begin=time();
 	$end=$begin+90*60; 
 	$C=new Course(new Subject('Math'),$begin,$end); 
 	$C->setRoom("C102");
