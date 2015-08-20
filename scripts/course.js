@@ -38,8 +38,8 @@ function createNewCourseElementClass(Course) {
 		var endmin=timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin);
 		
 		if(endmin==0){
-			var bottom=$("tr.calendar[begin_hour="+endDate.getHours()-1
-				+"][end_min=60]").offset().top+$("tr.calendar[begin_hour="+endDate.getHours()-1
+			var bottom=$("tr.calendar[begin_hour="+(endDate.getHours()-1)
+				+"][end_min=60]").offset().top+$("tr.calendar[begin_hour="+(endDate.getHours()-1)
 				+"][end_min=60]").height();
 		}else{
 			var bottom=$("tr.calendar[begin_hour="+endDate.getHours()

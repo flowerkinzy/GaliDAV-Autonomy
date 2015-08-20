@@ -35,7 +35,8 @@ var timeintervaldisplayinmin=30;
 	});
 	
 	$("td.daycolumn>div").on("click",function(){
-		console.log("new event");
+		console.log("new event on:");
+		console.dir($(this).parent());
 		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"));
 	});
 //FIN documentReady
@@ -164,8 +165,10 @@ function displayFormNewEvent(BeginH,BeginM){
 	
 	$("#newOrModifyCourse").dialog();
 	$("#newOrModifyCourse").parent().css("z-index",3);
-	//$("#datepicker").datepicker();
-	//$("#newOrModifyCourse").open();
+	$("#newOrModifyCourse").parent().css("width","50%");
+	$("#newOrModifyCourse").parent().css("height","80%");
+	$("#newOrModifyCourse").parent().css("top","25%");
+	$("#newOrModifyCourse").parent().css("left","10%");
 }
 
 function createFormNewEvent(BeginH,BeginM){
@@ -173,31 +176,95 @@ function createFormNewEvent(BeginH,BeginM){
 	var form=$("<form></form>");
 	
 	var divBegin=$("<div></div>");
-	var hourpickerB=$("<input type='number' max="+hourmax+" min="+hourmin+" value="+BeginH+" >");
-	var minpickerB=$("<input type='number' max=45 min=0 value="+BeginM+" >");
-	$(hourpickerB).spinner();
+	var hourpickerB=$("<input required >");
+	var minpickerB=$("<input required >");
 	$(divBegin).append(hourpickerB);
-	$(minpickerB).spinner({
-		step:15,
-		incremental:false
-	});
+	
 	$(divBegin).append(minpickerB);
 	$(form).append(divBegin);
 	
-	var divEnd=$("<div></div>");
-	var hourpickerE=$("<input type='number' max="+hourmax+" min="+hourmin+" value="+(parseInt(BeginH)+1)+" >");
-	var minpickerE=$("<input type='number' max=45 min=0 value="+(parseInt(BeginM)+30)+" >");
-	$(hourpickerE).spinner();
+	var divEnd=$("<div ></div>");
+	var EndHdefault=Math.floor(((parseInt(BeginH)*60)+parseInt(BeginM)+90)/60)
+	var EndMdefault=Math.floor((parseInt(BeginH)*60)+parseInt(BeginM)+90)%60;
+	
+	var hourpickerE=$("<input required >");
+	var minpickerE=$("<input required >");
+	
 	$(divEnd).append(hourpickerE);
-	$(minpickerE).spinner({
-		step:15,
-		incremental:false
-	});
 	$(divEnd).append(minpickerE);
 	$(form).append(divEnd);
 	
 	$(form).append("<input type='submit'/>");
 	$(div).append(form);
+	
+	$(hourpickerB).spinner({
+		min:hourmin,
+		max:hourmax,
+		stop: function( event, ui ) {
+			if($(hourpickerB).spinner("value")==hourmax){
+				$(minpickerB).spinner("option","max",(endmin-timeintervalinmin));
+				if($(minpickerB).spinner("value")>(endmin-timeintervalinmin))
+					$(minpickerB).spinner("value",(endmin-timeintervalinmin));
+			}else{
+				$(minpickerB).spinner("option","max",45);
+			}
+			if($(hourpickerB).spinner("value")==hourmin){
+				$(minpickerB).spinner("option","min",beginmin);
+				if($(minpickerB).spinner("value")<beginmin)
+					$(minpickerB).spinner("value",beginmin);
+			}else{
+				$(minpickerB).spinner("option","min",0);
+			}
+		}
+	});
+	if(BeginH==hourmin)$(minpickerB).spinner("option","min",beginmin);
+	if(BeginH==hourmax)$(minpickerB).spinner("option","max",(endmin-timeintervalinmin));
+	$(hourpickerE).spinner({
+		min:hourmin,
+		max:hourmax,
+		stop: function( event, ui ) {
+			if($(hourpickerE).spinner("value")==hourmax){
+				$(minpickerE).spinner("option","max",endmin);
+				if($(minpickerE).spinner("value")>endmin)
+					$(minpickerE).spinner("value",endmin);
+			}else{
+				$(minpickerE).spinner("option","max",45);
+			}
+			if($(hourpickerE).spinner("value")==hourmin){
+				$(minpickerE).spinner("option","min",(beginmin+timeintervalinmin));
+				if($(minpickerE).spinner("value")>(beginmin+timeintervalinmin))
+					$(minpickerE).spinner("value",(beginmin+timeintervalinmin));
+			}else{
+				$(minpickerE).spinner("option","min",0);
+			}
+		}
+	});
+	//if(EndH==hourmin)$(minpickerB).spinner("option","min",(beginmin+timeintervalinmin)%60);
+	if(EndH==hourmax)$(minpickerB).spinner("option","max",endmin);
+	$(minpickerB).spinner({
+		step:15,
+		incremental:false,
+		min:0,
+		max:45
+	});
+	$(minpickerE).spinner({
+		step:15,
+		incremental:false,
+		min:0,
+		max:45
+	});
+	$(hourpickerB).spinner("value",BeginH);
+	$(minpickerB).spinner("value",BeginM);
+	$(hourpickerE).spinner("value",EndHdefault);
+	$(minpickerE).spinner("value",EndMdefault);
+	$(hourpickerB).parent().css("min-width","30%");
+	$(hourpickerE).parent().css("min-width","30%");
+	$(minpickerB).parent().css("min-width","30%");
+	$(minpickerE).parent().css("min-width","30%");
+	$(hourpickerB).parent().css("max-width","30%");
+	$(hourpickerE).parent().css("max-width","30%");
+	$(minpickerB).parent().css("max-width","30%");
+	$(minpickerE).parent().css("max-width","30%");
 	//$form.append("<input type='submit'/>");
 	return div;
 }

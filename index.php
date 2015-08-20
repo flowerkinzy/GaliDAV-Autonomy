@@ -9,6 +9,7 @@
 	<script src="scripts/jquery-ui/jquery-ui.js"></script>
 	<script src="scripts/calendar.js"></script>
 	<script src="scripts/course.js"></script>
+	<script src="scripts/d3.v3.min.js" charset="utf-8"></script>
 	<title>Style2/Frame3</title>
 </head>
 <body>
