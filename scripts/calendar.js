@@ -164,7 +164,7 @@ function displayFormNewEvent(BeginH,BeginM){
 	$(createFormNewEvent(BeginH,BeginM)).appendTo("#wrap");
 	
 	$("#newOrModifyCourse").dialog();
-	$("#newOrModifyCourse").parent().css("z-index",3);
+	
 	$("#newOrModifyCourse").parent().css("width","50%");
 	$("#newOrModifyCourse").parent().css("height","80%");
 	$("#newOrModifyCourse").parent().css("top","25%");
@@ -172,10 +172,10 @@ function displayFormNewEvent(BeginH,BeginM){
 }
 
 function createFormNewEvent(BeginH,BeginM){
-	var div=$("<div id=newOrModifyCourse style=></div>"); //attributes To complete
+	var div=$("<div id=newOrModifyCourse></div>"); //attributes To complete
 	var form=$("<form></form>");
 	
-	var divBegin=$("<div></div>");
+	var divBegin=$("<div class=timespinnersframe></div>");
 	var hourpickerB=$("<input required >");
 	var minpickerB=$("<input required >");
 	$(divBegin).append(hourpickerB);
@@ -183,7 +183,7 @@ function createFormNewEvent(BeginH,BeginM){
 	$(divBegin).append(minpickerB);
 	$(form).append(divBegin);
 	
-	var divEnd=$("<div ></div>");
+	var divEnd=$("<div class=timespinnersframe></div>");
 	var EndHdefault=Math.floor(((parseInt(BeginH)*60)+parseInt(BeginM)+90)/60)
 	var EndMdefault=Math.floor((parseInt(BeginH)*60)+parseInt(BeginM)+90)%60;
 	
@@ -240,7 +240,7 @@ function createFormNewEvent(BeginH,BeginM){
 		}
 	});
 	//if(EndH==hourmin)$(minpickerB).spinner("option","min",(beginmin+timeintervalinmin)%60);
-	if(EndH==hourmax)$(minpickerB).spinner("option","max",endmin);
+	if(EndHdefault==hourmax)$(minpickerB).spinner("option","max",endmin);
 	$(minpickerB).spinner({
 		step:15,
 		incremental:false,
@@ -256,15 +256,6 @@ function createFormNewEvent(BeginH,BeginM){
 	$(hourpickerB).spinner("value",BeginH);
 	$(minpickerB).spinner("value",BeginM);
 	$(hourpickerE).spinner("value",EndHdefault);
-	$(minpickerE).spinner("value",EndMdefault);
-	$(hourpickerB).parent().css("min-width","30%");
-	$(hourpickerE).parent().css("min-width","30%");
-	$(minpickerB).parent().css("min-width","30%");
-	$(minpickerE).parent().css("min-width","30%");
-	$(hourpickerB).parent().css("max-width","30%");
-	$(hourpickerE).parent().css("max-width","30%");
-	$(minpickerB).parent().css("max-width","30%");
-	$(minpickerE).parent().css("max-width","30%");
-	//$form.append("<input type='submit'/>");
+	$(minpickerE).spinner("value",EndMdefault);	
 	return div;
 }

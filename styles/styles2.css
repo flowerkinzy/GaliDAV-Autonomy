@@ -171,3 +171,11 @@ div.course{
 	overflow-x:hidden;
 	font-size:x-small;
 }
+
+div.timespinnersframe .ui-spinner{
+min-width:15%;
+max-width:15%;
+}
+div.ui-dialog[aria-describedby="newOrModifyCourse"]{
+	z-index:3;
+}
