@@ -179,3 +179,38 @@ max-width:15%;
 div.ui-dialog[aria-describedby="newOrModifyCourse"]{
 	z-index:3;
 }
+
+
+
+/* Header Menu*/
+
+#header-menu {
+	max-width: 100%;
+	max-height: 30px;
+	background: -webkit-linear-gradient(#585858, #3d3d3d);
+	padding: 10px;
+}
+
+#view-filter {
+	height: 100%;
+	margin: 0px;
+}
+
+.view-filter-option {
+	display: inline;
+}
+
+.view-filter-option > a {
+	padding: 10px;
+	color: #fff;
+	font-size: 130%;
+}
+.view-filter-option:nth-child(n+2){
+	border-left: solid 1px #000;
+}
+
+.view-filter-option a:active, .view-filter-option a:focus{
+	background: -webkit-linear-gradient(#fff, #eee);
+	color: #000;
+	font-weight: bold;
+}
