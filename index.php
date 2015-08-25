@@ -12,14 +12,16 @@
 	<script src="scripts/d3.v3.min.js" charset="utf-8"></script>
 	<title>Style2/Frame3</title>
 
-	<?php error_reporting(E_ALL); include("./object_views/header_menu.php"); ?>
+	
 
 </head>
 <body>
 	<div id="wrap" class='fullspace'>
-		<?php error_reporting(E_ALL); include("./object_views/widget_zone_left.php"); ?>
+		<?php 	error_reporting(E_ALL); 
+				include("./object_views/header_menu.php"); 
+				include("./object_views/widget_zone_left.php"); ?>
 		<div class="timetable fullspace" id="frame_timetable">
-			<?php error_reporting(E_ALL); include("./object_views/calendar_frame3.php"); ?>
+			<?php include("./object_views/calendar_frame3.php"); ?>
 		</div>
 	</div>
 </body>
