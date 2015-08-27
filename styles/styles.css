@@ -1,0 +1,167 @@
+html,body{
+margin:0;
+padding:0;
+height:100%;
+/* border:solid; */
+min-width:100%;
+    max-width:100%;
+	min-height:100%;
+	max-height:100%;
+
+}
+#wrap{
+/* height:100%; */
+/* max-height:100%; */
+overflow:hidden;
+margin:0;
+padding:0;
+}
+
+#frame_timetable {
+    /* border:solid; */
+	position:absolute;
+	background-color:gray;
+	min-width:80%;
+    max-width:80%;
+	min-height:80%;
+	max-height:80%;
+	margin:0;
+    left:15%;
+	right:0%;
+	padding:0%;
+	top:10%; 
+	
+	/* overflow:hidden; */
+
+}
+
+tbody{
+min-width:100%;
+min-height:100%;
+max-height:100%;
+max-width:100%;
+}
+
+#frame_calendar_main_table{
+display:initial;
+}
+/* #frame_calendar_main_table{
+min-width:100%;
+min-height:100%;
+max-height:100%;
+} */
+/* #frame_calendar_main_table>*{
+min-width:100%;
+min-height:100%;
+max-height:100%;
+} */
+/* #frame_calendar_main_table>*>*{
+min-width:100%;
+min-height:100%;
+max-height:100%;
+} */
+
+.fullspace{
+margin:0;
+	min-width:100%;
+	max-width:100%;
+	min-height:100%;
+	max-height:100%;
+	/* width:auto; */
+	/* height:auto; */
+}
+.no-margin-x{
+margin-left:0;
+	margin-right:0;
+}
+
+.no-margin-y{
+margin-top:0;
+margin-bottom:0;
+}
+.fullspace-y{
+	margin-bottom:0;
+	margin-top:0;
+	min-height:100%;
+	max-height:100%;
+}
+
+.fullspace-x{
+margin-left:0;
+	margin-right:0;
+	min-width:100%;
+	max-width:100%;
+}
+/* #frame_extended_timetable>*>*>*{
+min-width:100%;
+min-height:100%;
+max-height:100%;
+} */ 
+#frame_calendar_core_row{
+max-height:85%;
+min-height:85%;
+/* min-width:100%; */
+overflow-y:auto;
+display:list-item;
+}
+
+#frame_calendar_controls_row{
+max-height:10%;
+min-height:10%;
+/* display:list-item; */
+display:none;
+
+}
+
+
+.timetable {
+	color:red;
+	height:100%;
+	margin:0;
+	padding:0;
+}
+
+.no-overflow:{
+overflow-x:none;
+overflow-y:none;
+}
+* { overflow-y:auto;border-style:solid;
+border-width:1px;}
+
+#frame_calendar_core_table{
+	border:solid;
+	border-color:yellow;
+	background-color:white;
+	/* height:100%; */
+	/* min-width:100%; */
+	/* display:block; */
+}
+#frame_calendar_core_table td{
+	/* max-height:100%; */
+	/* min-height:100%; */
+	/* width:20%; */
+	border-style:none;
+	border-color:green;
+	background-color:purple;
+	/* display:none; */
+}
+#frame_calendar_core_table tbody{
+min-width:100%;
+min-height:100%;
+}
+
+#frame_calendar_core_table tr{
+min-height:10%;
+max-height:10%;
+/* min-width:100%; */
+border-style:dotted;
+border-color:yellow;
+background-color:white;
+}
+
+/* #frame_calendar_test_div{
+min-height:100%;
+max-height:100%;
+min-width:100%;
+overflow-y:auto;
+} */
