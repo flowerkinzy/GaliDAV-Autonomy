@@ -18,11 +18,19 @@ error_reporting(E_ALL);
 	$hourmax=18;
 	$beginmin=30;
 	$endmin=45;
+
+	$days=array(1 => 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
 	
 	$timeintervalinmin=15;
 	$timeintervaldisplayinmin=30;
 
 	echo "<table id='calendar_core_table' class='calendar fullspace-y'>";
+	echo "<tr class='calendar fullspace-x'>";
+	for ($j_day=0; $j_day <= 5; $j_day++){
+		$weekDayDisplay=sprintf('%s', $days[$j_day]);
+		echo "<td class='fullspace-y'> <div> $weekDayDisplay </div> </td>";
+	}
+	echo "</tr>";
 	for ($beginH = $hourmin ; $beginH <= $hourmax ; $beginH++){
 		$bm=0;
 		$em=60;
