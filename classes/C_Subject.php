@@ -33,26 +33,14 @@ class Subject
 	*/
 	public function __construct($newName = NULL, $newGroup = NULL)
 	{
-		if (!is_string($newName))
-		{
-			$newName = "Pas de nom";
-		}
+	     echo "<script>console.log('new Subject ($newName , $newGroup)');</script>";
+		if (is_string($newName) && $newGroup != NULL){		
 
-		$this->name = $newName;
-/* 		$params     = array($newName);
-		$params[]   = $newGroup->getSqlId();
-		$query      = "INSERT INTO " . self::TABLENAME . " (name, id_group) VALUES ($1, $2);";
-		$result     = Database::currentDB()->executeQuery($query, $params);
-
-		if (!$result)
-		{
-			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
-		}
-		else
-		{
-			$params = array($newName);
-			$query  = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1;";
-			$result = Database::currentDB()->executeQuery($query, $params);
+			$this->name = $newName;
+	 		$params     = array($newName);
+			$params[]   = $newGroup->getSqlId();
+			$query      = "INSERT INTO " . self::TABLENAME . " (name, id_group) VALUES ($1, $2);";
+			$result     = Database::currentDB()->executeQuery($query, $params);
 
 			if (!$result)
 			{
@@ -60,13 +48,24 @@ class Subject
 			}
 			else
 			{
-				$result = pg_fetch_assoc($result);
-				$this->group  = $newGroup;
-				$this->sqlId  = $result['id'];
-				$newTimetable = new Timetable($this);
-				$this->timetable = $newTimetable;
+				$params = array($newName);
+				$query  = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1;";
+				$result = Database::currentDB()->executeQuery($query, $params);
+
+				if (!$result)
+				{
+					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+				}
+				else
+				{
+					$result = pg_fetch_assoc($result);
+					$this->group  = $newGroup;
+					$this->sqlId  = $result['id'];
+					$newTimetable = new Timetable($this);
+					$this->timetable = $newTimetable;
+				}
 			}
-		} */
+		}
 	}
 
 	// getters

@@ -44,24 +44,33 @@ class Group
 	{
 		if ($newName != NULL)
 		{
-			CreateGroupAccount($newName, session_salted_sha1($newName)); // The password is the same as the group name
+			//CreateGroupAccount($newName, session_salted_sha1($newName)); // The password is the same as the group name
 			$this->name      = $newName;
 			$this->isAClass  = $newIsAClass;
-			$query           = "INSERT INTO " . self::TABLENAME . " (name, is_class) VALUES ($1, $newIsAClass);";
+			if($newIsAClass)
+				$query           = "INSERT INTO " . self::TABLENAME . " (name, is_class) VALUES ($1, true);";
+			 else
+				$query           = "INSERT INTO " . self::TABLENAME . " (name, is_class) VALUES ($1, FALSE);";
 			$params[]        = $newName;
 			$result          = Database::currentDB()->executeQuery($query, $params);
-			$query           = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1;";
-			$result          = Database::currentDB()->executeQuery($query, $params);
-			$result          = pg_fetch_assoc($result);
-			$this->sqlId     = $result['id'];
-
-			if ($newIsAClass)
+			if (!$result)
 			{
-				$this->timetable = new Timetable($this);
-			}
-			else
-			{
-				$this->timetable = new ClassesTimetable($this);
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+			}else{
+			  $query           = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1;";
+			  $result          = Database::currentDB()->executeQuery($query, $params);
+			  
+			  $result          = pg_fetch_assoc($result);
+			  $this->sqlId     = $result['id'];
+			  echo "<script>console.log('--id=".$this->sqlId ."');</script>";
+			  if ($newIsAClass)
+			  {
+				  $this->timetable = new Timetable($this);
+			  }
+			  else
+			  {
+				  $this->timetable = new ClassesTimetable($this);
+			  }
 			}
 		}
 	}

@@ -1,5 +1,9 @@
-
-var timeintervalinmin=15;	
+var hourmin=8;
+var hourmax=19;
+var beginmin=30;
+var endmin=45;
+var timeintervalinmin=15;
+var timeintervaldisplayinmin=30;
 
 function getTypeName(type){
 	
@@ -79,12 +83,21 @@ function displayNewCourseElementClass(Course) {
 	var beginDate=new Date(Course.begin*1000);
 	var endDate=new Date(Course.end*1000);
 	var weekday=beginDate.getDay(); //0 is for Sunday and so on
-    $("td.daycolumn[begin_hour="
-		+beginDate.getHours()+
-		"][begin_min="
-		+timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin)
-		+"][weekday="+
-		(weekday-1)%7+"]>div")
-		.append(createNewCourseElementClass(Course));
+	var beginM=timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin);
+	var beginH=beginDate.getHours();
+	var endM=timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin);
+	var endH=endDate.getHours();
+	if(weekday<1 || weekday>5);
+	else if(beginH < HOUR_MIN || beginH> HOUR_MAX);
+	else if(endH < HOUR_MIN || endH> HOUR_MAX);
+	else if(beginH==HOUR_MIN && beginM < BEGIN_MIN);
+	else if(beginH==HOUR_MAX && beginM >= END_MIN);
+	else if(endH==HOUR_MIN && endM <= BEGIN_MIN);
+	else if(endH==HOUR_MAX && endM > END_MIN);
+	else{
+		$("td.daycolumn[begin_hour="
+			+beginH+"][begin_min="+beginM+"][weekday="+(weekday-1)%7+"]>div")
+				.append(createNewCourseElementClass(Course));
+		}
 }
 

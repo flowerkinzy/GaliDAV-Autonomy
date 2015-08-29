@@ -1,9 +1,4 @@
-var hourmin=8;
-var hourmax=19;
-var beginmin=30;
-var endmin=45;
-var timeintervalinmin=15;
-var timeintervaldisplayinmin=30;
+
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
@@ -35,12 +30,11 @@ var timeintervaldisplayinmin=30;
 	});
 	
 	$("td.daycolumn>div").on("click",function(){
-		console.log("new event on:");
-		console.dir($(this).parent());
+		console.log("on click");
 		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"));
 	});
 //FIN documentReady
-	});
+});
 	
 	
 function adapt_button_position(){
@@ -191,71 +185,83 @@ function createFormNewEvent(BeginH,BeginM){
 	var minpickerE=$("<input required >");
 	
 	$(divEnd).append(hourpickerE);
-	$(divEnd).append(minpickerE);
+	$(divEnd).append(minpickerE);	
 	$(form).append(divEnd);
 	
-	$(form).append("<input type='submit'/>");
+	var divSubject=$("<select name='subject' id='select_choose_subject'><option value='A'>A</select>");
+	$(divSubject).selectmenu({
+		appendTo:"#div_select_choose_subject"
+	});
+	
+	//$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
+	$(form).append(divSubject);
+	
+	$(form).append("<div><input type='submit'/></div>");
 	$(div).append(form);
 	
-	$(hourpickerB).spinner({
-		min:hourmin,
-		max:hourmax,
-		stop: function( event, ui ) {
-			if($(hourpickerB).spinner("value")==hourmax){
-				$(minpickerB).spinner("option","max",(endmin-timeintervalinmin));
-				if($(minpickerB).spinner("value")>(endmin-timeintervalinmin))
-					$(minpickerB).spinner("value",(endmin-timeintervalinmin));
-			}else{
-				$(minpickerB).spinner("option","max",45);
-			}
-			if($(hourpickerB).spinner("value")==hourmin){
-				$(minpickerB).spinner("option","min",beginmin);
-				if($(minpickerB).spinner("value")<beginmin)
-					$(minpickerB).spinner("value",beginmin);
-			}else{
-				$(minpickerB).spinner("option","min",0);
-			}
-		}
-	});
-	if(BeginH==hourmin)$(minpickerB).spinner("option","min",beginmin);
-	if(BeginH==hourmax)$(minpickerB).spinner("option","max",(endmin-timeintervalinmin));
-	$(hourpickerE).spinner({
-		min:hourmin,
-		max:hourmax,
-		stop: function( event, ui ) {
-			if($(hourpickerE).spinner("value")==hourmax){
-				$(minpickerE).spinner("option","max",endmin);
-				if($(minpickerE).spinner("value")>endmin)
-					$(minpickerE).spinner("value",endmin);
-			}else{
-				$(minpickerE).spinner("option","max",45);
-			}
-			if($(hourpickerE).spinner("value")==hourmin){
-				$(minpickerE).spinner("option","min",(beginmin+timeintervalinmin));
-				if($(minpickerE).spinner("value")>(beginmin+timeintervalinmin))
-					$(minpickerE).spinner("value",(beginmin+timeintervalinmin));
-			}else{
-				$(minpickerE).spinner("option","min",0);
-			}
-		}
-	});
-	//if(EndH==hourmin)$(minpickerB).spinner("option","min",(beginmin+timeintervalinmin)%60);
-	if(EndHdefault==hourmax)$(minpickerB).spinner("option","max",endmin);
 	$(minpickerB).spinner({
 		step:15,
 		incremental:false,
 		min:0,
 		max:45
 	});
+	
+	$(hourpickerB).spinner({
+		min:HOUR_MIN,
+		max:HOUR_MAX,
+		stop: function( event, ui ) {
+			if($(hourpickerB).spinner("value")==HOUR_MAX){
+				$(minpickerB).spinner("option","max",(END_MIN-TIME_INTERVAL_IN_MIN));
+				if($(minpickerB).spinner("value")>(END_MIN-TIME_INTERVAL_IN_MIN))
+					$(minpickerB).spinner("value",(END_MIN-TIME_INTERVAL_IN_MIN));
+			}else{
+				$(minpickerB).spinner("option","max",45);
+			}
+			if($(hourpickerB).spinner("value")==HOUR_MIN){
+				if($(minpickerB).spinner("value")<BEGIN_MIN)
+					$(minpickerB).spinner("value",BEGIN_MIN);
+			}else{
+				$(minpickerB).spinner("option","min",0);
+			}
+		}
+	});
+	if(BeginH==HOUR_MIN)$(minpickerB).spinner("option","min",BEGIN_MIN);
+	if(BeginH==HOUR_MAX)$(minpickerB).spinner("option","max",(END_MIN-TIME_INTERVAL_IN_MIN));
 	$(minpickerE).spinner({
 		step:15,
 		incremental:false,
 		min:0,
 		max:45
 	});
+	$(hourpickerE).spinner({
+		min:HOUR_MIN,
+		max:HOUR_MAX,
+		stop: function( event, ui ) {
+			if($(hourpickerE).spinner("value")==HOUR_MAX){
+				$(minpickerE).spinner("option","max",END_MIN);
+				if($(minpickerE).spinner("value")>END_MIN)
+					$(minpickerE).spinner("value",END_MIN);
+			}else{
+				$(minpickerE).spinner("option","max",45);
+			}
+			if($(hourpickerE).spinner("value")==HOUR_MIN){
+				$(minpickerE).spinner("option","min",(BEGIN_MIN+TIME_INTERVAL_IN_MIN));
+				if($(minpickerE).spinner("value")>(BEGIN_MIN+TIME_INTERVAL_IN_MIN))
+					$(minpickerE).spinner("value",(BEGIN_MIN+TIME_INTERVAL_IN_MIN));
+			}else{
+				$(minpickerE).spinner("option","min",0);
+			}
+		}
+	});
+	//if(EndH==HOUR_MIN)$(minpickerB).spinner("option","min",(BEGIN_MIN+TIME_INTERVAL_IN_MIN)%60);
+	if(EndHdefault==HOUR_MAX)$(minpickerB).spinner("option","max",END_MIN);
+	
+	
 	$(hourpickerB).spinner("value",BeginH);
 	$(minpickerB).spinner("value",BeginM);
 	$(hourpickerE).spinner("value",EndHdefault);
 	$(minpickerE).spinner("value",EndMdefault);	
+	
+	
 	return div;
 }

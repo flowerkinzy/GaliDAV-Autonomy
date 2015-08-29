@@ -144,6 +144,24 @@ function XoptionGroups()
 	return $out;
 }
 
+function XoptionSubjects($idGroup)
+{
+	// $out = "<datalist class = optionOfGroup id = listsubjects'>";
+	$out = "";
+	$res = -aDatabase::currentDB()->executeQuery(query_all_groups($idGroup));
+	$group = pg_fetch_assoc($res);
+
+	while ($group != NULL)
+	{
+		// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
+		$out .= "<option>" . $group['name'];
+	}
+
+	//$out .= "</datalist>";
+
+	return $out;
+}
+
 function XPerson($ressource)
 {
 	if (is_array($ressource))
@@ -165,6 +183,18 @@ function XGroup($ressource)
 		$out .= "<input type = 'hidden' name = 'action' value = 'delete_group' /><input type = 'hidden' name = 'id' value = " . $ressource['id'] . " /><input type = 'submit' value = 'Supprimer' /></form>";
 
 		return $out;
+	}
+}
+
+function XSubject($ressource)
+{
+	if (is_array($ressource))
+	{
+		$out = "";
+		$out .= "<form method = 'POST'>" . $ressource['name'];
+		$out .= "<input type = 'hidden' name = 'action' value = 'delete_subject' /><input type = 'hidden' name = 'id' value = " . $ressource['id'] . " /><input type = 'submit' value = 'Supprimer' /></form>";
+
+		return $out;	
 	}
 }
 
@@ -207,6 +237,23 @@ function query_one_group($idOrName)
 	else if (is_int($idOrName))
 	{
 		return "SELECT * FROM " . Group::TABLENAME . " WHERE id = $idOrName;";
+	}
+}
+
+function query_all_subjects($idGroup)
+{
+	return "SELECT * FROM " . Subject::TABLENAME . " WHERE id_group=".$idGroup." ORDER BY name;";
+}
+
+function query_one_subject($idOrName)
+{
+	if (is_string($idOrName))
+	{
+		return "SELECT * FROM " . Suject::TABLENAME . " WHERE NAME = '" . pg_escape_string($idOrName) . "';";
+	}
+	else if (is_int($idOrName))
+	{
+		return "SELECT * FROM " . Suject::TABLENAME . " WHERE id = $idOrName;";
 	}
 }
 

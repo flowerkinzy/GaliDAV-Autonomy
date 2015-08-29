@@ -32,7 +32,7 @@ class Teacher extends User
 	{
 		parent::__construct($newFamilyName, $newFirstName, $newLogin, $newPassword);
 
-		if ($newLogin != NULL and $newPassword != NULL)
+		if ($newFamilyName != NULL and $newFirstName != NULL and $newLogin != NULL and $newPassword != NULL)
 		{
 			$this->addStatus(new PersonStatus(PersonStatus::TEACHER));
 			$this->personalTimetable = new Timetable($this);

@@ -58,6 +58,7 @@ class Course
 		$this->subject = $newSubject;
 		$this->begin   = $newBegin;
 		$this->end     = $newEnd;
+		//TODO write in DataBase
 	}
 
 	// getters

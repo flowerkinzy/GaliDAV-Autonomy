@@ -1,4 +1,5 @@
 <?php 
+include_once("./classes/C_Class.php");
 include_once("./classes/C_Course.php");
 include_once("./classes/C_Subject.php");
 error_reporting(E_ALL);
@@ -58,17 +59,15 @@ error_reporting(E_ALL);
 	
 	</div>
 </div>
-<script>
+
 <?php
-	//$D=get_date(time()/($timeintervalinmin*60));
-	//$begin2=get_date(time()/($timeintervalinmin*60));
-	//$end2=get_date((time()/($timeintervalinmin*60))+90*60);
-	//$begin=(int)floor(time()/($timeintervalinmin*60));
-	$begin=($timeintervalinmin*60)*(int)(time()/($timeintervalinmin*60));
+	$begin=((9*60)+15)*60;//Par défaut, le jeudi 1er janvier 70 à 10h15
+	//$begin=($timeintervalinmin*60)*(int)(time()/($timeintervalinmin*60));//heure courante. N'affiche rien si trop tôt/tard.
 	$end=$begin+90*60; 
-	$C=new Course(new Subject('Math'),$begin,$end); 
+	$INFO2=new C_Class("INFO2");
+	$C=new Course(new Subject('Math',$INFO2->sqlId),$begin,$end); 
 	$C->setRoom("C102");
 	$C->setCourseType(CM);
-	echo "displayNewCourseElementClass('".addslashes(json_encode($C->to_array()))."');";
+	echo "<script>displayNewCourseElementClass('".addslashes(json_encode($C->to_array()))."');</script>";
 ?>
-</script>
+

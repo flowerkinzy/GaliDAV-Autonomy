@@ -29,6 +29,7 @@ class C_Class extends Group
 	*/
 	public function __construct($newName)
 	{
+	  echo "<script>console.log('new Class ($newName)');</script>";
 		parent::__construct($newName, TRUE);
 	}
 

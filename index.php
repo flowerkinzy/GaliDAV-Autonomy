@@ -7,6 +7,8 @@
 	<!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>-->
 	<script src="scripts/jquery-ui/external/jquery/jquery.js"></script>
 	<script src="scripts/jquery-ui/jquery-ui.js"></script>
+	<script src="config/calendar_vars.js"></script>
+	
 	<script src="scripts/calendar.js"></script>
 	<script src="scripts/course.js"></script>
 	<script src="scripts/d3.v3.min.js" charset="utf-8"></script>
@@ -16,7 +18,9 @@
 
 </head>
 <body>
-	<?php error_reporting(E_ALL);require_once("classes/C_Database.php");
+	<?php error_reporting(E_ALL);
+				require_once("config/path.php");
+				require_once("classes/C_Database.php");
 				Database::currentDB()->initialize();
 				?>
 	<div id="wrap" class='fullspace'>
