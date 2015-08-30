@@ -1,8 +1,24 @@
-<div id="header-menu">
-	<ul id="view-filter">
-		<li class="view-filter-option"><a>Option 1</a></li>
-		<li class="view-filter-option"><a>Option 2</a></li>
-		<li class="view-filter-option"><a>Option 3</a></li>
-		<li class="dropdown view-filter-option" style='margin-top:auto;margin-bottom:auto;'><a href='admin_panel2.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Administration</span></a></li>
-	</ul>
-</div>
+	<div id="logbar">
+		<div id="logbar-left"> 
+			<a>Mr. BOB's Calendar </a>
+		</div>
+		<div id="logbar-right"> 
+			<a>Logout </a>
+		</div>
+	</div>
+	<div id="header-menu">
+		<ul id="view-filter">
+			
+			<li class="view-filter-option" type="logo">
+				<p> GaliDAV </p>
+			</li>
+			<li class="view-filter-option" type="button-left"><a>Month</a></li>
+			<li class="view-filter-option" type="button-left"><a>Week</a></li>
+			<li class="view-filter-option" type="button-left"><a>Day</a></li>
+			<li class="view-filter-option" type="button-left"><a>Agenda</a></li>
+
+			<li class="view-filter-option" type="button-right"><a>Next</a></li>
+			<li class="view-filter-option" type="button-right"><a>Previous</a></li>
+
+		</ul>
+	</div>
