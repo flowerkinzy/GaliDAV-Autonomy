@@ -13,6 +13,8 @@ if (0 > version_compare(PHP_VERSION, '5'))
 
 /* Par défaut la BDD considérée se nomme galidav accessible par l'utilisateur galidav en local */
 
+include_once("functions/error_handling.php");
+
 //require_once("/usr/share/davical/htdocs/always.php");
 //require_once("auth-functions.php"); // Utile ou pas ?
 require_once("classes/C_Person.php");
@@ -22,6 +24,7 @@ require_once("classes/C_Modification.php");
 require_once("classes/C_Subject.php");
 require_once("classes/C_Timetable.php");
 require_once("classes/C_PersonStatus.php");
+
 
 
 

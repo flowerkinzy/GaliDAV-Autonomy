@@ -12,7 +12,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 {
 	die('This file was written for PHP 5');
 }
-
+include_once("functions/error_handling.php");
 require_once('types/T_Courses.php');
 require_once('classes/C_Timetable.php');
 require_once('classes/C_Subject.php');
@@ -29,7 +29,7 @@ class Course
 	private $subject     = NULL;
 
 	const TABLENAME           = "gcourse";
-	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30) NOT NULL, room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER";
+	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER";
 	const belongsToTABLENAME  = "gcourse_belongs_to";
 	const belongsToSQLcolumns = "id_course INTEGER REFERENCES gcourse(id), id_calendar INTEGER REFERENCES gcalendar(id), CONSTRAINT gcourse_belongs_to_pk PRIMARY KEY(id_course, id_calendar)";
 
@@ -43,22 +43,35 @@ class Course
 	 * \param $newBegin   ???
 	 * \param $newEnd     ???
 	*/
-	public function __construct(Subject $newSubject, $newBegin, $newEnd)
+	public function __construct(Subject $newSubject=NULL, $newBegin=NULL, $newEnd=NULL)
 	{
-		if (!is_int($newBegin))
-		{
-			$newBegin = time();
+		if(is_int($newBegin) && is_int($newEnd)){
+			if($newBegin>=$newEnd)echo "<script>console.log('Horaires de cours non conforme');</script>";
+			else{
+				if($newSubject!=NULL)
+					$query="INSERT INTO " . self::TABLENAME . " (begins_at, ends_at,id_subject) VALUES ($1, $2,$3);";
+				else
+					$query="INSERT INTO " . self::TABLENAME . " (begins_at, ends_at) VALUES ($1, $2);";
+				$params[]        = date('Y-m-d G:i:s',$newBegin);
+				$params[]        = date('Y-m-d G:i:s',$newEnd);
+				if($newSubject!=NULL)$params[]        = $newSubject->getSqlId();
+				$result          = Database::currentDB()->executeQuery($query, $params);
+				if (!$result)
+				{
+					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+				}else{
+					echo "<script>console.log('result?');</script>";
+					$result=pg_fetch_assoc($result);
+					echo "<script>console.log('result OK');</script>";
+					$this->subject = $newSubject;
+					$this->begin   = $newBegin;
+					$this->end    = $newEnd;
+					$this->sqlId     = $result['id'];
+				//TODO write in DataBase
+				}
+				
+			}	
 		}
-
-		if (!is_int($newEnd))
-		{
-			$newEnd = time();//+90*60;
-		}
-
-		$this->subject = $newSubject;
-		$this->begin   = $newBegin;
-		$this->end     = $newEnd;
-		//TODO write in DataBase
 	}
 
 	// getters
@@ -272,14 +285,17 @@ class Course
 	
 	public function to_array(){
 		$result=array();
-        foreach($this as $key => $value) {
+		foreach($this as $key => $value) {
 			if(!is_null($value)){
 				if(!is_object($value))$result[$key] = $value;
-				else $result[$key]=$value->to_array();
+				else {
+					if(method_exists($value,"getSqlId"))$result[$key."_id"]=$value->getSqlId();
+					if(method_exists($value,"getName"))$result[$key."_name"]=$value->getName();
+				}
 			}
-        }
+		}
  
-        return $result;
-    }
+		return $result;
+	}
 }
 ?>

@@ -1,5 +1,5 @@
 <?php 
-include_once("./classes/C_Class.php");
+include_once("classes/C_Class.php");
 include_once("./classes/C_Course.php");
 include_once("./classes/C_Subject.php");
 error_reporting(E_ALL);
@@ -28,7 +28,8 @@ error_reporting(E_ALL);
 	echo "<table id='calendar_core_table' class='calendar fullspace-y'>";
 	echo "<tr class='calendar fullspace-x'>";
 	for ($j_day=0; $j_day <= 5; $j_day++){
-		$weekDayDisplay=sprintf('%s', $days[$j_day]);
+		if($j_day>0)$weekDayDisplay=sprintf('%s', $days[$j_day]);
+		else $weekDayDisplay="";
 		echo "<td class='fullspace-y'> <div> $weekDayDisplay </div> </td>";
 	}
 	echo "</tr>";
@@ -65,7 +66,9 @@ error_reporting(E_ALL);
 	//$begin=($timeintervalinmin*60)*(int)(time()/($timeintervalinmin*60));//heure courante. N'affiche rien si trop tôt/tard.
 	$end=$begin+90*60; 
 	$INFO2=new C_Class("INFO2");
-	$C=new Course(new Subject('Math',$INFO2->sqlId),$begin,$end); 
+	echo "<script>displayNewCourseElementClass('just before new Subject');</script>";
+	$M=new Subject('Math',$INFO2);
+	$C=new Course($M,$begin,$end); 
 	$C->setRoom("C102");
 	$C->setCourseType(CM);
 	echo "<script>displayNewCourseElementClass('".addslashes(json_encode($C->to_array()))."');</script>";

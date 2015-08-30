@@ -9,6 +9,7 @@
             Note: There’s no SQL reference to a group id or a subject id in this table since there’s already one in group table and subject table.
 */
 error_reporting(E_ALL);
+ini_set("display_errors","1");
 
 if (0 > version_compare(PHP_VERSION, '5'))
 {
@@ -108,8 +109,8 @@ class Timetable
 
 				if (Database::currentDB()->executeQuery($query))
 				{
-					$anIdCollection = (int)CreateCalendar($aGroup->getName(), $aGroup->getName() . " EDT");
-					$this->setIdCollection($anIdCollection);
+					//$anIdCollection = (int)CreateCalendar($aGroup->getName(), $aGroup->getName() . " EDT");
+					//$this->setIdCollection($anIdCollection);
 					$this->group = $aGroup;
 				}
 				else
@@ -124,8 +125,8 @@ class Timetable
 
 				if (Database::currentDB()->executeQuery($query))
 				{
-					$anIdCollection = (int)CreateCalendar($aSubject->getGroup()->getName(), $aSubject->getName() . " " . $aSubject->getGroup()->getName());
-					$this->setIdCollection($anIdCollection);
+					//$anIdCollection = (int)CreateCalendar($aSubject->getGroup()->getName(), $aSubject->getName() . " " . $aSubject->getGroup()->getName());
+					//$this->setIdCollection($anIdCollection);
 					$this->subject = $aSubject;
 				}
 				else
@@ -140,8 +141,8 @@ class Timetable
 
 				if (Database::currentDB()->executeQuery($query))
 				{
-					$anIdCollection = (int)CreateCalendar($aTeacher->getLogin(), $aTeacher->getFullName() . " EDT");
-					$this->setIdCollection($anIdCollection);
+					//$anIdCollection = (int)CreateCalendar($aTeacher->getLogin(), $aTeacher->getFullName() . " EDT");
+					//$this->setIdCollection($anIdCollection);
 					$this->teacherOwner = $aTeacher;
 				}
 				else
@@ -1026,5 +1027,17 @@ class Timetable
 			}
 		}
 	}
+	/*
+	public function to_array(){
+		$result=array();
+		foreach($this as $key => $value) {
+			if(!is_null($value)){
+				if(!is_object($value))$result[$key] = $value;
+				else $result[$key]=$value->to_array();
+			}
+		}
+ 
+		return $result;
+	}*/
 }
 ?>

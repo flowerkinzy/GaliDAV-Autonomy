@@ -11,8 +11,11 @@ if (0 > version_compare(PHP_VERSION, '5'))
 	die('This file was written for PHP 5');
 }
 
+include_once("functions/error_handling.php");
+
 require_once('classes/C_Class.php');
 require_once('classes/C_Timetable.php');
+require_once('classes/C_ClassesTimetable.php');
 require_once('classes/C_Person.php');
 
 class Group
@@ -65,11 +68,13 @@ class Group
 			  echo "<script>console.log('--id=".$this->sqlId ."');</script>";
 			  if ($newIsAClass)
 			  {
-				  $this->timetable = new Timetable($this);
+				echo "<script>console.log('just before new ClassesTimetable()');</script>";
+				$this->timetable = new ClassesTimetable($this);
 			  }
 			  else
 			  {
-				  $this->timetable = new ClassesTimetable($this);
+				  echo "<script>console.log('jsu before new Timetable()');</script>"; 
+				 $this->timetable = new Timetable($this);
 			  }
 			}
 		}
@@ -566,6 +571,21 @@ class Group
 		{
 			Database::currentDB()->showError();
 		}
+	}
+	
+	public function to_array(){
+		$result=array();
+		foreach($this as $key => $value) {
+			if(!is_null($value)){
+				if(!is_object($value))$result[$key] = $value;
+				else {
+					if(method_exists($value,"getSqlId"))$result[$key+"_id"]=$value->getSqlId();
+					if(method_exists($value,"getName"))$result[$key+"_name"]=$value->getName();
+				}
+			}
+		}
+ 
+		return $result;
 	}
 }
 ?>

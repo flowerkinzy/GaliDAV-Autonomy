@@ -64,7 +64,7 @@ function createNewCourseElementClass(Course) {
 			" weekday="+(beginDate.getDay()-1)%7+
 			" id="+
 			Course.sqlId+"><p><b>"+
-			Course.subject.name;
+			Course.subject_name;
 			if(getTypeName(Course.coursesType)!="")
 				res=res+" T:"+getTypeName(Course.coursesType);
 			if(typeof Course.room !== 'undefined')

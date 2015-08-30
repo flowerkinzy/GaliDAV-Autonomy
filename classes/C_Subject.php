@@ -10,9 +10,9 @@ if (0 > version_compare(PHP_VERSION, '5'))
 {
 	die('This file was written for PHP 5');
 }
-
+include_once("functions/error_handling.php");
 require_once('classes/C_Person.php');
-
+require_once('classes/C_Group.php');
 class Subject
 {
 	// --- ATTRIBUTES ---
@@ -31,9 +31,8 @@ class Subject
 	 * \param $newName  \e String containing the subject’s name.
 	 * \param $newGroup Contains the group of the subject.
 	*/
-	public function __construct($newName = NULL, $newGroup = NULL)
+	public function __construct($newName = NULL, Group $newGroup = NULL)
 	{
-	     echo "<script>console.log('new Subject ($newName , $newGroup)');</script>";
 		if (is_string($newName) && $newGroup != NULL){		
 
 			$this->name = $newName;
@@ -372,7 +371,10 @@ class Subject
         foreach($this as $key => $value) {
 			if(!is_null($value)){
 				if(!is_object($value))$result[$key] = $value;
-				else $result[$key]=$value->to_array();
+				else {
+					if(method_exists($value,"getSqlId"))$result[$key+"_id"]=$value->getSqlId();
+					if(method_exists($value,"getName"))$result[$key+"_name"]=$value->getName();
+				}
 			}
         }
  
