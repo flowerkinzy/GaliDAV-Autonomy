@@ -65,15 +65,13 @@ class Group
 			  
 			  $result          = pg_fetch_assoc($result);
 			  $this->sqlId     = $result['id'];
-			  echo "<script>console.log('--id=".$this->sqlId ."');</script>";
 			  if ($newIsAClass)
 			  {
-				echo "<script>console.log('just before new ClassesTimetable()');</script>";
+				
 				$this->timetable = new ClassesTimetable($this);
 			  }
 			  else
 			  {
-				  echo "<script>console.log('jsu before new Timetable()');</script>"; 
 				 $this->timetable = new Timetable($this);
 			  }
 			}

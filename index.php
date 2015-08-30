@@ -3,7 +3,7 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="scripts/jquery-ui/jquery-ui.css">
 	<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
-	<link rel="stylesheet" type="text/css" href="./styles/styles2.css">
+	<link rel="stylesheet" type="text/css" href="./styles/styles.css">
 	<!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>-->
 	<script src="scripts/jquery-ui/external/jquery/jquery.js"></script>
 	<script src="scripts/jquery-ui/jquery-ui.js"></script>
@@ -31,7 +31,7 @@
 				include("./object_views/header_menu.php"); 
 				include("./object_views/widget_zone_left.php"); ?>
 		<div class="timetable fullspace" id="frame_timetable">
-			<?php include("./object_views/calendar_frame3.php"); ?>
+			<?php include("./object_views/calendar_frame.php"); ?>
 		</div>
 	</div>
 </body>

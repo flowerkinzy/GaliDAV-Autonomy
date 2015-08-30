@@ -284,16 +284,20 @@ class Database
 	*/
 	public function showError($explanation = NULL)
 	{
-		$out = "<div style = 'position:absolute;z-index:5;border-style:solid;background-color:#AAAAAA'>";
-		$out .= $this->sqlErrorMessage;
+		if($this->sqlErrorMessage!=""){
+			$out = "<div style = 'position:absolute;z-index:5;border-style:solid;background-color:#AAAAAA'>";
+			$out .= $this->sqlErrorMessage;
 
-		if (is_string($explanation))
-		{
-			$out .= "<p><i><b>Explanation:</b>$explanation</i></p>";
+			if (is_string($explanation))
+			{
+				$out .= "<p><i><b>Explanation:</b>$explanation</i></p>";
+			}
+
+			$out .= "</div>";
+			echo $out;
+			return $out;
 		}
-
-		$out .= "</div>";
-		echo $out;
+		return false;
 	}
 
 	/**

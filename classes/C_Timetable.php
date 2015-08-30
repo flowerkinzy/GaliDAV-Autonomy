@@ -1033,7 +1033,10 @@ class Timetable
 		foreach($this as $key => $value) {
 			if(!is_null($value)){
 				if(!is_object($value))$result[$key] = $value;
-				else $result[$key]=$value->to_array();
+				else {
+					if(method_exists($value,"getSqlId"))$result[$key+"_id"]=$value->getSqlId();
+					if(method_exists($value,"getName"))$result[$key+"_name"]=$value->getName();
+				}
 			}
 		}
  

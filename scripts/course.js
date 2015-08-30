@@ -1,9 +1,4 @@
-var hourmin=8;
-var hourmax=19;
-var beginmin=30;
-var endmin=45;
-var timeintervalinmin=15;
-var timeintervaldisplayinmin=30;
+var NUMBER_OF_COURSES_TYPES=6;
 
 function getTypeName(type){
 	
@@ -26,20 +21,20 @@ function getTypeName(type){
 }
 
 function createNewCourseElementClass(Course) { 
-	console.log("createNewCourseElementClass...");
+
 	var beginDate=new Date(Course.begin*1000);
 	var endDate=new Date(Course.end*1000);
 	var durationInMin=Math.floor((Course.end-Course.begin)/60);
 	console.log("TOP:tr.calendar[begin_hour="+beginDate.getHours()
-		+"][begin_min="+timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin)
+		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 		+"]");
 	var top=$("tr.calendar[begin_hour="+beginDate.getHours()
-		+"][begin_min="+timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin)
+		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 		+"]").offset().top;
 	console.log("BOTTOM:tr.calendar[begin_hour="+endDate.getHours()
-		+"][begin_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 		+"]");
-		var endmin=timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin);
+		var endmin=TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN);
 		
 		if(endmin==0){
 			var bottom=$("tr.calendar[begin_hour="+(endDate.getHours()-1)
@@ -47,9 +42,9 @@ function createNewCourseElementClass(Course) {
 				+"][end_min=60]").height();
 		}else{
 			var bottom=$("tr.calendar[begin_hour="+endDate.getHours()
-				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+				+"][end_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 				+"]").offset().top+$("tr.calendar[begin_hour="+endDate.getHours()
-				+"][end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)
+				+"][end_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 				+"]").height();
 		}
 	var height=bottom-top;
@@ -58,15 +53,15 @@ function createNewCourseElementClass(Course) {
 			height+"px; max-height:"+height+"px; "+
 			"max-width:"+width+"px; width:"+width+"px;min-width:"+Math.floor(width/3)+"px'"+
 			" begin_hour="+beginDate.getHours()+
-			" begin_min="+timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin)+
+			" begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)+
 			" end_hour="+endDate.getHours()+
-			" end_min="+timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin)+
+			" end_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)+
 			" weekday="+(beginDate.getDay()-1)%7+
 			" id="+
 			Course.sqlId+"><p><b>"+
 			Course.subject_name;
-			if(getTypeName(Course.coursesType)!="")
-				res=res+" T:"+getTypeName(Course.coursesType);
+			if(getTypeName(Course.courseType)!="")
+				res=res+" "+getTypeName(Course.courseType);
 			if(typeof Course.room !== 'undefined')
 				res=res+"</b></p><p><i>"+Course.room+"</i></p></div>";
 			else
@@ -83,9 +78,9 @@ function displayNewCourseElementClass(Course) {
 	var beginDate=new Date(Course.begin*1000);
 	var endDate=new Date(Course.end*1000);
 	var weekday=beginDate.getDay(); //0 is for Sunday and so on
-	var beginM=timeintervalinmin*Math.floor(beginDate.getMinutes()/timeintervalinmin);
+	var beginM=TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN);
 	var beginH=beginDate.getHours();
-	var endM=timeintervalinmin*Math.floor(endDate.getMinutes()/timeintervalinmin);
+	var endM=TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN);
 	var endH=endDate.getHours();
 	if(weekday<1 || weekday>5);
 	else if(beginH < HOUR_MIN || beginH> HOUR_MAX);

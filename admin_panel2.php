@@ -30,8 +30,6 @@ error_reporting(E_ALL);
    <ul class="nav pull-right">
   <?php
  
-  if(!defined("GALIDAV_PATH"))
- 	define("GALIDAV_PATH","http://edthote.fr/galidav");
  	$galidav_path=GALIDAV_PATH;
  	
   	echo("<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><a href='".$galidav_path."/index.php' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary' role='button' aria-disabled='false'> <span class='ui-button-text'>Retour aux emplois du temps</span></a></li>");

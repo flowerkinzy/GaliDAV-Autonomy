@@ -66,7 +66,6 @@ error_reporting(E_ALL);
 	//$begin=($timeintervalinmin*60)*(int)(time()/($timeintervalinmin*60));//heure courante. N'affiche rien si trop tôt/tard.
 	$end=$begin+90*60; 
 	$INFO2=new C_Class("INFO2");
-	echo "<script>displayNewCourseElementClass('just before new Subject');</script>";
 	$M=new Subject('Math',$INFO2);
 	$C=new Course($M,$begin,$end); 
 	$C->setRoom("C102");

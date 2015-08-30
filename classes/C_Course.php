@@ -29,14 +29,14 @@ class Course
 	private $subject     = NULL;
 
 	const TABLENAME           = "gcourse";
-	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER";
+	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER,creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT localtimestamp NOT NULL";
 	const belongsToTABLENAME  = "gcourse_belongs_to";
 	const belongsToSQLcolumns = "id_course INTEGER REFERENCES gcourse(id), id_calendar INTEGER REFERENCES gcalendar(id), CONSTRAINT gcourse_belongs_to_pk PRIMARY KEY(id_course, id_calendar)";
 
 	/* TODO : Make the links with davical and name davical events differently depending on the collection (timetable) they belong to
 	*/
 
-	// --- OPERATIONS ---
+	// --- OPERATIONS ---write in DataBase
 	/**
 	 * \brief Course’s constructor
 	 * \param $newSubject The subject of the course.
@@ -60,14 +60,24 @@ class Course
 				{
 					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 				}else{
-					echo "<script>console.log('result?');</script>";
-					$result=pg_fetch_assoc($result);
-					echo "<script>console.log('result OK');</script>";
-					$this->subject = $newSubject;
-					$this->begin   = $newBegin;
-					$this->end    = $newEnd;
-					$this->sqlId     = $result['id'];
-				//TODO write in DataBase
+					$params = [];
+					$query  = "SELECT id FROM " . self::TABLENAME . " ORDER BY creation_timestamp DESC;";
+					$result = Database::currentDB()->executeQuery($query, $params);
+
+					if (!$result)
+					{
+						Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+						die();
+					}
+					else
+					{
+						$result=pg_fetch_assoc($result);
+						$this->subject = $newSubject;
+						$this->begin   = $newBegin;
+						$this->end    = $newEnd;
+						$this->sqlId     = $result['id'];
+					}
+				//TODO add to all related calendars
 				}
 				
 			}	
@@ -190,7 +200,17 @@ class Course
 	{
 		if (is_int($newNumber))
 		{
-			$this->number = $newNumber;
+			$query  = "UPDATE " . self::TABLENAME . " SET number = $1 WHERE id = " . $this->sqlId . ";";
+			$params = array($newNumber);
+
+			if (Database::currentDB()->executeQuery($query, $params))
+			{
+				$this->number = $newNumber;
+			}
+			else
+			{
+				Database::currentDB()->showError();
+			}
 		}
 	}
 
@@ -200,9 +220,21 @@ class Course
 	*/
 	public function setBegin($newBegin)
 	{
-		if (!empty($newBegin))
+		
+		if (is_int($newBegin))
 		{
-			$this->begin = $newBegin;
+			$query  = "UPDATE " . self::TABLENAME . " SET begins_at = $1 WHERE id = " . $this->sqlId . ";";
+			$params = array(date('Y-m-d G:i:s',$newBegin));
+
+			if (Database::currentDB()->executeQuery($query, $params))
+			{
+				$this->begin = $newBegin;
+			}
+			else
+			{
+				Database::currentDB()->showError();
+			}
+			
 		}
 	}
 
@@ -212,9 +244,19 @@ class Course
 	*/
 	public function setEnd($newEnd)
 	{
-		if (!empty($newEnd))
+		if (is_int($newEnd))
 		{
-			$this->end = $newEnd;
+			$query  = "UPDATE " . self::TABLENAME . " SET ends_at = $1 WHERE id = " . $this->sqlId . ";";
+			$params = array(date('Y-m-d G:i:s',$newEnd));
+
+			if (Database::currentDB()->executeQuery($query, $params))
+			{
+				$this->end = $newEnd;
+			}
+			else
+			{
+				Database::currentDB()->showError();
+			}
 		}
 	}
 
@@ -226,7 +268,18 @@ class Course
 	{
 		if (is_string($newRoom))
 		{
-			$this->room = $newRoom;
+			$query  = "UPDATE " . self::TABLENAME . " SET room = $1 WHERE id = " . $this->sqlId . ";";
+			$params = array($newRoom);
+
+			if (Database::currentDB()->executeQuery($query, $params))
+			{
+				$this->room = $newRoom;
+			}
+			else
+			{
+				Database::currentDB()->showError();
+			}
+			
 		}
 	}
 
@@ -238,7 +291,18 @@ class Course
 	{
 		if (is_int($newCoursesType))
 		{
-			$this->courseType = $newCoursesType;
+			
+			$query  = "UPDATE " . self::TABLENAME . " SET type = $1 WHERE id = " . $this->sqlId . ";";
+			$params = array($newCoursesType);
+
+			if (Database::currentDB()->executeQuery($query, $params))
+			{
+				$this->courseType = $newCoursesType;
+			}
+			else
+			{
+				Database::currentDB()->showError();
+			}
 		}
 	}
 
@@ -246,12 +310,34 @@ class Course
 	 * \brief  Setter for the attribute $subject.
 	 * \param  $newSubject Contains the new value of $subject.
 	*/
-	public function setSubject($newSubject)
+	public function setSubject(Subject $newSubject=NULL)
 	{
-		if ($newSubject instanceof Subject)
+		if ($newSubject!=NULL)
 		{
-			$this->subject = $newSubject;
+			$query  = "UPDATE " . self::TABLENAME . " SET id_subject = $1 WHERE id = " . $this->sqlId . ";";
+			$params = array($newSubject->getSqlId());
+
+			if (Database::currentDB()->executeQuery($query, $params))
+			{
+				$this->subject=$newSubject;
+			}
+			else
+			{
+				Database::currentDB()->showError();
+			}
+		}else{
+			$query  = "UPDATE " . self::TABLENAME . " SET id_subject =NULL WHERE id = " . $this->sqlId . ";";
+
+			if (Database::currentDB()->executeQuery($query))
+			{
+				$this->subject=$newSubject;
+			}
+			else
+			{
+				Database::currentDB()->showError();
+			}
 		}
+		//TODO adapt all calendars it should be intergrated to
 	}
 
 	// others
@@ -270,6 +356,7 @@ class Course
 	*/
 	public function removeFromDB()
 	{
+		//TODO
 	}
 
 	/**

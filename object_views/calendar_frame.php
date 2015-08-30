@@ -1,51 +1,76 @@
+<?php 
+include_once("classes/C_Class.php");
+include_once("./classes/C_Course.php");
+include_once("./classes/C_Subject.php");
+error_reporting(E_ALL);
+error_log("KFK - Has loaded ".__FILE__);
+ ?>
 <div id='frame_calendar_main_table' class=fullspace>
 
 	<div id="frame_calendar_controls_row" class='fullspace-x no-margin-y'>
-	<table class='fullspace'><tr class='fullspace'><th class='fullspace-y'>semaine<?php ?></th>
-	<td class='fullspace-y'> précédent /suivant </td></tr></table>
+		<div class='fullspace-y'><p class='fullspace'>semaine<?php ?></p></div>
+		<div class='fullspace-y'><p class='fullspace'> pr&eacute;c&eacute;dent /suivant </p></div>
 	</div>
-	<div id="frame_calendar_core_row" class='fullspace-x no-margin-y'>
-	<?php
-	/*$hourmin=8;
-	$hourmax=19;
-	$timeintervalinmin=15;
-	$timeintervaldisplayinmin=30;
-	echo "<td><table class='calendar calendar_time'>";
-	for ($i = 1 ; $i <= ($hourmax-$hourmin)*60/$timeintervaldisplayinmin ; $i++)
-			if($i%($timeintervaldisplayinmin/$timeintervalinmin)==0)
-				echo "<tr><td>$i</td></tr>";
-			else
-				echo "<tr><td>' '</td></tr>";
-	echo "</table></td>";	
-	for ($i_day = 1 ; $i_day <= 5 ; $i_day++){
-		echo "<td><table class='calendar calendar_day'>";
-		for ($j_hour = 1 ; $j_hour <= ($hourmax-$hourmin)*60/$timeintervaldisplayinmin ; $j_hour++)
-			echo "<tr><td>$j_hour</td></tr>";
-		echo "</table></td>";
-	}*/
-
-	?>
 	
+
+	<div id='frame_calendar_core_table' class='fullspace-x'>
+
 	<?php
 	$hourmin=8;
-	$hourmax=19;
-	$timeintervalinmin=15;
-	$timeintervaldisplayinmin=15;
-	echo "<table id='frame_calendar_core_table' class='calendar fullspace'>";
-	for ($i = 1 ; $i <= ($hourmax-$hourmin)*60/$timeintervaldisplayinmin ; $i++){
-		echo "<tr class='calendar fullspace-x'>";
-		$res1=$hourmin+floor($i*$timeintervaldisplayinmin/60);
-		$res2=($i*$timeintervaldisplayinmin)%60;
-		$finalres=sprintf('%02d', $res1)." : ".sprintf('%02d', $res2);
-		echo "<td class=fullspace-y> $finalres</td>";
-		for ($j_day=1; $j_day <= 5; $j_day++){
-			echo "<td class=fullspace-y> $i </td>";
-		}
-		echo "</tr>";
-	}
-	echo"</table>";
+	$hourmax=18;
+	$beginmin=30;
+	$endmin=45;
 
+	$days=array(1 => 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
+	
+	$timeintervalinmin=15;
+	$timeintervaldisplayinmin=30;
+
+	echo "<table id='calendar_core_table' class='calendar fullspace-y'>";
+	echo "<tr class='calendar fullspace-x'>";
+	for ($j_day=0; $j_day <= 5; $j_day++){
+		if($j_day>0)$weekDayDisplay=sprintf('%s', $days[$j_day]);
+		else $weekDayDisplay="";
+		echo "<td class='fullspace-y'> <div> $weekDayDisplay </div> </td>";
+	}
+	echo "</tr>";
+	for ($beginH = $hourmin ; $beginH <= $hourmax ; $beginH++){
+		$bm=0;
+		$em=60;
+		if($beginH==$hourmin){
+			$bm=$beginmin;
+		}
+		if($beginH==$hourmax){
+			$em=$endmin;
+		}
+		for($beginM=$bm; $beginM < $em; $beginM=$beginM+$timeintervalinmin){
+			$endM=$beginM+$timeintervalinmin;
+			echo "<tr class='calendar fullspace-x' begin_hour=$beginH begin_min=$beginM end_min=$endM >";
+			$finalres=sprintf('%02d', $beginH)." : ".sprintf('%02d', $beginM);
+			echo "<td class='fullspace-y hourcolumn' begin_hour=$beginH begin_min=$beginM end_min=$endM><div> $finalres</div></td>";
+			for ($j_day=0; $j_day <= 4; $j_day++){
+				echo "<td class='fullspace-y daycolumn' weekday=$j_day begin_hour=$beginH begin_min=$beginM end_min=$endM>
+					<div>  </div> </td>";
+			}
+			echo "</tr>";
+
+		}
+	}
+	echo"</table>"; 	
 	?>
+	
 	</div>
 </div>
+
+<?php
+	$begin=((9*60)+15)*60;//Par dÃ©faut, le jeudi 1er janvier 70 Ã  10h15
+	//$begin=($timeintervalinmin*60)*(int)(time()/($timeintervalinmin*60));//heure courante. N'affiche rien si trop tÃ´t/tard.
+	$end=$begin+90*60; 
+	$INFO2=new C_Class("INFO2");
+	$M=new Subject('Math',$INFO2);
+	//$C=new Course($M,$begin,$end); 
+	//$C->setRoom("C102");
+	//$C->setCourseType(CM);
+	//echo "<script>displayNewCourseElementClass('".addslashes(json_encode($C->to_array()))."');</script>";
+?>
 

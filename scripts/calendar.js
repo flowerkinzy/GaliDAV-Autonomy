@@ -1,4 +1,4 @@
-
+var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0); 
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
@@ -29,9 +29,8 @@
 		$(this).children().toggle();
 	});
 	
-	$("td.daycolumn>div").on("click",function(){
-		console.log("on click");
-		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"));
+ 	$("td.daycolumn>div").on("click",function(){
+		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"));
 	});
 //FIN documentReady
 });
@@ -152,26 +151,64 @@ function adaptCoursesHeightAfterShowingRow(beginH,beginM,endM, rowHeight){
 	}
 }
 
-function displayFormNewEvent(BeginH,BeginM){
+function displayFormNewEvent(BeginH,BeginM,weekday){
 	$("#newOrModifyCourse").remove();
 	
-	$(createFormNewEvent(BeginH,BeginM)).appendTo("#wrap");
+	$(createFormNewEvent(BeginH,BeginM,weekday)).appendTo("#wrap");
 	
-	$("#newOrModifyCourse").dialog();
-	
-	$("#newOrModifyCourse").parent().css("width","50%");
-	$("#newOrModifyCourse").parent().css("height","80%");
-	$("#newOrModifyCourse").parent().css("top","25%");
-	$("#newOrModifyCourse").parent().css("left","10%");
+	$("#newOrModifyCourse").dialog({
+		title:"Nouveau cours",
+		minWidth:"50%",
+		minHeight:"80%",
+		width:"50%",
+		//height:"80%",
+		top:"25%",
+		left:"10%",
+		resizable:false
+	});
+	$("#newOrModifyCourse button").on("click",function(event){
+		event.stopPropagation();
+		event.preventDefault;
+		var beginUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_begin").spinner("value")*60*60);
+		beginUTC += ($("#input_pick_min_begin").spinner("value")*60);
+		var endUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_end").spinner("value")*60*60);
+		endUTC += ($("#input_pick_min_end").spinner("value")*60);
+		//var param={begin: beginUTC,end: endUTC, type: $("#select_choose_type").val()};
+		var param={};
+		param.action="create_course";
+		param.begin=beginUTC;
+		param.end=endUTC;
+		param.type=$("#select_choose_type").val();
+		if($("#input_room").val()!="")param.room=$("#input_room").val();
+		if($("#select_choose_subject").val()>0)param.id_subject=$("#select_choose_subject").val();
+					  console.dir(param);
+// 		$("#newOrModifyCourse").dialog("close");
+		//$.get("functions/lists.php",{action:"get_lists_subjects", id_group:1},function(data){
+		//	console.log("data="+data);
+		//});
+// 		$.get("functions/courses_functions.php",
+// 		      {action: "create_course"},
+// 			function(data)
+// 			{
+// 				//if(data.SQL_ERROR != undefined)$("body").append(data.SQL_ERROR);
+// 				//else 
+// 				console.log("data="+data+"...");
+// 				console.dir(data);
+// 				//displayNewCourseElementClass(data);
+// 			}
+// 		  );
+	});
+
 }
 
-function createFormNewEvent(BeginH,BeginM){
+function createFormNewEvent(BeginH,BeginM,weekday){
 	var div=$("<div id=newOrModifyCourse></div>"); //attributes To complete
-	var form=$("<form></form>");
-	
+	var form=$("<div></div>");
+	$(form).append("<input id='input_weekday' type=hidden name='weekday' value="+weekday+" />");
 	var divBegin=$("<div class=timespinnersframe></div>");
-	var hourpickerB=$("<input required >");
-	var minpickerB=$("<input required >");
+	var hourpickerB=$("<input id='input_pick_hour_begin' required >");
+	var minpickerB=$("<input id='input_pick_min_begin' required >");
+	$(divBegin).append("<p class='label'>Heure de début:</p>");
 	$(divBegin).append(hourpickerB);
 	
 	$(divBegin).append(minpickerB);
@@ -181,22 +218,34 @@ function createFormNewEvent(BeginH,BeginM){
 	var EndHdefault=Math.floor(((parseInt(BeginH)*60)+parseInt(BeginM)+90)/60)
 	var EndMdefault=Math.floor((parseInt(BeginH)*60)+parseInt(BeginM)+90)%60;
 	
-	var hourpickerE=$("<input required >");
-	var minpickerE=$("<input required >");
-	
+	var hourpickerE=$("<input id='input_pick_hour_end' required >");
+	var minpickerE=$("<input id='input_pick_min_end' required >");
+	$(divEnd).append("<p class='label'>Heure de fin:</p>");
 	$(divEnd).append(hourpickerE);
 	$(divEnd).append(minpickerE);	
 	$(form).append(divEnd);
 	
-	var divSubject=$("<select name='subject' id='select_choose_subject'><option value='A'>A</select>");
-	$(divSubject).selectmenu({
-		appendTo:"#div_select_choose_subject"
+	var divSubject=$("<select name='subject' id='select_choose_subject'></select>");
+	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:1},function(data){
+		$(divSubject).append("<option value=0 >--");
+		$(divSubject).append(data);
 	});
+	$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
+	$(divSubject).parent().prepend("<p class='label'>Choisir une matière:</p>");
+	$(form).append($(divSubject).parent());
 	
-	//$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
-	$(form).append(divSubject);
+	var selectType=$("<select name='type' id='select_choose_type'></select>");
+	for(i=0;i<NUMBER_OF_COURSES_TYPES;i++){
+		$(selectType).append("<option value="+i+" >"+getTypeName(i));
+	}
+	$(selectType).wrap("<div id='div_select_choose_type'></div>");
+	$(selectType).parent().prepend("<p class='label'>Type de cours:</p>");
+	$(form).append($(selectType).parent());
 	
-	$(form).append("<div><input type='submit'/></div>");
+	
+	$(form).append("<div id='div_input_room'><p class='label'>Choisir une salle:</p><input id='input_room' name='room' type='text' autocomplete /></div>");
+	
+	$(form).append("<div><button value='Créer cours!'>Créer cours!</button></div>");
 	$(div).append(form);
 	
 	$(minpickerB).spinner({
@@ -256,7 +305,10 @@ function createFormNewEvent(BeginH,BeginM){
 	//if(EndH==HOUR_MIN)$(minpickerB).spinner("option","min",(BEGIN_MIN+TIME_INTERVAL_IN_MIN)%60);
 	if(EndHdefault==HOUR_MAX)$(minpickerB).spinner("option","max",END_MIN);
 	
-	
+	$(hourpickerB).spinner("widget").attr("id","spinner_pick_hour_begin");
+	$(minpickerB).spinner("widget").attr("id","spinner_pick_min_begin");
+	$(hourpickerE).spinner("widget").attr("id","spinner_pick_hour_end");
+	$(minpickerE).spinner("widget").attr("id","spinner_pick_min_end");
 	$(hourpickerB).spinner("value",BeginH);
 	$(minpickerB).spinner("value",BeginM);
 	$(hourpickerE).spinner("value",EndHdefault);
