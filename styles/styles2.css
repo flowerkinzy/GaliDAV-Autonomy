@@ -15,7 +15,6 @@ body{
 	min-height:100%;
 	max-height:100%;
 	overflow:hidden
-
 }
 
 html, body {
@@ -24,6 +23,9 @@ html, body {
 	background: -webkit-linear-gradient(#585858, #3d3d3d);
 }
 
+p {
+	font-size: 18px;
+}
 .timetable {
 	height:100%;
 	margin:0;
@@ -31,8 +33,8 @@ html, body {
 }
 
 .no-overflow:{
-overflow-x:hidden;
-overflow-y:hidden;
+	overflow-x:hidden;
+	overflow-y:hidden;
 }
 
 .fullspace{
@@ -50,13 +52,13 @@ overflow-y:hidden;
 position:absolute;
 }
 .no-margin-x{
-margin-left:0;
+	margin-left:0;
 	margin-right:0;
 }
 
 .no-margin-y{
-margin-top:0;
-margin-bottom:0;
+	margin-top:0;
+	margin-bottom:0;
 }
 .fullspace-y{
 	margin-bottom:0;
@@ -79,36 +81,36 @@ margin-bottom:0;
 }
 
 #frame_timetable {
-	display:inline;
+	display: inline;
 	background-color: #585858;
-	min-width:85%;
-    max-width:85%;
-	min-height:85%;
-	max-height:85%;
-	margin:0;
-	right:0%;
-	padding:0%;
-	/*top:10%; */
-	overflow:hidden;
+	min-width: 85%;
+    max-width: 85%;
+	min-height: 85%;
+	max-height: 85%;
+	margin: 0;
+	right: 0%;
+	padding: 0%;
+	top: 10%; 
+	overflow: hidden;
 }
 
 tbody{
-	min-width:100%;
-	min-height:100%;
-	max-height:100%;
-	max-width:100%;
-}
+	min-width: 100%;
+	min-height: 100%;
+	max-height: 100%;
+	max-width: 100%;
+} 
 
 #frame_calendar_main_table{
-	display:initial;
+	display: initial;
 }
 
 #frame_calendar_controls_row{
-	top:0;
-	position:absolute;
-	max-height:7%;
-	min-height:7%;
-	overflow:hidden;
+	top: 0;
+	position: absolute;
+	max-height: 7%;
+	min-height: 7%;
+	overflow: hidden;
 }
 
 #frame_calendar_controls_row>div:first-child{
@@ -153,7 +155,7 @@ tbody{
 }
 
 #calendar_core_table td+td{
-width:18%;
+	width:18%;
 }
 
 #calendar_core_table td>div{
@@ -179,21 +181,34 @@ div.course{
 }
 
 div.timespinnersframe .ui-spinner{
-min-width:15%;
-max-width:15%;
+min-width: 15%;
+max-width: 15%;
 }
 div.ui-dialog[aria-describedby="newOrModifyCourse"]{
 	z-index:3;
 }
+/* Navbar */
+#logbar {
+	padding: 30px;
+}
+
+#logbar-left{
+	float: left;
+}
+
+#logbar-right{
+	float: right;
+}
+
 
 /* Header Menu*/
 
 #header-menu {
 	max-width: 100%;
-	/*max-height: 30px;*/
-	max-height: 10%;
+	max-height: 30px;
 	background: -webkit-linear-gradient(#585858, #3d3d3d);
 	padding: 10px;
+	border: 1px solid;
 }
 
 #view-filter {
@@ -201,23 +216,24 @@ div.ui-dialog[aria-describedby="newOrModifyCourse"]{
 	margin: 0px;
 }
 
-.view-filter-option {
-	display: inline;
-}
-
 .view-filter-option > a {
 	padding: 10px;
 	color: #fff;
 	font-size: 130%;
-}
-.view-filter-option:nth-child(n+2){
-	border-left: solid 1px #000;
 }
 
 .view-filter-option a:active, .view-filter-option a:focus, .view-filter-option a:hover{
 	background: -webkit-linear-gradient(#fff, #eee);
 	color: #000;
 	font-weight: bold;
+}
+
+.view-filter-option{
+	display: inline;
+	color: #fff;
+	border: 1px solid #444;
+	text-align: enter;
+	text-shadow:   1px 1px 0 #000;
 }
 
 li[type="button-right"] {
@@ -259,16 +275,41 @@ li[type="button-right"] {
 */
 
 .widget-left {
-  background-color: white; 
-  display: block;
-  width: 100%;
-  text-align: center;
-  padding-bottom: 10%;
-  border: solid 1px;
-  margin-bottom: 15%;
-  overflow: hidden;
+	background-color: white; 
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding-bottom: 10%;
+	margin-bottom: 15%;
+	overflow: hidden;
 }
 
+#widget-left-button{
+	display: block;
+	width: 100%;
+	padding-top: 10%;
+	padding-bottom: 10%;
+	text-align: center;
+	overflow: hidden;
+}
+
+#widget-left-button > button {
+	height: 30%;
+	width: 80%;
+	background-color: #3d3d3d;
+	text-shadow: 1px 1px 0 #000;
+	border: none;
+	padding: 5%;
+	color: #fff;
+}
+
+#widget-left-button > button:active {
+	height: 30%;
+	width: 80%;
+	background-color: #fff;
+	border: none;
+	color: #000;
+}
 .widget-left-textbox {
 	width: 100%;
 	height: 100%;
@@ -276,16 +317,16 @@ li[type="button-right"] {
 }
 
 .widget-left-title {
-  display: block;
-  background-color: #3d3d3d;
-  margin: 0px;
-  width: 100%;
-  height: 100%;
-  color: rgba(255,255,255,1);
-  text-align: center;
-  -webkit-box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.3) ;
-  box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.3);
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-  padding-bottom: 10%;
-  padding-top: 10%;
+	display: block;
+	background-color: #3d3d3d;
+	margin: 0px;
+	width: 100%;
+	height: 100%;
+	color: rgba(255,255,255,1);0
+	text-align: center;
+	-webkit-box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.3) ;
+	box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.3);
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+	padding-bottom: 10%;
+	padding-top: 10%;
 }
