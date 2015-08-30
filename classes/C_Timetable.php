@@ -56,7 +56,7 @@ class Timetable
 				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 
-			$query  = "SELECT id FROM " . self::TABLENAME . " WHERE id_collection IS NULL;";
+		/*	$query  = "SELECT id FROM " . self::TABLENAME . " WHERE id_collection IS NULL;";
 			$result = Database::currentDB()->executeQuery($query);
 
 			if ($result) 
@@ -68,7 +68,19 @@ class Timetable
 			{
 				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe : " . __CLASS__);
 			}
+*/
+			$query  = "SELECT id FROM " . self::TABLENAME . " ORDER BY date_creation DESC,id DESC";
+			$result = Database::currentDB()->executeQuery($query);
 
+			if ($result) 
+			{
+				$result      = pg_fetch_assoc($result);
+				$this->sqlId = $result['id'];
+			}
+			else
+			{
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe : " . __CLASS__);
+			}
 			if ($object instanceof Group)
 			{
 				$aGroup = $object;
@@ -122,7 +134,6 @@ class Timetable
 			{
 				$aSubject = $object;
 				$query    = "UPDATE " . Subject::TABLENAME . " SET id_calendar = " . $this->sqlId . " WHERE id = " . $aSubject->getSqlId() . ";";
-
 				if (Database::currentDB()->executeQuery($query))
 				{
 					//$anIdCollection = (int)CreateCalendar($aSubject->getGroup()->getName(), $aSubject->getName() . " " . $aSubject->getGroup()->getName());
@@ -151,7 +162,7 @@ class Timetable
 				}
 			}
 
-			$this->autoShare();
+			//$this->autoShare();
 		}
 	}
 
@@ -682,7 +693,7 @@ class Timetable
 	public function loadCourseFromRessource($ressource)
 	{
 		$newCourse = new Cours();
-		$newCourse->loadFromDB(int_val($ressource['id_course']));
+		$newCourse->loadFromDB(intval($ressource['id_course']));
 		$this->addCourse($newCourse);
 	}
 
@@ -695,11 +706,11 @@ class Timetable
 	{
 		$newModification = new Modification();
 		$newModification->setDate($ressource['date']);
-		$newUser = new Utilisateur();
-		$newUser->loadFromDB(int_val($ressource['id_user']));
+		$newUser = new User();
+		$newUser->loadFromDB(intval($ressource['id_user']));
 		$newModification->setModifiedBy($newUser);
-		$newCourse = new Cours();
-		$newCourse->loadFromDB(int_val($ressource['id_course']));
+		$newCourse = new Course();
+		$newCourse->loadFromDB(intval($ressource['id_course']));
 		$newModification->setCourseModified($newCourse);
 		$this->addModification($newModification);
 	}
@@ -732,6 +743,7 @@ class Timetable
 			}
 
 			$result = Database::currentDB()->executeQuery($query);
+
 		}
 		else // (if yes) from here, we load data about the timetable that has $id as $sqlId
 		{
@@ -755,6 +767,7 @@ class Timetable
 
 			return TRUE;
 		}
+		else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 
 		return FALSE;
 	}
@@ -768,13 +781,13 @@ class Timetable
 		// we change values of attributes
 		$this->sqlId = $ressource['id'];
 		$newUser     = new User();
-		$newUser->loadFromDB(int_val($ressource['is_being_modified_by']));
+		$newUser->loadFromDB(intval($ressource['is_being_modified_by']));
 		$this->modifiedBy = $newUser;
 
 		if ($ressource['id_teacher'])
 		{
 			$newUser = new User();
-			$newUser->loadFromDB(int_val($ressource['id_teacher']));
+			$newUser->loadFromDB(intval($ressource['id_teacher']));
 			$this->teacher = $newUser;
 		}
 		else
@@ -799,12 +812,12 @@ class Timetable
 		{
 			$result2  = pg_fetch_assoc($result2);
 			$newGroup = new Group();
-			$newGroup->loadFromDB(int_val($result2['id']));
+			$newGroup->loadFromDB(intval($result2['id']));
 			$this->group = $newGroup;
 		}
 		else
 		{
-			$this->group = NULL;
+			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 		}
 
 		$query = "SELECT id FROM " . Subject::TABLENAME . " WHERE id_calendar = $1;";
@@ -813,12 +826,12 @@ class Timetable
 		{
 			$result2    = pg_fetch_assoc($result2);
 			$newSubject = new Subject();
-			$newSubject->loadFromDB(int_val($result2['id']));
+			$newSubject->loadFromDB(intval($result2['id']));
 			$this->subject = $newSubject;
 		}
 		else
 		{
-			$this->subject = NULL;
+			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 		}
 	}
 
@@ -839,7 +852,7 @@ class Timetable
 		{
 			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 		}
-
+		/*
 		$DB = new Database("davical_app", "davical");
 
 		if (!$DB->connect())
@@ -853,6 +866,7 @@ class Timetable
 			$query = "DELETE FROM collection WHERE collection_id = " . $this->idCollection . ";";
 			$DB->executeQuery($query, $params);
 		}
+		*/
 	}
 
 	/**
@@ -860,6 +874,7 @@ class Timetable
 	 * \param $aUser The user to share timetable with.
 	 * \param $write \e Boolean indicating if the user will have the right to write on the timetable.
 	*/
+	/*
 	public function shareWith(User $aUser, $write = FALSE)
 	{
 		$DB = new Database("agendav");
@@ -908,10 +923,11 @@ class Timetable
 			}
 		}
 	}
-
+*/
 	/**
 	 * \brief ???
 	*/
+	/*
 	public function autoShare()
 	{
 
@@ -947,7 +963,7 @@ class Timetable
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 
@@ -975,7 +991,7 @@ class Timetable
 
 						$userId = pg_fetch_assoc($result);
 					}
-				}
+				}else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 		//Shares a teacher calendar with all secretaries (reading privilege?)
@@ -1002,13 +1018,16 @@ class Timetable
 
 					$userId = pg_fetch_assoc($result);
 				}
-			}		
+			}
+			else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);	
 		}
 	}
+	*/
 
 	/**
 	 * \brief ???
 	*/
+	/*
 	public static function autoShareAllCalendars()
 	{
 		$query  = "SELECT id FROM " . self::TABLENAME . ";";
@@ -1026,7 +1045,9 @@ class Timetable
 				$id = pg_fetch_assoc($result);
 			}
 		}
+		else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 	}
+	*/
 	/*
 	public function to_array(){
 		$result=array();

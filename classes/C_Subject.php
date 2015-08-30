@@ -131,7 +131,7 @@ class Subject
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -282,7 +282,7 @@ class Subject
 	*/
 	public function loadFromDB($id = NULL)
 	{
-		if ($id == NULL)
+		if (!is_int($id))
 		{
 			if ($this->sqlId != NULL)
 			{
@@ -290,20 +290,29 @@ class Subject
 			}
 		}
 
-		if ($id == NULL)
+		if (!is_int($id))
 		{
 			$query  = "SELECT * FROM " . self::TABLENAME . ";";
 			$result = Database::currentDB()->executeQuery($query);
+			if (!$result)
+			{
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+			}
 		}
 		else
 		{
 			$query  = "SELECT * FROM " . self::TABLENAME . " WHERE id = $1;";
 			$params = array($id);
 			$result = Database::currentDB()->executeQuery($query, $params);
+			if (!$result)
+			{
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+			}
 		}
-
-		$result = pg_fetch_assoc($result);
-		$this->loadFromRessource($result);
+		if($result){
+			$result = pg_fetch_assoc($result);
+			$this->loadFromRessource($result);
+		}
 	}
 
 	/**
@@ -338,18 +347,20 @@ class Subject
 					}
 				}
 			}
-
-			if ($result['id_group'])
+			
+			if ($ressource['id_group'])
 			{
 				$this->group = new Group();
 				$this->group->loadFromDB(intval($ressource['id_group']));
 			}
-
-			if ($result['id_calendar'])
+			/*
+			if ($ressource['id_calendar'])
 			{
 				$this->timetable = new Timetable();
 				$this->timetable->loadFromDB(intval($ressource['id_calendar']));
 			}
+			*/
+			
 		}
 	}
 
@@ -368,7 +379,7 @@ class Subject
 	}
 	public function to_array(){
 		$result=array();
-        foreach($this as $key => $value) {
+		foreach($this as $key => $value) {
 			if(!is_null($value)){
 				if(!is_object($value))$result[$key] = $value;
 				else {

@@ -29,7 +29,7 @@ class Course
 	private $subject     = NULL;
 
 	const TABLENAME           = "gcourse";
-	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER,creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT localtimestamp NOT NULL";
+	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER, creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT 'now' NOT NULL";
 	const belongsToTABLENAME  = "gcourse_belongs_to";
 	const belongsToSQLcolumns = "id_course INTEGER REFERENCES gcourse(id), id_calendar INTEGER REFERENCES gcalendar(id), CONSTRAINT gcourse_belongs_to_pk PRIMARY KEY(id_course, id_calendar)";
 
@@ -48,7 +48,7 @@ class Course
 		if(is_int($newBegin) && is_int($newEnd)){
 			if($newBegin>=$newEnd)echo "<script>console.log('Horaires de cours non conforme');</script>";
 			else{
-				if($newSubject!=NULL)
+				if($newSubject!=NULL && $newSubject->getSqlId()!=NULL)
 					$query="INSERT INTO " . self::TABLENAME . " (begins_at, ends_at,id_subject) VALUES ($1, $2,$3);";
 				else
 					$query="INSERT INTO " . self::TABLENAME . " (begins_at, ends_at) VALUES ($1, $2);";
@@ -61,13 +61,13 @@ class Course
 					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 				}else{
 					$params = [];
-					$query  = "SELECT id FROM " . self::TABLENAME . " ORDER BY creation_timestamp DESC;";
+					$query  = "SELECT id FROM " . self::TABLENAME . " ORDER BY creation_timestamp DESC, id DESC;";
 					$result = Database::currentDB()->executeQuery($query, $params);
 
 					if (!$result)
 					{
 						Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
-						die();
+
 					}
 					else
 					{
@@ -209,7 +209,7 @@ class Course
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -232,7 +232,7 @@ class Course
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 			
 		}
@@ -255,7 +255,7 @@ class Course
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -277,7 +277,7 @@ class Course
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 			
 		}
@@ -301,7 +301,7 @@ class Course
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -323,7 +323,7 @@ class Course
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}else{
 			$query  = "UPDATE " . self::TABLENAME . " SET id_subject =NULL WHERE id = " . $this->sqlId . ";";
@@ -334,7 +334,7 @@ class Course
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 		//TODO adapt all calendars it should be intergrated to

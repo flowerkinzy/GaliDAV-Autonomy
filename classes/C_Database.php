@@ -285,7 +285,7 @@ class Database
 	public function showError($explanation = NULL)
 	{
 		if($this->sqlErrorMessage!=""){
-			$out = "<div style = 'position:absolute;z-index:5;border-style:solid;background-color:#AAAAAA'>";
+			$out = "<div style = 'position:absolute;z-index:8;border-style:solid;background-color:#AAAAAA'>";
 			$out .= $this->sqlErrorMessage;
 
 			if (is_string($explanation))

@@ -174,29 +174,31 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 		var endUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_end").spinner("value")*60*60);
 		endUTC += ($("#input_pick_min_end").spinner("value")*60);
 		//var param={begin: beginUTC,end: endUTC, type: $("#select_choose_type").val()};
-		var param={};
+		var param=new Object();
 		param.action="create_course";
 		param.begin=beginUTC;
 		param.end=endUTC;
 		param.type=$("#select_choose_type").val();
-		if($("#input_room").val()!="")param.room=$("#input_room").val();
-		if($("#select_choose_subject").val()>0)param.id_subject=$("#select_choose_subject").val();
-					  console.dir(param);
-// 		$("#newOrModifyCourse").dialog("close");
-		//$.get("functions/lists.php",{action:"get_lists_subjects", id_group:1},function(data){
-		//	console.log("data="+data);
-		//});
-// 		$.get("functions/courses_functions.php",
-// 		      {action: "create_course"},
-// 			function(data)
-// 			{
-// 				//if(data.SQL_ERROR != undefined)$("body").append(data.SQL_ERROR);
-// 				//else 
-// 				console.log("data="+data+"...");
-// 				console.dir(data);
-// 				//displayNewCourseElementClass(data);
-// 			}
-// 		  );
+		param.room=$("#input_room").val();
+		if($("#select_choose_subject").val()>0)param.id_subject=1;//$("#select_choose_subject").val();
+		console.log("param=..."); console.dir(param);
+ 		$("#newOrModifyCourse").dialog("close");
+
+		$.post("functions/courses_functions.php",
+		      param,
+			function(data)
+			{
+				console.log("data="+data+"...");
+				console.dir(data);
+				try{
+					var obj=jQuery.parseJSON(data);
+					displayNewCourseElementClass(data);
+				}catch(err){
+					$("body").append(data)
+				}
+
+			}
+		  );
 	});
 
 }
