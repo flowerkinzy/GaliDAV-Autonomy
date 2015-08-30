@@ -188,8 +188,8 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 		      param,
 			function(data)
 			{
-				console.log("data="+data+"...");
-				console.dir(data);
+				//console.log("data="+data+"...");
+				//console.dir(data);
 				try{
 					var obj=jQuery.parseJSON(data);
 					displayNewCourseElementClass(data);
