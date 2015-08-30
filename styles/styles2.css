@@ -180,25 +180,49 @@ div.course{
 	font-size:x-small;
 }
 
+/*
+ *
+ *
+ *** New Event Dialog ***
+ *
+ *
+ */
 div.timespinnersframe .ui-spinner{
-min-width: 15%;
-max-width: 15%;
+	min-width:15%;
+	max-width:15%;
 }
 div.ui-dialog[aria-describedby="newOrModifyCourse"]{
 	z-index:3;
+	
 }
-/* Navbar */
-#logbar {
-	padding: 30px;
+div.ui-dialog[aria-describedby="newOrModifyCourse"] input[type='submit']{
+	margin-left:40%;;
+	margin-right:auto;
+	margin-top:1%;
+	width:20%;
+	
+}
+#select_choose_subject{
+	min-width:30%;
 }
 
-#logbar-left{
-	float: left;
+#input_room, #select_choose_type{
+	min-width:15%;
+	max-width:15%;
 }
-
-#logbar-right{
-	float: right;
+#div_select_choose_subject, #div_input_room{
+	margin:1%;
+	margin-left:0;
+	margin-bottom:0;
+	
 }
+p.label{
+	font-size:x-small;
+	font-style:italic;
+	margin-bottom:0;
+	
+}
+/* fin New Event Dialog */
 
 
 /* Header Menu*/
