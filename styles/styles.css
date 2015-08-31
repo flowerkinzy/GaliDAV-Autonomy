@@ -354,3 +354,31 @@ li[type="button-right"] {
 	padding-bottom: 10%;
 	padding-top: 10%;
 }
+
+* Login page */
+
+#logbox {
+	margin-left:auto;
+	margin-right: auto; 
+	width: 33%;
+	max-width: 33%;
+	height: 33%;
+	max-height: 33%;
+}
+
+h2[type="log-welcome"] {
+	color: #fff;
+	text-shadow: 1px 1px 1px #000;
+}
+
+label {
+	color: #fff;
+	text-shadow: 1px 1px 1px #000;
+}
+
+fieldset {
+	color: #fff;
+	font-weight: bold;
+	text-shadow: 1px 1px 1px #000;
+	border: solid 2px #3d3d3d;
+}
