@@ -57,11 +57,11 @@ function query_one_subject($idOrName)
 {
 	if (is_string($idOrName))
 	{
-		return "SELECT * FROM " . Suject::TABLENAME . " WHERE NAME = '" . pg_escape_string($idOrName) . "';";
+		return "SELECT * FROM " . Subject::TABLENAME . " WHERE NAME = '" . pg_escape_string($idOrName) . "';";
 	}
 	else if (is_int($idOrName))
 	{
-		return "SELECT * FROM " . Suject::TABLENAME . " WHERE id = $idOrName;";
+		return "SELECT * FROM " . Subject::TABLENAME . " WHERE id = $idOrName;";
 	}
 }
 

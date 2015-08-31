@@ -15,7 +15,7 @@ error_log("KFK - Has loaded ".__FILE__);
  		
  		$S->loadFromDB($id_subject);
 		if(Database::currentDB()->sqlErrorMessage!="")return "";
-		$C = new Course($S,$begin,$end);
+		$C = new Course($id_subject,$begin,$end);
 		if(Database::currentDB()->sqlErrorMessage!="")return "";
 		if($C->getSqlId()==null)return "";
 	
@@ -27,7 +27,7 @@ error_log("KFK - Has loaded ".__FILE__);
 	}
 	
 	
-	$C->setCourseType($id_subject);
+	if(is_int($type))$C->setCourseType($type);
 	if(Database::currentDB()->sqlErrorMessage!="")return "";
 	if(is_string($room))$C->setRoom($room);
 	if(Database::currentDB()->sqlErrorMessage=="") return json_encode($C->to_array());

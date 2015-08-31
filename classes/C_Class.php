@@ -12,7 +12,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 }
 include_once("functions/error_handling.php");
 
-require_once('classes/C_Timetable.php');
+require_once('classes/C_ClassesTimetable.php');
 require_once('classes/C_Group.php');
 require_once('classes/C_ClassesModel.php');
 require_once('classes/C_Person.php');
@@ -21,7 +21,8 @@ require_once('classes/C_Head.php');
 class C_Class extends Group
 {
 	// --- ATTRIBUTES ---
-	private $coursesModel;
+	private $coursesModel	=	NULL;
+	protected $validatedtimetable        = NULL;
 
 	// --- OPERATIONS ---
 	/**
@@ -31,6 +32,8 @@ class C_Class extends Group
 	public function __construct($newName)
 	{
 		parent::__construct($newName, TRUE);
+		$this->validatedtimetable=(new ClassesTimetable($this,true))->getSqlId();
+		
 	}
 
 	// getters
@@ -40,6 +43,7 @@ class C_Class extends Group
 	*/
 	public function getCoursesModel()
 	{
+		//TODO loadFromDB()?
 		return $this->coursesModel;
 	}
 
@@ -50,7 +54,10 @@ class C_Class extends Group
 	*/
 	public function setCoursesModel($newCoursesModel)
 	{
-		$this->coursesModel = $newCoursesModel;
+		if($newCoursesModel instanceof ClassModels)
+			$this->coursesModel = $newCoursesModel->getSqlId();
+		else if(is_int($newCoursesModel))
+			$this->coursesModel = $newCoursesModel;	
 	}
 
 	// others
@@ -59,10 +66,17 @@ class C_Class extends Group
 	*/
 	public function getTimetableOfClass()
 	{
-		$returnValue = NULL;
+		return parent::getTimetable();
 
-		return $returnValue;
 	}
+	
+	public function getValidatedTimetableOfClass()
+	{
+		//TODO loadFromDB
+		return $this->validatedtimetable;
+
+	}
+
 
 	/**
 	 * \brief  Loads data from the database.

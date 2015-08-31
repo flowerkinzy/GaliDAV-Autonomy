@@ -33,9 +33,19 @@ class Modification
 	*/
 	public function __constructor($newDate, $newMadeBy, $newModifiedCourse)
 	{
-		$this->date           = $newDate;
-		$this->madeBy         = $newMadeBy;
-		$this->modifiedCourse = $newModifiedCourse;
+		if($newMadeBy instanceof User){
+			$newMadeBy=$newMadeBy->getSqlId();
+		}
+		if($newModifiedCourse instanceof Course){
+			$newModifiedCourse=$newModifiedCourse->getSqlId();
+		}
+		if(is_int($newDate) && is_int($newMadeBy) && is_int($newModifiedCourse)){
+		
+			$this->date           = $newDate;
+			$this->madeBy         = $newMadeBy;
+			$this->modifiedCourse = $newModifiedCourse;
+			//TODO write on database
+		}
 	}
 
 	// getters
@@ -54,6 +64,7 @@ class Modification
 	*/
 	public function getMadeBy()
 	{
+		//TODO loadFromDB?
 		return $this->madeBy;
 	}
 
@@ -63,6 +74,7 @@ class Modification
 	*/
 	public function getModifiedCourse()
 	{
+		//TODO loadFromDB?
 		return $this->modifiedCourse;
 	}
 
@@ -73,7 +85,7 @@ class Modification
 	*/
 	public function setDate($newDate)
 	{
-		if (!empty($newDate))
+		if (is_int($newDate))
 		{
 			$this->date = $newDate;
 		}
@@ -85,7 +97,11 @@ class Modification
 	*/
 	public function setMadeBy($newMadeBy)
 	{
-		if (!empty($newMadeBy))
+	
+		if($newMadeBy instanceof User){
+			$newMadeBy=$newMadeBy->getSqlId();
+		}	
+		if (is_int($newMadeBy))
 		{
 			$this->madeBy = $newMadeBy;
 		}
@@ -97,7 +113,10 @@ class Modification
 	*/
 	public function setModifiedCourse($newModifiedCourse)
 	{
-		if (!empty($newModifiedCourse))
+		if($newModifiedCourse instanceof Course){
+			$newModifiedCourse=$newModifiedCourse->getSqlId();
+		}
+		if (is_int($newModifiedCourse))
 		{
 			$this->modifiedCourse = $newModifiedCourse;
 		}
@@ -108,7 +127,7 @@ class Modification
 	*/
 	public function removeFromDB()
 	{
-		// TODO
+		// TODO complete
 	}
 }
 ?>

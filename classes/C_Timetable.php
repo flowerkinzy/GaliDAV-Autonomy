@@ -44,6 +44,7 @@ class Timetable
 	 * \param $object    Contains either a group, a subject or a teacher.
 	 * \param $validated \e Boolean indicating if the timetable is validated or not.
 	*/
+	//NOTE: $object cant be an id!!
 	public function __construct($object = NULL, $validated = FALSE)
 	{
 		if (($object instanceof Group) or ($object instanceof Subject) or ($object instanceof Teacher))
@@ -56,26 +57,13 @@ class Timetable
 				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 
-		/*	$query  = "SELECT id FROM " . self::TABLENAME . " WHERE id_collection IS NULL;";
+			$query  = "SELECT id FROM " . self::TABLENAME . " ORDER BY date_creation DESC, id DESC";
 			$result = Database::currentDB()->executeQuery($query);
 
 			if ($result) 
 			{
 				$result      = pg_fetch_assoc($result);
-				$this->sqlId = $result['id'];
-			}
-			else
-			{
-				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe : " . __CLASS__);
-			}
-*/
-			$query  = "SELECT id FROM " . self::TABLENAME . " ORDER BY date_creation DESC,id DESC";
-			$result = Database::currentDB()->executeQuery($query);
-
-			if ($result) 
-			{
-				$result      = pg_fetch_assoc($result);
-				$this->sqlId = $result['id'];
+				$this->sqlId = intval($result['id']);
 			}
 			else
 			{
@@ -123,7 +111,7 @@ class Timetable
 				{
 					//$anIdCollection = (int)CreateCalendar($aGroup->getName(), $aGroup->getName() . " EDT");
 					//$this->setIdCollection($anIdCollection);
-					$this->group = $aGroup;
+					$this->group = $aGroup->getSqlId();
 				}
 				else
 				{
@@ -138,7 +126,7 @@ class Timetable
 				{
 					//$anIdCollection = (int)CreateCalendar($aSubject->getGroup()->getName(), $aSubject->getName() . " " . $aSubject->getGroup()->getName());
 					//$this->setIdCollection($anIdCollection);
-					$this->subject = $aSubject;
+					$this->subject = $aSubject->getSqlId();
 				}
 				else
 				{	
@@ -154,7 +142,7 @@ class Timetable
 				{
 					//$anIdCollection = (int)CreateCalendar($aTeacher->getLogin(), $aTeacher->getFullName() . " EDT");
 					//$this->setIdCollection($anIdCollection);
-					$this->teacherOwner = $aTeacher;
+					$this->teacherOwner = $aTeacher->sqId();;
 				}
 				else
 				{
@@ -182,6 +170,7 @@ class Timetable
 	*/
 	public function getModifiedBy()
 	{
+		//TODO loadFromDB;
 		return $this->modifiedBy;
 	}
 
@@ -193,6 +182,7 @@ class Timetable
 	{
 		return $this->coursesList;
 	}
+	
 
 	/**
 	 * \brief  Getter for the attribute $modifList.
@@ -209,6 +199,7 @@ class Timetable
 	*/
 	public function getGroup()
 	{
+		//TODO loadFromDB;
 		return $this->group;
 	}
 
@@ -218,6 +209,7 @@ class Timetable
 	*/
 	public function getSubject()
 	{
+		//TODO loadFromDB
 		return $this->subject;
 	}
 
@@ -234,17 +226,17 @@ class Timetable
 	 * \brief  Getter for the attribute $idCollection.
 	 * \return The \e integer value of $idCollection.
 	*/
-	public function getIdCollection()
+	/*public function getIdCollection()
 	{
 		return $this->idCollection;
 	}
-
+*/
 	// setters
 	/**
 	 * \brief  Setter for the attribute $sqlId.
 	 * \param  $newSqlId Contains the new value of $sqlId.
 	*/
-	protected function setSqlId($newSqlId)
+/*	protected function setSqlId($newSqlId)
 	{
 		if (is_int($newSqlId))
 		{
@@ -259,13 +251,13 @@ class Timetable
 				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * \brief  Setter for the attribute $idCollection.
 	 * \param  $newIdCollection Contains the new value of $idCollection.
 	*/
-	protected function setIdCollection($newIdCollection)
+/*	protected function setIdCollection($newIdCollection)
 	{
 		if (is_int($newIdCollection))
 		{
@@ -280,17 +272,18 @@ class Timetable
 				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * \brief  Setter for the attribute $modifiedBy.
 	 * \param  $newModifiedBy Contains the new value of $modifiedBy.
 	*/
-	public function setModifiedBy(Person $newModifiedBy = NULL)
+	public function setModifiedBy($newModifiedBy = NULL)
 	{
-		if ($newModifiedBy instanceof Person)
+		if ($newModifiedBy instanceof Person)$newModifiedBy=$newModifiedBy->getSqlId();
+		if(is_int($newModifiedBy))
 		{
-			$query = "UPDATE " . self::TABLENAME . " SET is_being_modified_by = " . $newModifiedBy->getSqlId() . " WHERE id = " . $this->sqlId . ";";
+			$query = "UPDATE " . self::TABLENAME . " SET is_being_modified_by = " . $newModifiedBy . " WHERE id = " . $this->sqlId . ";";
 
 			if (Database::currentDB()->executeQuery($query))
 			{
@@ -361,17 +354,18 @@ class Timetable
 	 * \brief  Setter for the attribute $group.
 	 * \param  $newGroup Contains the new value of $group.
 	*/
-	protected function setGroup(Group $newGroup = NULL)
+	protected function setGroup($newGroup = NULL)
 	{
-		if ($newGroup instanceof Group)
+		if ($newGroup instanceof Group)$newGroup=$newGroup->getSqlId();
+		if(is_int($newGroup))
 		{
 			if ($this->validated)
 			{
-				$query = "UPDATE " . Group::TABLENAME . " SET id_validated_calendar = " . $this->sqlId . " WHERE id = " . $newGroup->sqlId() . ";";
+				$query = "UPDATE " . Group::TABLENAME . " SET id_validated_calendar = " . $this->sqlId . " WHERE id = " . $newGroup . ";";
 			}
 			else
 			{
-				$query = "UPDATE " . Group::TABLENAME . " SET id_current_calendar = " . $this->sqlId . " WHERE id = " . $newGroup->sqlId() . ";";
+				$query = "UPDATE " . Group::TABLENAME . " SET id_current_calendar = " . $this->sqlId . " WHERE id = " . $newGroup . ";";
 
 				if (Database::currentDB()->executeQuery($query))
 				{
@@ -386,15 +380,15 @@ class Timetable
 				$this->setTeacherOwner();
 			}
 		}
-		else
+		else if(is_int($this->group))
 		{
 			if ($this->validated)
 			{
-				$query = "UPDATE " . Group::TABLENAME . " SET id_validated_calendar = NULL WHERE id = " . $newGroup->sqlId() . ";";
+				$query = "UPDATE " . Group::TABLENAME . " SET id_validated_calendar = NULL WHERE id = " . $this->group. ";";
 			}
 			else
 			{
-				$query = "UPDATE " . Group::TABLENAME . " SET id_current_calendar = NULL WHERE id = " . $newGroup->sqlId() . ";";
+				$query = "UPDATE " . Group::TABLENAME . " SET id_current_calendar = NULL WHERE id = " .$this->group . ";";
 
 				if (Database::currentDB()->executeQuery($query))
 				{
@@ -413,11 +407,12 @@ class Timetable
 	 * \brief  Setter for the attribute $subject.
 	 * \param  $newSubject Contains the new value of $subject.
 	*/
-	private function setSubject(Subject $newSubject = NULL)
+	private function setSubject($newSubject = NULL)
 	{
-		if ($newSubject instanceof Subject)
+		if ($newSubject instanceof Subject)$newSubject=$newSubject->getSqlId();
+		if(is_int($newSubject))
 		{
-			$query = "UPDATE " . Subject::TABLENAME . " SET id_calendar = " . $this->sqlId . " WHERE id = " . $newSubject->sqlId() . ";";
+			$query = "UPDATE " . Subject::TABLENAME . " SET id_calendar = " . $this->sqlId . " WHERE id = " . $newSubject . ";";
 
 			if (Database::currentDB()->executeQuery($query))
 			{
@@ -431,9 +426,9 @@ class Timetable
 			$this->setGroup();
 			$this->setTeacherOwner();
 		}
-		else
+		else if(is_int($this->subject))
 		{
-			$query = "UPDATE " . Subject::TABLENAME . " SET id_calendar = NULL WHERE id = " . $newSubject->sqlId() . ";";
+			$query = "UPDATE " . Subject::TABLENAME . " SET id_calendar = NULL WHERE id = " .$this->subject . ";";
 
 			if (Database::currentDB()->executeQuery($query))
 			{
@@ -451,11 +446,12 @@ class Timetable
 	 * \brief  Setter for the attribute $teacherOwner.
 	 * \param  $newTeacherOwner Contains the new value of $teacherOwner.
 	*/
-	private function setTeacherOwner(Teacher $newTeacherOwner = NULL)
+	private function setTeacherOwner($newTeacherOwner = NULL)
 	{
-		if ($newTeacherOwner instanceof Teacher)
+		if ($newTeacherOwner instanceof Teacher)$newTeacherOwner=$newTeacherOwner->getSqlId();
+		if(is_int($newTeacherOwner))
 		{
-			$query = "UPDATE " . self::TABLENAME . " SET id_teacher = " . $newTeacherOwner->getSqlId() . " WHERE id = " . $this->sqlId . ";";
+			$query = "UPDATE " . self::TABLENAME . " SET id_teacher = " . $newTeacherOwner . " WHERE id = " . $this->sqlId . ";";
 
 			if (Database::currentDB()->executeQuery($query))
 			{
@@ -469,7 +465,7 @@ class Timetable
 			$this->setSubject();
 			$this->setGroup();
 		}
-		else
+		else if(is_int($this->teacherOwner))
 		{
 			$query = "UPDATE " . self::TABLENAME . " SET id_teacher = NULL WHERE id = " . $this->sqlId . ";";
 			if (Database::currentDB()->executeQuery($query))
@@ -508,13 +504,16 @@ class Timetable
 	 * \param  $aCourse The course to search in the timetable.
 	 * \return TRUE if the timetable contains the given course, ELSE otherwise.
 	*/
-	public function containsCourse(Cours $aCourse)
+	public function containsCourse($aCourse)
 	{
-		foreach ($this->coursesList as $oneCourse)
-		{
-			if ($oneCourse == $aCourse)
+		if($aCourse instanceof Course)$aCourse->getSqlId();
+		if(is_int($aCourse)){
+			foreach ($this->coursesList as $oneCourse)
 			{
-				return TRUE;
+				if ($oneCourse == $aCourse)
+				{
+					return TRUE;
+				}
 			}
 		}
 
@@ -526,6 +525,7 @@ class Timetable
 	 * \param  $aModif The modif to search in the timetable.
 	 * \return TRUE if the timetable has the given modification, ELSE otherwise.
 	*/
+	//NOTE: Modifications have no id
 	public function hasModification(Modification $aModif)
 	{
 		foreach ($this->modifList as $oneModif)
@@ -543,47 +543,53 @@ class Timetable
 	 * \brief  Adds a course in the list of courses.
 	 * \param  $newCourse The course to add.
 	*/
-	public function addCourse(Course $newCourse) // TODO adapt davical dB en créant des évènements de même nom/horaires et salle pour tous les EDT concernés
+	public function addCourse($newCourse) 
 	{
-		if (!$this->containsCourse($newCourse))
+		if(is_int($newCourse)){
+			$Co=new Course();
+			$Co->loadFromDB($newCourse);
+
+			
+			//if(is_int($Co->getSqlId()$newCourse=$Co;
+		}
+		if ($newCourse instanceof Course && !$this->containsCourse($newCourse->getSqlId()))
 		{
-			$query = "INSERT " . Course::belongsToTABLENAME . " (id_course, id_calendar) VALUES(" . $newCourse->getSqlId() . "," . $this->sqlId . ") ;";
+			
+			$query = "INSERT  INTO " . Course::belongsToTABLENAME . " (id_course, id_calendar) VALUES(" . $newCourse->getSqlId() . "," . $this->sqlId . ") ;";
 
 			if (Database::currentDB()->executeQuery($query))
 			{
-				$this->coursesList[] = $newCourse;
-				$aSubject            = $newCourse->getSubject();
+				$this->coursesList[] = $newCourse->getSqlId();
+				//$aSubject = new Subject();
+				//$aSubject->loadFromDB($newCourse->getSubject());
+				//When creating a course, it is automatically added to subject & teacher calendars;
 
-				// the two next blocs add the new course to all calendars related to this one
-				if (!empty($aSubject))
+			/*	// the two next blocs add the new course to all calendars related to this one
+				if (is_int($aSubject->getSqlId()))
 				{
-					$aSubject->getTimetable()->addCourse($newCourse); // ADD course to calendar of the course’s subject
+					$T=new Timetable();
+					$T->loadFromDB($aSubject->getTimetable());
+					$T->addCourse($newCourse); // ADD course to calendar of the course’s subject
 
-					foreach ($aSubject->getTeachedBy() as $oneSpeaker) // for all speakers of this course
+					foreach ($aSubject->getTeachedByList() as $idSpeaker) // for all speakers of this course
 					{
-						$aTeacher = new Teacher();
-
-						if ($aTeacher->loadFromDB($oneSpeaker->getSqlId())) // we check that $onespeaker is a user
-						{
-							$aTeacher->getTimetable()->addCourse($newCourse); // ADD course to teacher’s calendar
+						$aSpeaker=new Teacher();
+						$aSpeaker->loadFromDB($idSpeaker);
+						if ($aSpeaker->hasStatus(new PersonStatus(PersonStatus::SPEAKER))){
+							
+							$T=new Timetable();
+							$T->loadFromDB($aSpeaker->getTimetable());
+							$T->addCourse($newCourse);
 						}
+
 					}
 				}
 
-				if (!empty($this->group)) // ADD course in all linked groups calendars
+				if (!empty($this->group)) // ADD course in dependingCalendars
 				{
-					$aGroup = $this->group;
-
-					foreach ($aGroup->getListOfLinkedGroups() as $oneGroup)
-					{
-						$aTimetable = $oneGroup->getTimeTable();
-
-						if (!empty($aTimetable))
-						{
-							$aTimetable->addCourse($newCourse);
-						}
-					}
+					//DO NOTHING
 				}
+			*/
 			}
 			else
 			{
@@ -611,32 +617,28 @@ class Timetable
 				// The two next blocs remove the course from all calendars related to this one
 				if (!empty($aSubject))
 				{
-					$aSubject->getTimetable()->removeCourse($courseToRemove); // REMOVE course from calendar of the course’s subject
+					$T=new Timetable();
+					$T->loadFromDB($aSubject->getTimetable());
+					$T->removeCourse($courseToRemove); // REMOVE course from calendar of the course’s subject
 
-					foreach ($aSubject->getTeachedBy() as $oneSpeaker) // for all speakers of this course
+					foreach ($aSubject->getTeachedByList() as $oneSpeaker) // for all speakers of this course
 					{
 						$aTeacher = new Teacher();
 
-						if ($aTeacher->loadFromDB($oneSpeaker->getSqlId())) // We check that $oneSpeaker is a user
+						if ($aTeacher->loadFromDB($oneSpeaker)) // We check that $oneSpeaker is a user
 						{
-							$aTeacher->getTimetable()->removeCourse($courseToRemove); // REMOVE course from teacher’s calendar
+							//$aTeacher->getTimetable()->removeCourse($courseToRemove); // REMOVE course from teacher’s calendar
+							$T=new Timetable();
+							$T->loadFromDB($aTeacher->getTimetable());
+							$T->removeCourse($courseToRemove); // REMOVE course from calendar of the course’s subject
+
 						}
 					}
 				}
 
-				if (!empty($this->group)) // REMOVE course from all linked groups calendars
+				if (!empty($this->group)) // REMOVE course from all dependingCalendars
 				{
-					$aGroup = $this->group;
-
-					foreach ($aGroup->getListOfLinkedGroups() as $oneGroup)
-					{
-						$aTeacher = $oneGroup->getTimeTable();
-
-						if (!empty($aTeacher))
-						{
-							$aTeacher->removeCourse($courseToRemove);
-						}
-					}
+					//Issue#3: DO NOTHING
 				}
 			}
 			else
@@ -687,14 +689,34 @@ class Timetable
 	}
 
 	/**
+	 * \brief  
+	 * \return The list of courses contained in of $coursesList between $begin and $end
+	*/
+	public function getCoursesListBetween($begin,$end)
+	{
+		if(is_int($begin) && is_int($end)){
+			$result=array();
+			foreach($this->coursesList as $courseId){
+				$C=new Course();
+				$C->loadFromDB($courseId);
+				if($C->getBegin() >=$begin && $C->getEnd() <= $end)$result[]=$courseId;
+			}
+			return $result;
+		}
+		return null;
+	}
+	
+	
+	
+	/**
 	 * \brief  Loads a course from the given ressource.
 	 * \param  $ressource The ressource from which a course will be loaded.
 	*/
 	public function loadCourseFromRessource($ressource)
 	{
-		$newCourse = new Cours();
-		$newCourse->loadFromDB(intval($ressource['id_course']));
-		$this->addCourse($newCourse);
+		//$newCourse = new Cours();
+		//$newCourse->loadFromDB(intval($ressource['id_course']));
+		$this->addCourse(intval($ressource['id_course']));
 	}
 
 	// This method expects an array describing a ressource from a select query on modification table
@@ -704,14 +726,7 @@ class Timetable
 	*/
 	public function loadModificationFromRessource($ressource)
 	{
-		$newModification = new Modification();
-		$newModification->setDate($ressource['date']);
-		$newUser = new User();
-		$newUser->loadFromDB(intval($ressource['id_user']));
-		$newModification->setModifiedBy($newUser);
-		$newCourse = new Course();
-		$newCourse->loadFromDB(intval($ressource['id_course']));
-		$newModification->setCourseModified($newCourse);
+		$newModification = new Modification(strtotime($ressource['date'],intval($ressource['id_user']),intval($ressource['id_course'])));
 		$this->addModification($newModification);
 	}
 
@@ -723,9 +738,10 @@ class Timetable
 	*/
 	public function loadFromDB($id = NULL, $onlyClassCalendar = FALSE)
 	{
+		
 		if ($id == NULL) // if we do not want to load a particular timetable
 		{
-			if ($this->sqlId != NULL) // check if the current timetable object is defined
+			if (is_int($this->sqlId)) // check if the current timetable object is defined
 			{
 				$id = $this->sqlId; // if yes, we want to “reload” data about this object from the database (UPDATE)
 			}
@@ -741,13 +757,13 @@ class Timetable
 			{
 				$query = "SELECT * FROM " . self::TABLENAME . " WHERE is_class_calendar = TRUE;";
 			}
-
+			
 			$result = Database::currentDB()->executeQuery($query);
 
 		}
 		else // (if yes) from here, we load data about the timetable that has $id as $sqlId
 		{
-			if ($onlyClassCalendar) // we load any timetable that matches the criteria
+			if (!$onlyClassCalendar) // we load any timetable that matches the criteria
 			{
 				$query = "SELECT * FROM " . self::TABLENAME . " WHERE id = $1;";
 			}
@@ -757,6 +773,7 @@ class Timetable
 			}
 
 			$params = array($id);
+		
 			$result = Database::currentDB()->executeQuery($query, $params);
 		}
 
@@ -779,10 +796,9 @@ class Timetable
 	public function loadFromRessource($ressource)
 	{
 		// we change values of attributes
-		$this->sqlId = $ressource['id'];
-		$newUser     = new User();
-		$newUser->loadFromDB(intval($ressource['is_being_modified_by']));
-		$this->modifiedBy = $newUser;
+		
+		$this->sqlId = intval($ressource['id']);
+		$this->modifiedBy = intval($ressource['is_being_modified_by']);
 
 		if ($ressource['id_teacher'])
 		{
@@ -797,23 +813,21 @@ class Timetable
 
 		$params = array($this->sqlId);
 
-		if ($ressource['is_validated_calendar'])
+		if (boolval($ressource['is_validated_calendar']))
 		{
 			$this->validated = TRUE;
-			$query           = "SELECT id FROM " . Group::TABLENAME . " WHERE id_validated_calendar = $1;";
+			$query           = "SELECT id FROM " . Group::TABLENAME . " WHERE id_validated_timetable = $1;";
 		}
 		else
 		{
 			$this->validated = FALSE;
-			$query           = "SELECT id FROM " . Group::TABLENAME . " WHERE id_current_calendar = $1;";
+			$query           = "SELECT id FROM " . Group::TABLENAME . " WHERE id_current_timetable = $1;";
 		}
 
 		if ($result2 = Database::currentDB()->executeQuery($query, $params))
 		{
 			$result2  = pg_fetch_assoc($result2);
-			$newGroup = new Group();
-			$newGroup->loadFromDB(intval($result2['id']));
-			$this->group = $newGroup;
+			$this->group = intval($result2['id']);
 		}
 		else
 		{

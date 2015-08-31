@@ -73,7 +73,7 @@ class Person
 				$query       = "SELECT id FROM " . self::TABLENAME . " ORDER BY date_creation DESC, id DESC;";
 				$result      = Database::currentDB()->executeQuery($query);
 				$tmp         = pg_fetch_assoc($result);
-				$this->sqlId = $tmp['id'];
+				$this->sqlId = intval($tmp['id']);
 			}
 		}
 	}
@@ -425,7 +425,7 @@ class Person
 	{
 		if (is_array($ressource))
 		{
-			$this->sqlId         = $ressource['id'];
+			$this->sqlId         = inval($ressource['id']);
 			$this->familyName    = $ressource['familyname'];
 			$this->firstName     = $ressource['firstname'];
 			$this->emailAddress1 = $ressource['emailaddress1'];

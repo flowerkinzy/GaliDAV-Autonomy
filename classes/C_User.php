@@ -190,9 +190,9 @@ class User extends Person
 			return FALSE; // we did not find a matching $result in the database
 		}
 
-		$this->sqlId    = $result['id_person'];
+		$this->sqlId    = intval($result['id_person']);
 		$this->login    = $result['login'];
-		$this->password = $result['password']; // Has to be fixed
+		$this->password = $result['password']; //TODO Has to be fixed
 
 		return parent::loadFromDB();
 	}

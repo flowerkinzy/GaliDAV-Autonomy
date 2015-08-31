@@ -17,7 +17,10 @@ require_once('classes/C_ElemOfClassesModel.php');
 class ClassesModel
 {
 	// --- ATTRIBUTES ---
+	private $sqlId=NULL;
 	private $elemOfClassesModelsList = array();
+	
+	//TODO Create a table
 
 	// --- OPERATIONS ---
 	/**
@@ -27,6 +30,7 @@ class ClassesModel
 	public function __construct($newElemOfClassesModelsList)
 	{
 		$this->elemOfClassesModelsList = $newElemOfClassesModelsList;
+		//TODO insert in table
 	}
 
 	// getters
@@ -37,6 +41,11 @@ class ClassesModel
 	public function getElemOfClassesModelsList()
 	{
 		return $this->elemOfClassesModelsList;
+	}
+	
+	public function getSqlId(){
+		return $this->sqlId;
+	
 	}
 
 	// setters

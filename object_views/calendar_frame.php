@@ -67,10 +67,10 @@ error_log("KFK - Has loaded ".__FILE__);
 	//$begin=($timeintervalinmin*60)*(int)(time()/($timeintervalinmin*60));//heure courante. N'affiche rien si trop tôt/tard.
 	$end=$begin+90*60; 
 	$INFO2=new C_Class("INFO2");
-	$M=new Subject('Math',$INFO2);
-	//$C=new Course($M,$begin,$end); 
-	//$C->setRoom("C102");
-	//$C->setCourseType(CM);
-	//echo "<script>displayNewCourseElementClass('".addslashes(json_encode($C->to_array()))."');</script>";
+	$M=new Subject('Math',$INFO2->getSqlId());
+	$C=new Course($M->getSqlId(),$begin,$end); 
+	$C->setRoom("C102");
+	$C->setCourseType(CM);
+	echo "<script>displayNewCourseElementClass('".addslashes(json_encode($C->to_array()))."');</script>";
 ?>
 
