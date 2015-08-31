@@ -32,9 +32,12 @@ class ElemOfClassesModel
 	*/
 	public function __construct($newSubject, $newCoursesType, $newNumHours)
 	{
-		$this->subject      = $newSubject;
-		$this->coursesType  = $newCoursesType;
-		$this->numHours     = $newNumHours;
+		if($newSubject instanceof Subject)$newSubject=$newSubject->getSqlId();
+		if(is_int($newSubject) && is_int($newCoursesTyp) && is_int($newNumHours){
+			$this->subject      = $newSubject;
+			$this->coursesType  = $newCoursesType;
+			$this->numHours     = $newNumHours;
+		}
 	}
 
 	// getters
@@ -44,6 +47,7 @@ class ElemOfClassesModel
 	*/
 	public function getSubject()
 	{
+		//TODO loadFromDB?
 		return $this->subject;
 	}
 
@@ -72,14 +76,9 @@ class ElemOfClassesModel
 	*/
 	public function setSubject($newSubject)
 	{
-		if ($newSubject instanceof Subject)
-		{
-			$this->subject = $newSubject;
-		}
-		else
-		{
-			echo 'Erreur dans la méthode setSubject() de la classe ElemOfClassesModel : l’argument donné n’est pas une matière.';
-		}
+		if ($newSubject instanceof Subject)$newSubject=$newSubject->getSqlId();
+		if(is_int($newSubject))$this->subject = $newSubject;
+		
 	}
 
 	/**
@@ -88,7 +87,7 @@ class ElemOfClassesModel
 	*/
 	public function setCoursesType($newCoursesType)
 	{
-		if (!empty($newCoursesType))
+		if (is_int($newCoursesType))
 		{
 			$this->coursesType = $newCoursesType;
 		}
@@ -100,7 +99,7 @@ class ElemOfClassesModel
 	*/
 	public function setNumHours($newNumHours)
 	{
-		if (!empty($newNumHours))
+		if (is_int($newNumHours))
 		{
 			$this->numHours = $newNumHours;
 		}

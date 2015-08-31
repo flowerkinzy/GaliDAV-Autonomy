@@ -44,18 +44,20 @@ class Course
 	 * \param $newBegin   ???
 	 * \param $newEnd     ???
 	*/
-	public function __construct(Subject $newSubject=NULL, $newBegin=NULL, $newEnd=NULL)
+	public function __construct($newSubject=NULL, $newBegin=NULL, $newEnd=NULL)
 	{
+		
 		if(is_int($newBegin) && is_int($newEnd)){
 			if($newBegin>=$newEnd)echo "<script>console.log('Horaires de cours non conforme');</script>";
 			else{
-				if($newSubject!=NULL && $newSubject->getSqlId()!=NULL)
+				if($newSubject instanceof Subject)$newSubject=$newSubject->getSqlId();
+				if(is_int($newSubject))
 					$query="INSERT INTO " . self::TABLENAME . " (begins_at, ends_at,id_subject) VALUES ($1, $2,$3);";
 				else
 					$query="INSERT INTO " . self::TABLENAME . " (begins_at, ends_at) VALUES ($1, $2);";
 				$params[]        = date('Y-m-d G:i:s',$newBegin);
 				$params[]        = date('Y-m-d G:i:s',$newEnd);
-				if($newSubject!=NULL)$params[]        = $newSubject->getSqlId();
+				if(is_int($newSubject))$params[]        = $newSubject;
 				$result          = Database::currentDB()->executeQuery($query, $params);
 				if (!$result)
 				{
@@ -77,7 +79,20 @@ class Course
 						$this->begin   = $newBegin;
 						$this->end    = $newEnd;
 						$this->sqlId     = $result['id'];
+						if(is_int($newSubject)){
+							$S=new Subject();
+							$S->loadFromDB($newSubject);
+							$T=new Timetable();
+							$T->loadFromDB($S->getTimetable());
+							$T->addCourse($this);
+							$G=new Group();
+							$G->loadFromDB($S->getGroup());
+							$T=new Timetable();
+							$T->loadFromDB($G->getTimetable());
+							$G->addCo
+						}
 					}
+					
 				//TODO add to all related calendars
 				}
 				

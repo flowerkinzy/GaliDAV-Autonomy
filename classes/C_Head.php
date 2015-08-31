@@ -45,22 +45,44 @@ class Head extends Teacher
 	 * \param   $aCourse    The course that will be added or removed.
 	 * \param   $operation  \e String containing the type of modification.
 	*/
-	public function modifyTimetable(Timetable $aTimetable, Course $aCourse, $operation)
+	public function modifyTimetable($aTimetable,$aCourse, $operation)
 	{
-		if ($operation == 'add')
-		{
-			$aTimetable->addCourse($aCourse);
+		if(is_int($aTimetable)){
+			$T=new Timetable();
+			$T->loadFromDB($aTimetable);
+			$aTimetable=$T;
 		}
-		else if ($operation == 'remove')
-		{
-			$aTimetable->removeCourse($aCourse);
+		if(is_int($aCourse)){
+			$C=new Course();
+			$C->loadFromDB($aCourse);
+			$aCourse=$C;
 		}
-		else
-		{
-			echo 'Opération invalide';
+		if($aTimetable instanceof Timetable && is_int($aTimetable->getSqlId()) && $aCourse instanceof Course && is_int($aCourse->getSqlId()) && is_string($operation)){
+			if ($operation == 'add')
+			{
+				$aTimetable->addCourse($aCourse);
+			}
+			else if ($operation == 'remove')
+			{
+				$aTimetable->removeCourse($aCourse);
+			}
+			else
+			{
+				echo 'Opération invalide';
+			}
 		}
 	}
 
+	/**
+	 * \brief  Add a new group.
+	 * \param  $name \e String containing the name of the group.
+	 * \return The newly created group.
+	*/
+	public function addGroup($name)
+	{
+		new Group($name, FALSE);
+	}
+	
 	/**
 	 * \brief  Add a new group.
 	 * \param  $name \e String containing the name of the group.
@@ -101,8 +123,19 @@ class Head extends Teacher
 	 * \param   $aStudent  The student that will be added or removed.
 	 * \param   $operation \e String containing the type of modification.
 	*/
-	public function modifyGroupLinkedClasses(C_Class $aClass, Person $aStudent, $operation)
+	public function modifyGroupLinkedClasses($aClass, $aStudent, $operation)
 	{
+		
+		if(is_int($aClass)){
+			$C=new C_Class();
+			$C->loadFromDB($aClass);
+			$aClass=$C;
+		}
+		if(is_int($aCourse)){
+			$C=new Course();
+			$C->loadFromDB($aCourse);
+			$aCourse=$C;
+		}
 		if ($operation == 'add')
 		{
 			$aClass->addStudent($aStudent);
@@ -123,10 +156,11 @@ class Head extends Teacher
 	 * \param $begin ???
 	 * \param $end   ???
 	*/
+	//KFK: Compare for What? if there is an empty 'box' at that time?
 	public function compareTimetable($timetablesList, $begin, $end)
 	{
 		$returnValue = NULL;
-
+		//TODO complete
 		return $returnValue;
 	}
 
@@ -137,8 +171,11 @@ class Head extends Teacher
 	public function validateTimetable(Timetable $aTimetable)
 	{
 		$aTimetable->emptyModifications();
+		
 	}
 
+	
+	
 	/**
 	 * \brief   Modify a class’ courses model.
 	 * \details It can add or remove an element of classes model.
@@ -146,19 +183,26 @@ class Head extends Teacher
 	 * \param   $anElem    The element of classes model that will be added or removed.
 	 * \param   $operation \e String containing the type of modification.
 	*/
-	public function modifyClassCoursesModel(C_Class $aClass, ClassesModel $anElem, $operation)
+	public function modifyClassCoursesModel($aClass, ClassesModel $anElem, $operation)
 	{
-		if ($operation == 'add')
-		{
-			$aClass->getCoursesModel->addElemOfClassesModel($anElem);
+		if(is_int($aClass)){
+			$C=new c_Class();
+			$C->loadFromDB($aClass);
+			$aClass=$C;
 		}
-		else if ($operation == 'remove')
-		{
-			$aClass->getCoursesModel->removeElemOfClassesModel($anElem);
-		}
-		else
-		{
-			echo 'Opération invalide';
+		if($aClass instanceof C_Class && is_int($aClass->getSqlId()){
+			if ($operation == 'add')
+			{
+				$aClass->getCoursesModel->addElemOfClassesModel($anElem);
+			}
+			else if ($operation == 'remove')
+			{
+				$aClass->getCoursesModel->removeElemOfClassesModel($anElem);
+			}
+			else
+			{
+				echo 'Opération invalide';
+			}
 		}
 	}
 }
