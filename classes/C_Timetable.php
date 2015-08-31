@@ -63,7 +63,7 @@ class Timetable
 			if ($result) 
 			{
 				$result      = pg_fetch_assoc($result);
-				$this->sqlId = $result['id'];
+				$this->sqlId = intval($result['id']);
 			}
 			else
 			{
@@ -543,36 +543,45 @@ class Timetable
 	 * \brief  Adds a course in the list of courses.
 	 * \param  $newCourse The course to add.
 	*/
-	public function addCourse($newCourse) // TODO adapt davical dB en créant des évènements de même nom/horaires et salle pour tous les EDT concernés
+	public function addCourse($newCourse) 
 	{
 		if(is_int($newCourse)){
 			$Co=new Course();
 			$Co->loadFromDB($newCourse);
-			$newCourse=$Co;
+
+			
+			//if(is_int($Co->getSqlId()$newCourse=$Co;
 		}
 		if ($newCourse instanceof Course && !$this->containsCourse($newCourse->getSqlId()))
 		{
-			$query = "INSERT " . Course::belongsToTABLENAME . " (id_course, id_calendar) VALUES(" . $newCourse->getSqlId() . "," . $this->sqlId . ") ;";
+			
+			$query = "INSERT  INTO " . Course::belongsToTABLENAME . " (id_course, id_calendar) VALUES(" . $newCourse->getSqlId() . "," . $this->sqlId . ") ;";
 
 			if (Database::currentDB()->executeQuery($query))
 			{
 				$this->coursesList[] = $newCourse->getSqlId();
-				$aSubject = new Subject();
-				$aSubject->loadFromDB($newCourse->getSubject());
+				//$aSubject = new Subject();
+				//$aSubject->loadFromDB($newCourse->getSubject());
+				//When creating a course, it is automatically added to subject & teacher calendars;
 
-				// the two next blocs add the new course to all calendars related to this one
-				if (!is_int($aSubject))
+			/*	// the two next blocs add the new course to all calendars related to this one
+				if (is_int($aSubject->getSqlId()))
 				{
-					$aSubject->getTimetable()->addCourse($newCourse); // ADD course to calendar of the course’s subject
+					$T=new Timetable();
+					$T->loadFromDB($aSubject->getTimetable());
+					$T->addCourse($newCourse); // ADD course to calendar of the course’s subject
 
-					foreach ($aSubject->getTeachedBy() as $oneSpeaker) // for all speakers of this course
+					foreach ($aSubject->getTeachedByList() as $idSpeaker) // for all speakers of this course
 					{
-						$aTeacher = new Teacher();
-
-						if ($aTeacher->loadFromDB($oneSp)) // we check that $onespeaker is a user
-						{
-							$aTeacher->getTimetable()->addCourse($newCourse); // ADD course to teacher’s calendar
+						$aSpeaker=new Teacher();
+						$aSpeaker->loadFromDB($idSpeaker);
+						if ($aSpeaker->hasStatus(new PersonStatus(PersonStatus::SPEAKER))){
+							
+							$T=new Timetable();
+							$T->loadFromDB($aSpeaker->getTimetable());
+							$T->addCourse($newCourse);
 						}
+
 					}
 				}
 
@@ -580,6 +589,7 @@ class Timetable
 				{
 					//DO NOTHING
 				}
+			*/
 			}
 			else
 			{
@@ -706,7 +716,7 @@ class Timetable
 	{
 		//$newCourse = new Cours();
 		//$newCourse->loadFromDB(intval($ressource['id_course']));
-		$this->addCourse($ressource['id_course']);
+		$this->addCourse(intval($ressource['id_course']));
 	}
 
 	// This method expects an array describing a ressource from a select query on modification table
@@ -728,9 +738,10 @@ class Timetable
 	*/
 	public function loadFromDB($id = NULL, $onlyClassCalendar = FALSE)
 	{
+		
 		if ($id == NULL) // if we do not want to load a particular timetable
 		{
-			if ($this->sqlId != NULL) // check if the current timetable object is defined
+			if (is_int($this->sqlId)) // check if the current timetable object is defined
 			{
 				$id = $this->sqlId; // if yes, we want to “reload” data about this object from the database (UPDATE)
 			}
@@ -746,13 +757,13 @@ class Timetable
 			{
 				$query = "SELECT * FROM " . self::TABLENAME . " WHERE is_class_calendar = TRUE;";
 			}
-
+			
 			$result = Database::currentDB()->executeQuery($query);
 
 		}
 		else // (if yes) from here, we load data about the timetable that has $id as $sqlId
 		{
-			if ($onlyClassCalendar) // we load any timetable that matches the criteria
+			if (!$onlyClassCalendar) // we load any timetable that matches the criteria
 			{
 				$query = "SELECT * FROM " . self::TABLENAME . " WHERE id = $1;";
 			}
@@ -762,6 +773,7 @@ class Timetable
 			}
 
 			$params = array($id);
+		
 			$result = Database::currentDB()->executeQuery($query, $params);
 		}
 
@@ -784,10 +796,9 @@ class Timetable
 	public function loadFromRessource($ressource)
 	{
 		// we change values of attributes
-		$this->sqlId = $ressource['id'];
-		$newUser     = new User();
-		$newUser->loadFromDB(intval($ressource['is_being_modified_by']));
-		$this->modifiedBy = $newUser;
+		
+		$this->sqlId = intval($ressource['id']);
+		$this->modifiedBy = intval($ressource['is_being_modified_by']);
 
 		if ($ressource['id_teacher'])
 		{
@@ -802,23 +813,21 @@ class Timetable
 
 		$params = array($this->sqlId);
 
-		if ($ressource['is_validated_calendar'])
+		if (boolval($ressource['is_validated_calendar']))
 		{
 			$this->validated = TRUE;
-			$query           = "SELECT id FROM " . Group::TABLENAME . " WHERE id_validated_calendar = $1;";
+			$query           = "SELECT id FROM " . Group::TABLENAME . " WHERE id_validated_timetable = $1;";
 		}
 		else
 		{
 			$this->validated = FALSE;
-			$query           = "SELECT id FROM " . Group::TABLENAME . " WHERE id_current_calendar = $1;";
+			$query           = "SELECT id FROM " . Group::TABLENAME . " WHERE id_current_timetable = $1;";
 		}
 
 		if ($result2 = Database::currentDB()->executeQuery($query, $params))
 		{
 			$result2  = pg_fetch_assoc($result2);
-			$newGroup = new Group();
-			$newGroup->loadFromDB(intval($result2['id']));
-			$this->group = $newGroup;
+			$this->group = intval($result2['id']);
 		}
 		else
 		{

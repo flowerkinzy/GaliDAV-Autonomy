@@ -53,7 +53,7 @@ class Group
 	*/
 	public function __construct($newName = NULL, $newIsAClass = FALSE)
 	{
-		if ($newName != NULL)
+		if (is_string($newName))
 		{
 			//CreateGroupAccount($newName, session_salted_sha1($newName)); // The password is the same as the group name
 			$this->name      = $newName;
@@ -68,22 +68,24 @@ class Group
 			{
 				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}else{
-			  $query           = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1;";
+			  $query           = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1 ;";
 			  $result          = Database::currentDB()->executeQuery($query, $params);
-			  
-			  $result          = pg_fetch_assoc($result);
-			  $this->sqlId     = $result['id'];
-			  if ($newIsAClass)
-			  {
-				
-				//$this->timetable = new ClassesTimetable($this);
-				$this->timetable = new ClassesTimetable($this)->getSqlId();
-			  }
-			  else
-			  {
-				// $this->timetable = new Timetable($this);
-				$this->timetable = new Timetable($this)->getSqlId();
-			  }
+			 
+			  if($result){
+				$result          = pg_fetch_assoc($result);
+				$this->sqlId     = intval($result['id']);
+				if ($newIsAClass)
+				{
+					
+					//$this->timetable = new ClassesTimetable($this);
+					$this->timetable = (new ClassesTimetable($this))->getSqlId();
+				}
+				else
+				{
+					// $this->timetable = new Timetable($this);
+					$this->timetable = (new Timetable($this))->getSqlId();
+				}
+			  }else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}

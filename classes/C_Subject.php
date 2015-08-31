@@ -62,7 +62,7 @@ class Subject
 				{
 					$result = pg_fetch_assoc($result);
 					$this->group  = $newGroup;
-					$this->sqlId  = $result['id'];
+					$this->sqlId  = intval($result['id']);
 					$newTimetable = new Timetable($this);
 					$this->timetable = $newTimetable->getSqlId();
 				}
@@ -353,19 +353,19 @@ class Subject
 	{
 		if (is_array($ressource))
 		{
-			$this->sqlId     = $ressource['id'];
+			$this->sqlId     = intval($ressource['id']);
 			$this->name      = $ressource['name'];
 			$this->teachedByLists = NULL;
 
 			if ($ressource['id_speaker1'])
 			{
-				$this->addTeacher($ressource['id_speaker1']);
+				$this->addTeacher(intval($ressource['id_speaker1']));
 				if ($ressource['id_speaker2'])
 				{
-					$this->addTeacher($ressource['id_speaker2']);
+					$this->addTeacher(intval($ressource['id_speaker2']));
 					if ($ressource['id_speaker3'])
 					{
-						$this->addTeacher($ressource['id_speaker3']);
+						$this->addTeacher(intval($ressource['id_speaker3']));
 					}
 				}
 

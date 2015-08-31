@@ -23,8 +23,8 @@ class Course
 	// --- ATTRIBUTES ---
 	private $sqlId       = NULL;
 	private $number      = NULL;
-	private $begin;
-	private $end;
+	private $time_begin	=	NULL;
+	private $time_end	=	NULL;
 	private $room        = NULL;
 	private $courseType = NULL;
 	private $subject     = NULL;
@@ -62,7 +62,9 @@ class Course
 				if (!$result)
 				{
 					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
-				}else{
+				}
+				
+				else{
 					$params = [];
 					$query  = "SELECT id FROM " . self::TABLENAME . " ORDER BY creation_timestamp DESC, id DESC;";
 					$result = Database::currentDB()->executeQuery($query, $params);
@@ -74,22 +76,40 @@ class Course
 					}
 					else
 					{
+						
+						
 						$result=pg_fetch_assoc($result);
 						$this->subject = $newSubject;
-						$this->begin   = $newBegin;
-						$this->end    = $newEnd;
-						$this->sqlId     = $result['id'];
+						$this->time_begin   = $newBegin;
+						$this->time_end    = $newEnd;
+ 						$this->sqlId     = intval($result['id']);
 						if(is_int($newSubject)){
 							$S=new Subject();
 							$S->loadFromDB($newSubject);
-							$T=new Timetable();
-							$T->loadFromDB($S->getTimetable());
-							$T->addCourse($this);
-							$G=new Group();
-							$G->loadFromDB($S->getGroup());
-							$T=new Timetable();
-							$T->loadFromDB($G->getTimetable());
-							$G->addCo
+							
+							if(is_int($S->getSqlId())){
+								$T=new Timetable();
+								
+								$T->loadFromDB($S->getTimetable());
+								$T->addCourse($this);
+								$G=new Group();
+								$G->loadFromDB($S->getGroup());
+								$T=new Timetable();
+								$T->loadFromDB($G->getTimetable());
+								$T->addCourse($this);
+								foreach ($S->getTeachedByList() as $idSpeaker) // for all speakers of this course
+								{
+									$aSpeaker=new Teacher();
+									$aSpeaker->loadFromDB($idSpeaker);
+									if ($aSpeaker->hasStatus(new PersonStatus(PersonStatus::SPEAKER))){
+										
+										$T=new Timetable();
+										$T->loadFromDB($aSpeaker->getTimetable());
+										$T->addCourse($newCourse);
+									}
+
+								}
+							}
 						}
 					}
 					
@@ -116,7 +136,7 @@ class Course
 	*/
 	public function getBegin()
 	{
-		return $this->begin;
+		return $this->time_begin;
 	}
 
 	/**
@@ -125,7 +145,7 @@ class Course
 	*/
 	public function getBeginString()
 	{
-		return date('d/m/Y H:i', $this->begin);
+		return date('d/m/Y H:i', $this->time_begin);
 	}
 
 	/**
@@ -134,7 +154,7 @@ class Course
 	*/
 	public function getEnd()
 	{
-		return $this->end;
+		return $this->time_end;
 	}
 
 	/**
@@ -143,7 +163,7 @@ class Course
 	*/
 	public function getEndString()
 	{
-		return date('d/m/Y H:i', $this->end);
+		return date('d/m/Y H:i', $this->time_end);
 	}
 
 	/**
@@ -244,7 +264,7 @@ class Course
 
 			if (Database::currentDB()->executeQuery($query, $params))
 			{
-				$this->begin = $newBegin;
+				$this->time_begin = $newBegin;
 			}
 			else
 			{
@@ -267,7 +287,7 @@ class Course
 
 			if (Database::currentDB()->executeQuery($query, $params))
 			{
-				$this->end = $newEnd;
+				$this->time_end = $newEnd;
 			}
 			else
 			{
@@ -397,7 +417,11 @@ class Course
 				}
 			}
 		}
- 
+		if(is_int($this->getSubject())){
+			$S=new Subject();
+			$S->loadFromDB($this->getSubject());
+			if(is_int($S->getSqlId()))$result['subject_name']=$S->getName();
+		}
 		return $result;
 	}
 }

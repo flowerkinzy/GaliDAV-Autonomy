@@ -82,16 +82,7 @@ class Head extends Teacher
 	{
 		new Group($name, FALSE);
 	}
-	
-	/**
-	 * \brief  Add a new group.
-	 * \param  $name \e String containing the name of the group.
-	 * \return The newly created group.
-	*/
-	public function addGroup($name)
-	{
-		new Group($name, FALSE);
-	}
+
 
 	/**
 	 * \brief   Modify a group’s members.
@@ -190,7 +181,7 @@ class Head extends Teacher
 			$C->loadFromDB($aClass);
 			$aClass=$C;
 		}
-		if($aClass instanceof C_Class && is_int($aClass->getSqlId()){
+		if($aClass instanceof C_Class && is_int($aClass->getSqlId())){
 			if ($operation == 'add')
 			{
 				$aClass->getCoursesModel->addElemOfClassesModel($anElem);

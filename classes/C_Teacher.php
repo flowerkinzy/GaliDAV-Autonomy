@@ -35,7 +35,7 @@ class Teacher extends User
 		if ($newFamilyName != NULL and $newFirstName != NULL and $newLogin != NULL and $newPassword != NULL)
 		{
 			$this->addStatus(new PersonStatus(PersonStatus::TEACHER));
-			$this->personalTimetable = new Timetable($this)->getSqlId();
+			$this->personalTimetable = (new Timetable($this))->getSqlId();
 		}
 	}
 

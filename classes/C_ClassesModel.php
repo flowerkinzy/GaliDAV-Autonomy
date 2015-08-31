@@ -17,7 +17,7 @@ require_once('classes/C_ElemOfClassesModel.php');
 class ClassesModel
 {
 	// --- ATTRIBUTES ---
-	private sqlId=NULL;
+	private $sqlId=NULL;
 	private $elemOfClassesModelsList = array();
 	
 	//TODO Create a table

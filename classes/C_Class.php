@@ -32,7 +32,7 @@ class C_Class extends Group
 	public function __construct($newName)
 	{
 		parent::__construct($newName, TRUE);
-		$this->validatedtimetable=new ClassesTimetable($this,true)->getSqlId();
+		$this->validatedtimetable=(new ClassesTimetable($this,true))->getSqlId();
 		
 	}
 
@@ -66,7 +66,7 @@ class C_Class extends Group
 	*/
 	public function getTimetableOfClass()
 	{
-		return (ClassesTimetable) parent::getTimetable();
+		return parent::getTimetable();
 
 	}
 	

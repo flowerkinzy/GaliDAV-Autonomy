@@ -33,7 +33,7 @@ class ElemOfClassesModel
 	public function __construct($newSubject, $newCoursesType, $newNumHours)
 	{
 		if($newSubject instanceof Subject)$newSubject=$newSubject->getSqlId();
-		if(is_int($newSubject) && is_int($newCoursesTyp) && is_int($newNumHours){
+		if(is_int($newSubject) && is_int($newCoursesType) && is_int($newNumHours)){
 			$this->subject      = $newSubject;
 			$this->coursesType  = $newCoursesType;
 			$this->numHours     = $newNumHours;
