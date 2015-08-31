@@ -40,6 +40,7 @@ class C_Class extends Group
 	*/
 	public function getCoursesModel()
 	{
+		//TODO loadFromDB()?
 		return $this->coursesModel;
 	}
 
@@ -50,7 +51,10 @@ class C_Class extends Group
 	*/
 	public function setCoursesModel($newCoursesModel)
 	{
-		$this->coursesModel = $newCoursesModel;
+		if($newCoursesModel instanceof ClassModels)
+			$this->coursesModel = $newCoursesModel->getSqlId();
+		else if(is_int($newCoursesModel))
+			$this->coursesModel = $newCoursesModel;	
 	}
 
 	// others
@@ -59,9 +63,8 @@ class C_Class extends Group
 	*/
 	public function getTimetableOfClass()
 	{
-		$returnValue = NULL;
+		return (ClassesTimetable) parent::getTimetable();
 
-		return $returnValue;
 	}
 
 	/**

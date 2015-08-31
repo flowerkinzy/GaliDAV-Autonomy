@@ -197,7 +197,7 @@ class Course
 	 * \brief  Setter for the attribute $number.
 	 * \param  $newNumber Contains the new value of $number.
 	*/
-	public function setNumber($newNumber)
+	protected function setNumber($newNumber)
 	{
 		if (is_int($newNumber))
 		{

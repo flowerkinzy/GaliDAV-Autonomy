@@ -68,11 +68,13 @@ class Group
 			  if ($newIsAClass)
 			  {
 				
-				$this->timetable = new ClassesTimetable($this);
+				//$this->timetable = new ClassesTimetable($this);
+				$this->timetable = new ClassesTimetable($this)->getSqlId();
 			  }
 			  else
 			  {
-				 $this->timetable = new Timetable($this);
+				// $this->timetable = new Timetable($this);
+				$this->timetable = new Timetable($this)->getSqlId();
 			  }
 			}
 		}
@@ -130,6 +132,7 @@ class Group
 	*/
 	public function getTimetable()
 	{
+		//TODO loadFromDB?
 		return $this->timetable;
 	}
 
@@ -226,14 +229,18 @@ class Group
 	 * \param  $aStudent The student which will be searched in the group.
 	 * \return TRUE if the given student is found, FALSE otherwise.
 	*/
-	public function containsStudent(Person $aStudent)
+	public function containsStudent($aStudent)
 	{
+		if($aStudent instanceof Person)$aStudent=$aStudent->getSqlId();
+		if(is_int($aStudent)){
 		foreach ($this->studentsList as $oneStudent)
-		{
-			if ($oneStudent == $aStudent)
 			{
-				return TRUE;
+				if ($oneStudent == $aStudent)
+				{
+					return TRUE;
+				}
 			}
+		
 		}
 
 		return FALSE;
@@ -244,13 +251,16 @@ class Group
 	 * \param  $aGroup The group which will be searched in the linked group’s list.
 	 * \return TRUE if the given group is found, FALSE otherwise.
 	*/
-	public function isLinkedTo(Group $aGroup)
+	public function isLinkedTo($aGroup)
 	{
-		foreach ($this->linkedGroupsList as $oneGroup)
-		{
-			if ($oneGroup == $aGroup)
+		if($aGroup instanceof Group)$aGroup=$aGroup->getSqlId();
+		if(is_int($aGroup)){
+			foreach ($this->linkedGroupsList as $oneGroup)
 			{
-				return TRUE;
+				if ($oneGroup == $aGroup)
+				{
+					return TRUE;
+				}
 			}
 		}
 
@@ -261,9 +271,10 @@ class Group
 	 * \brief  Adds a student.
 	 * \param  $newStudent The student to add.
 	*/
-	public function addStudent(Person $newStudent)
+	public function addStudent($newStudent)
 	{
-		if (!$this->containsStudent($newStudent))
+		if($newStudent instanceof Person)$newStudent=$newStudent->getSqlId();
+		if (is_int($newStudent) && !$this->containsStudent($newStudent))
 		{
 			$params[] = $newStudent->sqlId;
 			$params[] = $this->sqlId;
@@ -285,9 +296,10 @@ class Group
 	 * \brief  Removes a student.
 	 * \param  $studentToRemove The student to remove.
 	*/
-	public function removeStudent(Person $studentToRemove)
+	public function removeStudent( $studentToRemove)
 	{
-		if ($this->containsStudent($studentToRemove))
+		if($studentToRemove instanceof Person)$studentToRemove=$studentToRemove->getSqlId();
+		if (is_int($studentToRemove) && $this->containsStudent($studentToRemove))
 		{
 			$query = "DELETE FROM " . self::composedOfTABLENAME . " WHERE id_person = " . $studentToRemove->getSqlId() . " AND id_group = " . $this->sqlId . ";";
 
@@ -307,9 +319,10 @@ class Group
 	 * \brief  Adds a linked group.
 	 * \param  $newLinkedGroup The linked group to add.
 	*/
-	public function addLinkedGroup(Group $newLinkedGroup)
+	public function addLinkedGroup($newLinkedGroup)
 	{
-		if (!$this->isLinkedTo($newLinkedGroup))
+		if($newLinkedGroup instanceof Group)$newLinkedGroup=$newLinkedGroup->getSqlId();
+		if (is_int($newLinkedGroup) && !$this->isLinkedTo($newLinkedGroup))
 		{
 			$params[] = $newLinkedGroup->sqlId;
 			$params[] = $this->sqlId;
@@ -351,9 +364,10 @@ class Group
 	 * \brief  Removes a linked group.
 	 * \param  $linkedGroupToRemove The linked group to remove.
 	*/
-	public function removeLinkedGroup(Group $linkedGroupToRemove)
+	public function removeLinkedGroup($linkedGroupToRemove)
 	{
-		if ($this->isLinkedTo($linkedGroupToRemove))
+		if($linkedGroupToRemove instanceof Group)$linkedGroupToRemove=$linkedGroupToRemove->getSqlId();
+		if (is_int($linkedGroupToRemove) && $this->isLinkedTo($linkedGroupToRemove))
 		{
 			$query = "DELETE FROM " . self::linkedToTABLENAME . " WHERE (id_class = $1 AND id_group = $2) OR (id_class = $1 AND id_group = $2);";
 
@@ -494,9 +508,10 @@ class Group
 	{
 		if (is_array($ressource))
 		{
-			$aStudent = new Person();
-			$aStudent->loadFromDB(intval($ressource['id_person']));
-			$this->addStudent($aStudent);
+			//$aStudent = new Person();
+			//$aStudent->loadFromDB(intval($ressource['id_person']));
+			//$this->addStudent($aStudent);
+			$this->addStudent($ressource['id_person']);
 		}
 	}
 
@@ -509,9 +524,10 @@ class Group
 	{
 		if (is_array($ressource))
 		{
-			$aLinkedGroup = new Group();
-			$aLinkedGroup->loadFromDB(intval($ressource['id_group']));
-			$this->addLinkedGroup($aLinkedGroup);
+			//$aLinkedGroup = new Group();
+			//$aLinkedGroup->loadFromDB(intval($ressource['id_group']));
+			//$this->addLinkedGroup($aLinkedGroup);
+			$this->addLinkedGroup($ressource['id_group']);
 		}
 	}
 
@@ -551,7 +567,7 @@ class Group
 
 		if (Database::currentDB()->executeQuery($query, $params))
 		{			
-			$DB = new Database("davical_app", "davical");
+			/*$DB = new Database("davical_app", "davical");
 
 			if (!$DB->connect())
 			{
@@ -564,6 +580,7 @@ class Group
 				$DB->executeQuery($query2, $params);
 				$DB->close();
 			}
+			*/
 		}
 		else
 		{
