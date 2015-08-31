@@ -12,11 +12,11 @@
 			<li class="view-filter-option" type="logo">
 				<p> GaliDAV </p>
 			</li>
-			<li class="view-filter-option" type="button-left"><a>Month</a></li>
+			<!--<li class="view-filter-option" type="button-left"><a>Month</a></li>
 			<li class="view-filter-option" type="button-left"><a>Week</a></li>
 			<li class="view-filter-option" type="button-left"><a>Day</a></li>
 			<li class="view-filter-option" type="button-left"><a>Agenda</a></li>
-
+			-->
 			<li class="view-filter-option" type="button-right"><a>Next</a></li>
 			<li class="view-filter-option" type="button-right"><a>Previous</a></li>
 

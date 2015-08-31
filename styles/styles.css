@@ -19,12 +19,13 @@ body{
 
 html, body {
 	height: 100%;
-  	font: normal 16px/1 "Economica", Helvetica, sans-serif;
+  	/*font: normal 16px/1 "Economica", Helvetica, sans-serif;*/
+	font: normal "Economica", Helvetica, sans-serif;
 	background: -webkit-linear-gradient(#585858, #3d3d3d);
 }
 
 p {
-	font-size: 18px;
+	/*font-size: 18px;*/
 }
 .timetable {
 	height:100%;
@@ -103,8 +104,9 @@ tbody{
 
 #frame_calendar_main_table{
 	display: initial;
+	overflow-y:auto;
 }
-
+/*
 #frame_calendar_controls_row{
 	top: 0;
 	position: absolute;
@@ -131,7 +133,7 @@ tbody{
 	min-height:93%;
 	max-height:93%;
 	overflow-y:auto;
-}
+}*/
 #frame_calendar_core_table {
 	cursor:default;
 
@@ -227,23 +229,33 @@ p.label{
 
 /* Header Menu*/
 
+#logbar {
+min-height:4%;
+	max-height: 5%;
+}
 #header-menu {
 	max-width: 100%;
-	max-height: 30px;
+	max-height: 5%;
+	min-height:4%;
 	background: -webkit-linear-gradient(#585858, #3d3d3d);
-	padding: 10px;
+	/*padding: 10px;*/
 	border: 1px solid;
+	
+	overflow:hidden;
 }
 
 #view-filter {
 	height: 100%;
 	margin: 0px;
+	
 }
 
 .view-filter-option > a {
-	padding: 10px;
+	/*padding: 10px;*/
 	color: #fff;
-	font-size: 130%;
+	/*font-size: 130%;*/
+	
+	
 }
 
 .view-filter-option a:active, .view-filter-option a:focus, .view-filter-option a:hover{
@@ -256,13 +268,22 @@ p.label{
 	display: inline;
 	color: #fff;
 	border: 1px solid #444;
-	text-align: enter;
+	text-align: center;
 	text-shadow:   1px 1px 0 #000;
+	
 }
 
 li[type="button-right"] {
 	overflow: hidden;
 	float: right;
+	padding:1px;
+	min-width:10%;
+	margin-right:5%;
+	margin-left:5px;
+}
+li[type="button-right"]+li{
+	margin-right:10px;
+	
 }
 
 .view-filter-option > p {
@@ -303,8 +324,8 @@ li[type="button-right"] {
 	display: block;
 	width: 100%;
 	text-align: center;
-	padding-bottom: 10%;
-	margin-bottom: 15%;
+	/*padding-bottom: 10%;*/
+	/*margin-bottom: 15%;*/
 	overflow: hidden;
 }
 
@@ -353,4 +374,32 @@ li[type="button-right"] {
 	text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
 	padding-bottom: 10%;
 	padding-top: 10%;
+}
+
+* Login page */
+
+#logbox {
+	margin-left:auto;
+	margin-right: auto; 
+	width: 33%;
+	max-width: 33%;
+	height: 33%;
+	max-height: 33%;
+}
+
+h2[type="log-welcome"] {
+	color: #fff;
+	text-shadow: 1px 1px 1px #000;
+}
+
+label {
+	color: #fff;
+	text-shadow: 1px 1px 1px #000;
+}
+
+fieldset {
+	color: #fff;
+	font-weight: bold;
+	text-shadow: 1px 1px 1px #000;
+	border: solid 2px #3d3d3d;
 }

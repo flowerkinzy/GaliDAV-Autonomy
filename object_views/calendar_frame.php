@@ -7,10 +7,10 @@ error_log("KFK - Has loaded ".__FILE__);
  ?>
 <div id='frame_calendar_main_table' class=fullspace>
 
-	<div id="frame_calendar_controls_row" class='fullspace-x no-margin-y'>
+	<!--<div id="frame_calendar_controls_row" class='fullspace-x no-margin-y'>
 		<div class='fullspace-y'><p class='fullspace'>semaine<?php ?></p></div>
 		<div class='fullspace-y'><p class='fullspace'> pr&eacute;c&eacute;dent /suivant </p></div>
-	</div>
+	</div>-->
 	
 
 	<div id='frame_calendar_core_table' class='fullspace-x'>
