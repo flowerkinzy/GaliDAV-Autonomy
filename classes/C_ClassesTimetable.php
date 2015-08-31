@@ -41,9 +41,12 @@ class ClassesTimetable extends Timetable
 	 * \brief  Setter for the attribute $group.
 	 * \param  $newClass Contains the new value of $group.
 	*/
-	protected function setClass(C_Class $newClass = NULL)
+	protected function setClass($newClass = NULL)
 	{
-		parent::setGroup($newClass);
+		if($newClass instanceOf C_Class){
+			parent::setGroup($newClass);
+		}else if (is_int($newClass) || $newClass==NULL)
+			parent::setGroup($newClass);
 	}
 
 	// others

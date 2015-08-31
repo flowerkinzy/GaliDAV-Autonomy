@@ -20,7 +20,7 @@ class Subject
 	// --- ATTRIBUTES ---
 	private $sqlId     = NULL;
 	private $name      = NULL;
-	private $teachedBy = array();
+	private $teachedByList = array();
 	private $group     = NULL;
 	private $timetable = NULL;
 
@@ -33,13 +33,14 @@ class Subject
 	 * \param $newName  \e String containing the subject’s name.
 	 * \param $newGroup Contains the group of the subject.
 	*/
-	public function __construct($newName = NULL, Group $newGroup = NULL)
+	public function __construct($newName = NULL, $newGroup = NULL)
 	{
-		if (is_string($newName) && $newGroup != NULL){		
+		if($newGroup instanceof Group)$newGroup =$newGroup->getSqlId();
+		if (is_string($newName) && is_int($newGroup)){		
 
 			$this->name = $newName;
 	 		$params     = array($newName);
-			$params[]   = $newGroup->getSqlId();
+			$params[]   = $newGroup;
 			$query      = "INSERT INTO " . self::TABLENAME . " (name, id_group) VALUES ($1, $2);";
 			$result     = Database::currentDB()->executeQuery($query, $params);
 
@@ -61,9 +62,9 @@ class Subject
 				{
 					$result = pg_fetch_assoc($result);
 					$this->group  = $newGroup;
-					$this->sqlId  = $result['id'];
+					$this->sqlId  = intval($result['id']);
 					$newTimetable = new Timetable($this);
-					$this->timetable = $newTimetable;
+					$this->timetable = $newTimetable->getSqlId();
 				}
 			}
 		}
@@ -89,12 +90,12 @@ class Subject
 	}
 
 	/**
-	 * \brief  Getter for the attribute $teachedBy.
-	 * \return The value of $teachedBy.
+	 * \brief  Getter for the attribute $teachedByList.
+	 * \return The value of $teachedByList.
 	*/
-	public function getTeachedBy()
+	public function getTeachedByList()
 	{
-		return $this->teachedBy;
+		return $this->teachedByList;
 	}
 
 	/**
@@ -103,6 +104,7 @@ class Subject
 	*/
 	public function getTimetable()
 	{
+		//TODO loadFromDB?
 		return $this->timetable;
 	}
 
@@ -112,6 +114,7 @@ class Subject
 	*/
 	public function getGroup()
 	{
+		//TODO loadFromDB?
 		return $this->group;
 	}
 
@@ -139,15 +142,24 @@ class Subject
 	}
 
 	/**
-	 * \brief  Setter for the attribute $teachedBy.
+	 * \brief  Setter for the attribute $teachedByList.
 	 * \param  $newTeachedBy Contains the new value of $teachedBy.
 	*/
-	public function setTeachedBy($newTeachedBy)
+	public function setTeachedByList($newTeachedByList)
 	{
-		if (!empty($newTeachedBy))
+		foreach ($this->teachedByList as $speaker)
 		{
-			$this->teachedBy[] = $newTeachedBy;
+			$this->removeTeacher($speaker);
 		}
+
+		if (is_array($newTeachedByList))
+		{
+			foreach ($newTeachedByList as $speaker)
+			{
+				$this->addTeacher($speaker);
+			}
+		}
+		
 	}
 
 	// others
@@ -155,16 +167,20 @@ class Subject
 	 * \brief  Checks if the course is teached by the given person.
 	 * \return TRUE if the given person teaches this course, FALSE otherwise.
 	*/
-	public function isTeachedBy(Person $aPerson)
+	public function isTeachedBy($aPerson)
 	{
-		foreach ($this->teachedBy as $onePerson)
-		{
-			if ($onePerson == $aPerson)
+		if($aPerson instanceof Person)$aPerson=$aPerson->getSqlId();
+		if(is_int($aPerson)){
+			foreach ($this->teachedByList as $onePerson)
 			{
-				return TRUE;
+				if ($onePerson == $aPerson)
+				{
+					return TRUE;
+				}
 			}
-		}
 
+		
+		}
 		return FALSE;
 	}
 
@@ -172,15 +188,16 @@ class Subject
 	 * \brief  Adds the given teacher to the course.
 	 * \param  $newTeacher The teacher to add.
 	*/
-	public function addTeacher(Person $newTeacher)
+	public function addTeacher($newTeacher)
 	{
-		if (sizeof($this->teachedBy) >= 3 and isset($this->teachedBy[0]) and isset($this->teachedBy[1]) and isset($this->teachedBy[2]))
+		if (sizeof($this->teachedByList) >= 3 and isset($this->teachedByList[0]) and isset($this->teachedByList[1]) and isset($this->teachedByList[2]))
 		{
-			echo ('GaliDAV : 3 personnes enseignent déjà cette matière ! Remplacez-en un.');
+			return false; //echo ('GaliDAV : 3 personnes enseignent déjà cette matière ! Remplacez-en un.');
 		}
 		else
 		{
-			if (!$this->isTeachedBy($newTeacher))
+			if($newTeacher instanceof Person)$newTeacher=$newTeacher->getSqlId();
+			if (is_int($newTeacher) && !$this->isTeachedBy($newTeacher))
 			{
 				$query   = "SELECT id FROM " . self::TABLENAME . " WHERE name = '" . $this->name . "';";
 				$result1 = Database::currentDB()->executeQuery($query);
@@ -193,11 +210,11 @@ class Subject
 				{
 					$result1 = pg_fetch_assoc($result1);
 
-					if (!isset($this->teachedBy[0]))
+					if (!isset($this->teachedByList[0]))
 					{
 						$query = "UPDATE " . self::TABLENAME . " SET id_speaker1 = $1 WHERE id = " . $result1['id'] . ";";
 					}
-					else if (!isset($this->teachedBy[1]))
+					else if (!isset($this->teachedByList[1]))
 					{
 						$query = "UPDATE " . self::TABLENAME . " SET id_speaker2 = $1 WHERE id = " . $result1['id'] . ";";
 					}
@@ -205,43 +222,45 @@ class Subject
 					{
 						$query = "UPDATE " . self::TABLENAME . " SET id_speaker3 = $1 WHERE id = " . $result1['id'] . ";";
 					}
+					
 
-					$params  = array($newTeacher->getSqlId());
+					$params  = array($newTeacher);
 					$result2 = Database::currentDB()->executeQuery($query, $params);
 					if($result2){
-					//if ($result2 and ($newTeacher instanceof Teacher))
-					//{
-						//$this->timetable->shareWith($newTeacher);
-					//}
+						$this->teachedByList[]=$newTeacher;
+						return true;
+						//if ($result2 and ($newTeacher instanceof Teacher))
+						//{
+							//$this->timetable->shareWith($newTeacher);
+						//}
 					}else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 				}
 			}
 			else
 			{
-				echo ('GaliDAV : cette personne enseigne déjà cette matière');
+				return false;//echo ('GaliDAV : cette personne enseigne déjà cette matière');
 			}
 		}
+		return false;
 	}
 
 	/**
 	 * \brief  Removes the given teacher to the course.
 	 * \param  $teacherToRemove The teacher to remove.
 	*/
-	public function removeTeacher(Person $teacherToRemove)
+	public function removeTeacher($teacherToRemove)
 	{
-		if (!$this->isTeachedBy($teacherToRemove)) 
+		if($teacherToRemove instanceof Person)$teacherToRemove=$teacherToRemove->getSqlId();
+		if(is_int($teacherToRemove) && $this->isTeachedBy($teacherToRemove))
 		{
-			echo ('L\'enseignant renseigné n\'enseigne pas cette matière');
-		}
-		else
-		{
-			if ($this->teachedBy[2] == $teacherToRemove)
+			if ($this->teachedByList[2] == $teacherToRemove)
 			{
 				$query = "UPDATE " . self::TABLENAME . " SET id_speaker3 = NULL WHERE id = " . $this->sqlId . ";";
 
 				if (Database::currentDB()->executeQuery($query))
 				{
-					unset($this->teachedBy[2]);
+					unset($this->teachedByList[2]);
+					return true;
 				}
 				else
 				{
@@ -249,13 +268,14 @@ class Subject
 				}
 			}
 
-			if ($this->teachedBy[1] == $teacherToRemove)
+			if ($this->teachedByList[1] == $teacherToRemove)
 			{
 				$query = "UPDATE " . self::TABLENAME . " SET id_speaker2 = NULL WHERE id = " . $this->sqlId . ";";
 
 				if (Database::currentDB()->executeQuery($query))
 				{
-					unset($this->teachedBy[1]);
+					unset($this->teachedByList[1]);
+					return true;
 				}
 				else
 				{
@@ -263,13 +283,14 @@ class Subject
 				}
 			}
 
-			if ($this->teachedBy[0] == $teacherToRemove)
+			if ($this->teachedByList[0] == $teacherToRemove)
 			{
 				$query = "UPDATE " . self::TABLENAME . " SET id_speaker1 = NULL WHERE id = " . $this->sqlId . ";";
 
 				if (Database::currentDB()->executeQuery($query))
 				{
-					unset($this->teachedBy[0]);
+					unset($this->teachedByList[0]);
+					return true;
 				}
 				else
 				{
@@ -277,6 +298,12 @@ class Subject
 				}
 			}
 		}
+		else
+		{
+			//echo ('L\'enseignant renseigné n\'enseigne pas cette matière');
+			return false;
+		}
+		return false;
 	}
 
 	/**
@@ -326,44 +353,36 @@ class Subject
 	{
 		if (is_array($ressource))
 		{
-			$this->sqlId     = $ressource['id'];
+			$this->sqlId     = intval($ressource['id']);
 			$this->name      = $ressource['name'];
-			$this->teachedBy = NULL;
+			$this->teachedByLists = NULL;
 
 			if ($ressource['id_speaker1'])
 			{
-			//TODO make difference b/w Teacher and Speaker
-// 				$newTeacher = new Teacher();
-// 				$newTeacher->loadFromDB(intval($ressource['id_speaker1']));
-// 				$this->addTeacher($newTeacher);
-// 
-// 				if ($ressource['id_speaker2'])
-// 				{
-// 					$newTeacher = new Teacher();
-// 					$newTeacher->loadFromDB(intval($ressource['id_speaker2']));
-// 					$this->addTeacher($newTeacher);
-// 
-// 					if ($ressource['id_speaker3'])
-// 					{
-// 						$newTeacher = new Teacher();
-// 						$newTeacher->loadFromDB(intval($ressource['id_speaker3']));
-// 						$this->addTeacher($newTeacher);
-// 					}
-// 				}
+				$this->addTeacher(intval($ressource['id_speaker1']));
+				if ($ressource['id_speaker2'])
+				{
+					$this->addTeacher(intval($ressource['id_speaker2']));
+					if ($ressource['id_speaker3'])
+					{
+						$this->addTeacher(intval($ressource['id_speaker3']));
+					}
+				}
+
 			}
 			
 			if ($ressource['id_group'])
 			{
-				$this->group = new Group();
-				$this->group->loadFromDB(intval($ressource['id_group']));
+				$this->group=intval($ressource['id_group']);
+
 			}
-			/*
+			
 			if ($ressource['id_calendar'])
 			{
-				$this->timetable = new Timetable();
-				$this->timetable->loadFromDB(intval($ressource['id_calendar']));
+				$this->timetable=intval($ressource['id_calendar']);
+
 			}
-			*/
+			
 			
 		}
 	}
@@ -381,6 +400,7 @@ class Subject
 			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 		}
 	}
+	
 	public function to_array(){
 		$result=array();
 		foreach($this as $key => $value) {

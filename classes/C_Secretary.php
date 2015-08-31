@@ -34,7 +34,6 @@ class Secretary extends User
 		$this->addStatus(new PersonStatus(PersonStatus::SECRETARY));
 	}
 
-	// others
 	/**
 	 * \brief   Modify a timetable.
 	 * \details It can add or remove a course.
@@ -42,19 +41,31 @@ class Secretary extends User
 	 * \param   $aCourse    The course that will be added or removed.
 	 * \param   $operation  \e String containing the type of modification.
 	*/
-	public function modifyTimetable(Timetable $aTimetable, Course $aCourse, $operation)
+	public function modifyTimetable($aTimetable,$aCourse, $operation)
 	{
-		if ($operation == 'add')
-		{
-			$aTimetable->addCourse($aCourse);
+		if(is_int($aTimetable)){
+			$T=new Timetable();
+			$T->loadFromDB($aTimetable);
+			$aTimetable=$T;
 		}
-		else if ($operation == 'remove')
-		{
-			$aTimetable->removeCourse($aCourse);
+		if(is_int($aCourse)){
+			$C=new Course();
+			$C->loadFromDB($aCourse);
+			$aCourse=$C;
 		}
-		else
-		{
-			echo 'Opération invalide';
+		if($aTimetable instanceof Timetable && is_int($aTimetable->getSqlId()) && $aCourse instanceof Course && is_int($aCourse->getSqlId()) && is_string($operation)){
+			if ($operation == 'add')
+			{
+				$aTimetable->addCourse($aCourse);
+			}
+			else if ($operation == 'remove')
+			{
+				$aTimetable->removeCourse($aCourse);
+			}
+			else
+			{
+				echo 'Opération invalide';
+			}
 		}
 	}
 

@@ -26,8 +26,16 @@ class Group
 	protected $timetable        = NULL;
 	protected $sqlId            = NULL;
 	protected $studentsList     = array();
-	protected $linkedGroupsList = array(); // Flora: a Classe object shouldn’t be linked to other Classe objects
-
+	protected $linkedGroupsList = array(); // Flora: A group can have linkedGroups and be linked to other goups.
+						//A simple Group object should always be linked to one or more groups (generally classes except when it's a subgroup of a group.
+						//But a Class is never linked to other groups but can have linked groups
+						
+						
+	//Flora NOTE: A group "A" is linked to group "B" when A and B have students in common AND all courses of group A should appear in B timetable.
+	// A is a linkedGroup of B and B is a dependingGroups of A.
+	//Examples: a) Group ING2 is linked to Classes INFO2/NRJ2/MACS2/TEL2, b) Group INFO3ADO is linked to Class INFO3, c) Group INFO1/2 is linked to INFO1/INFO2
+	//Examples: a)Classes INFO2/NRJ2/MACS2/TEL2 are dependingGroups of ING2, b) Group INFO3ADO is linked to Class INFO3, c) Group INFO1/2 is linked to INFO1/INFO2
+	//NB: I f there isnt a lot of courses in common between 2 classes, there is no need to create a "super-"group like in c).
 	const TABLENAME = "ggroup";
 	const SQLcolumns = "id serial PRIMARY KEY, name VARCHAR(30) UNIQUE NOT NULL, is_class BOOLEAN NOT NULL DEFAULT FALSE, id_current_timetable INTEGER REFERENCES gcalendar(id),id_validated_timetable INTEGER REFERENCES gcalendar(id)";
 
@@ -35,7 +43,7 @@ class Group
 	const composedOfSQLcolumns = "id_person INTEGER REFERENCES gperson(id), id_group INTEGER REFERENCES ggroup(id), CONSTRAINT ggroup_composed_of_pk PRIMARY KEY(id_person, id_group)";
 
 	const linkedToTABLENAME = "ggroup_linked_to";
-	const linkedToSQLcolumns = "id_group INTEGER REFERENCES ggroup(id), id_class INTEGER REFERENCES ggroup(id), CONSTRAINT ggroup_linked_to_pk PRIMARY KEY(id_group, id_class)";
+	const linkedToSQLcolumns = "id_linked_group INTEGER REFERENCES ggroup(id), id_depending_group INTEGER REFERENCES ggroup(id), CONSTRAINT ggroup_linked_to_pk PRIMARY KEY(id_linked_group, id_depending_group)";
 
 	// --- OPERATIONS ---
 	/**
@@ -45,7 +53,7 @@ class Group
 	*/
 	public function __construct($newName = NULL, $newIsAClass = FALSE)
 	{
-		if ($newName != NULL)
+		if (is_string($newName))
 		{
 			//CreateGroupAccount($newName, session_salted_sha1($newName)); // The password is the same as the group name
 			$this->name      = $newName;
@@ -60,20 +68,24 @@ class Group
 			{
 				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}else{
-			  $query           = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1;";
+			  $query           = "SELECT id FROM " . self::TABLENAME . " WHERE name = $1 ;";
 			  $result          = Database::currentDB()->executeQuery($query, $params);
-			  
-			  $result          = pg_fetch_assoc($result);
-			  $this->sqlId     = $result['id'];
-			  if ($newIsAClass)
-			  {
-				
-				$this->timetable = new ClassesTimetable($this);
-			  }
-			  else
-			  {
-				 $this->timetable = new Timetable($this);
-			  }
+			 
+			  if($result){
+				$result          = pg_fetch_assoc($result);
+				$this->sqlId     = intval($result['id']);
+				if ($newIsAClass)
+				{
+					
+					//$this->timetable = new ClassesTimetable($this);
+					$this->timetable = (new ClassesTimetable($this))->getSqlId();
+				}
+				else
+				{
+					// $this->timetable = new Timetable($this);
+					$this->timetable = (new Timetable($this))->getSqlId();
+				}
+			  }else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -96,6 +108,7 @@ class Group
 	{
 		return $this->linkedGroupsList;
 	}
+
 
 	/**
 	 * \brief  Getter for the attribute $name.
@@ -130,6 +143,7 @@ class Group
 	*/
 	public function getTimetable()
 	{
+		//TODO loadFromDB?
 		return $this->timetable;
 	}
 
@@ -192,7 +206,7 @@ class Group
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -215,7 +229,7 @@ class Group
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -226,13 +240,38 @@ class Group
 	 * \param  $aStudent The student which will be searched in the group.
 	 * \return TRUE if the given student is found, FALSE otherwise.
 	*/
-	public function containsStudent(Person $aStudent)
+	public function containsStudent($aStudent)
 	{
+		if($aStudent instanceof Person)$aStudent=$aStudent->getSqlId();
+		if(is_int($aStudent)){
 		foreach ($this->studentsList as $oneStudent)
-		{
-			if ($oneStudent == $aStudent)
 			{
-				return TRUE;
+				if ($oneStudent == $aStudent)
+				{
+					return TRUE;
+				}
+			}
+		
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * \brief  Indicates if the group is linked to the given group.
+	 * \param  $aGroup The group which will be searched in the linked group’s list.
+	 * \return TRUE if the given group is found, FALSE otherwise.
+	*/
+	public function isLinkedTo($aGroup)
+	{
+		if($aGroup instanceof Group)$aGroup=$aGroup->getSqlId();
+		if(is_int($aGroup)){
+			foreach ($this->linkedGroupsList as $oneGroup)
+			{
+				if ($oneGroup == $aGroup)
+				{
+					return TRUE;
+				}
 			}
 		}
 
@@ -240,30 +279,32 @@ class Group
 	}
 
 	/**
-	 * \brief  Indicates if the group is linked with the given group.
-	 * \param  $aGroup The group which will be searched in the linked group’s list.
+	 * \brief  Indicates if the group depends from the given group (meaning the given group is linked to this group)
+	 * \param  $aGroup 
 	 * \return TRUE if the given group is found, FALSE otherwise.
 	*/
-	public function isLinkedTo(Group $aGroup)
+	public function dependsFrom($aGroup)
 	{
-		foreach ($this->linkedGroupsList as $oneGroup)
-		{
-			if ($oneGroup == $aGroup)
-			{
-				return TRUE;
-			}
+		if($aGroup instanceof Group){
+			return $aGroup->isLinkedTo($this);
+		}
+		if(is_int($aGroup)){
+			$G=new Group();
+			$G->loadFromDB($aGroup);
+			return $G->isLinkedTo($this);
 		}
 
 		return FALSE;
 	}
-
+	
 	/**
 	 * \brief  Adds a student.
 	 * \param  $newStudent The student to add.
 	*/
-	public function addStudent(Person $newStudent)
+	public function addStudent($newStudent)
 	{
-		if (!$this->containsStudent($newStudent))
+		if($newStudent instanceof Person)$newStudent=$newStudent->getSqlId();
+		if (is_int($newStudent) && !$this->containsStudent($newStudent))
 		{
 			$params[] = $newStudent->sqlId;
 			$params[] = $this->sqlId;
@@ -276,7 +317,7 @@ class Group
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -285,11 +326,12 @@ class Group
 	 * \brief  Removes a student.
 	 * \param  $studentToRemove The student to remove.
 	*/
-	public function removeStudent(Person $studentToRemove)
+	public function removeStudent( $studentToRemove)
 	{
-		if ($this->containsStudent($studentToRemove))
+		if($studentToRemove instanceof Person)$studentToRemove=$studentToRemove->getSqlId();
+		if (is_int($studentToRemove) && $this->containsStudent($studentToRemove))
 		{
-			$query = "DELETE FROM " . self::composedOfTABLENAME . " WHERE id_person = " . $studentToRemove->getSqlId() . " AND id_group = " . $this->sqlId . ";";
+			$query = "DELETE FROM " . self::composedOfTABLENAME . " WHERE id_person = " . $studentToRemove . " AND id_group = " . $this->sqlId . ";";
 
 			if (Database::currentDB()->executeQuery($query))
 			{
@@ -298,7 +340,7 @@ class Group
 			}
 			else
 			{
-				Database::currentDB()->showError();
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 			}
 		}
 	}
@@ -307,13 +349,14 @@ class Group
 	 * \brief  Adds a linked group.
 	 * \param  $newLinkedGroup The linked group to add.
 	*/
-	public function addLinkedGroup(Group $newLinkedGroup)
+	public function addLinkedGroup($newLinkedGroup)
 	{
-		if (!$this->isLinkedTo($newLinkedGroup))
+		if($newLinkedGroup instanceof Group)$newLinkedGroup=$newLinkedGroup->getSqlId();
+		if (is_int($newLinkedGroup) )
 		{
-			$params[] = $newLinkedGroup->sqlId;
+			$params[] = $newLinkedGroup;
 			$params[] = $this->sqlId;
-			$query    = "SELECT * FROM " . self::linkedToTABLENAME . " WHERE (id_class = $1 AND id_group = $2) OR (id_class = $1 AND id_group = $2);";
+			$query    = "SELECT * FROM " . self::linkedToTABLENAME . " WHERE id_linked_group = $1 AND id_depending_group=$2;";
 
 			if (Database::currentDB()->executeQuery($query, $params))
 			{
@@ -323,25 +366,17 @@ class Group
 			}
 			else
 			{
-				if ($this->isAClass)
-				{
-					$query = "INSERT INTO " . self::linkedToTABLENAME . " (id_class, id_group) VALUES ($2, $1);";
-				}
-				else
-				{
-					$query = "INSERT INTO " . self::linkedToTABLENAME . " (id_class, id_group) VALUES ($1, $2);";
-				}
+				$query = "INSERT INTO " . self::linkedToTABLENAME . " (id_linked_group, id_depending_group) VALUES ($1, $2);";
 
 				$result = Database::currentDB()->executeQuery($query, $params);
 
 				if ($result)
 				{
 					$this->linkedGroupsList[] = $newLinkedGroup;
-					$newLinkedGroup->addLinkedGroup($this);
 				}
 				else
 				{
-					Database::currentDB()->showError();
+					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 				}
 			}
 		}
@@ -351,11 +386,14 @@ class Group
 	 * \brief  Removes a linked group.
 	 * \param  $linkedGroupToRemove The linked group to remove.
 	*/
-	public function removeLinkedGroup(Group $linkedGroupToRemove)
+	public function removeLinkedGroup($linkedGroupToRemove)
 	{
-		if ($this->isLinkedTo($linkedGroupToRemove))
+		if($linkedGroupToRemove instanceof Group)$linkedGroupToRemove=$linkedGroupToRemove->getSqlId();
+		if (is_int($linkedGroupToRemove) && $this->isLinkedTo($linkedGroupToRemove))
 		{
-			$query = "DELETE FROM " . self::linkedToTABLENAME . " WHERE (id_class = $1 AND id_group = $2) OR (id_class = $1 AND id_group = $2);";
+			$params[] = $newLinkedGroup;
+			$params[] = $this->sqlId;
+			$query = "DELETE FROM " . self::linkedToTABLENAME . " WHERE (id_linked_group = $1 AND id_depending_group = $2);";
 
 			if (Database::currentDB()->executeQuery($query))
 			{
@@ -367,8 +405,25 @@ class Group
 				// No error shown because it could happen the entry has already been removed by the group $G.
 			}
 
-			$linkedGroupToRemove->removeLinkedGroup($this);
 		}
+	}
+	
+	/**
+	 * \brief  
+	 * \return The list of all courses between $begin and $end  to display for this group including all courses from  linkedGroup
+	*/
+	public function getAllCoursesListBetween($begin,$end)
+	{
+		if(is_int($begin) && is_int($end)){
+			$result=array();
+			foreach($this->coursesList as $courseId){
+				$C=new Course();
+				$C->loadFromDB($courseId);
+				if($C->getBegin() >=$begin && $C->getEnd() <= $end)$result[]=$courseId;
+			}
+			if($result!=[])return $result;
+		}
+		return null;
 	}
 
 	/**
@@ -455,8 +510,7 @@ class Group
 
 			if (is_int($ressource['id_current_timetable']))
 			{
-				$this->timetable = new Timetable();
-				$this->timetable->loadFromDB(intval($ressource['id_current_timetable']));
+				$this->timetable = intval($ressource['id_current_timetable']);
 			}
 
 			// We load each element of the arraylist of students (students are people registered in people table).
@@ -467,19 +521,19 @@ class Group
 
 			while ($ressource)
 			{
-				$this->loadStudentFromRessource($ressource);
+				$this->addStudent($ressource['id_person']);
 				$ressource = pg_fetch_assoc($result);
 			}
 
 			// We load each element of the arraylist of linked groups (which are groups registerd in group table).
 			$this->linkedGroupsList   = NULL;
-			$query                    = "SELECT * FROM " . self::linkedToTABLENAME . " WHERE id_group = " . $this->sqlId . ";";
+			$query                    = "SELECT * FROM " . self::linkedToTABLENAME . " WHERE id_depending_group = " . $this->sqlId . ";";
 			$result                   = Database::currentDB()->executeQuery($query);
 			$ressource                = pg_fetch_assoc($result);
 
 			while ($ressource)
 			{
-				$this->loadLinkedGroupFromRessource($ressource);
+				$this->addLinkedGroup($ressource['id_linked_group']);
 				$ressource = pg_fetch_assoc($result);
 			}
 		}
@@ -490,13 +544,16 @@ class Group
 	 * \details This method expects a ressource resulting of a select query on composedOf table.
 	 * \param   $ressource The ressource from which the student will be loaded.
 	*/
+	
+//DEPRECATED
 	public function loadStudentFromRessource($ressource)
 	{
 		if (is_array($ressource))
 		{
-			$aStudent = new Person();
-			$aStudent->loadFromDB(intval($ressource['id_person']));
-			$this->addStudent($aStudent);
+			//$aStudent = new Person();
+			//$aStudent->loadFromDB(intval($ressource['id_person']));
+			//$this->addStudent($aStudent);
+			$this->addStudent($ressource['id_person']);
 		}
 	}
 
@@ -504,14 +561,15 @@ class Group
 	 * \brief   Loads linked group from the given ressource.
 	 * \details This method expects a ressource resulting of a select query on linkedTo table.
 	 * \param   $ressource The ressource from which the linked group will be loaded.
-	*/
+	*///DEPRECATED
 	public function loadLinkedGroupFromRessource($ressource)
 	{
 		if (is_array($ressource))
 		{
-			$aLinkedGroup = new Group();
-			$aLinkedGroup->loadFromDB(intval($ressource['id_group']));
-			$this->addLinkedGroup($aLinkedGroup);
+			//$aLinkedGroup = new Group();
+			//$aLinkedGroup->loadFromDB(intval($ressource['id_group']));
+			//$this->addLinkedGroup($aLinkedGroup);
+			$this->addLinkedGroup($ressource['id_group']);
 		}
 	}
 
@@ -524,7 +582,9 @@ class Group
 		$this->setStudentsList(); // remove all students from the group (DB)
 		$this->setLinkedGroupsList(); // remove all links with other groups/classes (DB)
 		$params = array(intval($this->sqlId));
-		$this->timetable->removeFromDB();
+		$T=new Timetable();
+		$T->loadFromDB($this->timetable);
+		$T->removeFromDB();
 		
 		$query  = "SELECT id FROM " . Subject::TABLENAME . " WHERE id_group = $1;";
 		$result = Database::currentDB()->executeQuery($query, $params);
@@ -551,7 +611,7 @@ class Group
 
 		if (Database::currentDB()->executeQuery($query, $params))
 		{			
-			$DB = new Database("davical_app", "davical");
+			/*$DB = new Database("davical_app", "davical");
 
 			if (!$DB->connect())
 			{
@@ -564,10 +624,11 @@ class Group
 				$DB->executeQuery($query2, $params);
 				$DB->close();
 			}
+			*/
 		}
 		else
 		{
-			Database::currentDB()->showError();
+			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 		}
 	}
 	

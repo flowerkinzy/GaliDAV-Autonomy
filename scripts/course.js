@@ -22,9 +22,9 @@ function getTypeName(type){
 
 function createNewCourseElementClass(Course) { 
 
-	var beginDate=new Date(Course.begin*1000);
-	var endDate=new Date(Course.end*1000);
-	var durationInMin=Math.floor((Course.end-Course.begin)/60);
+	var beginDate=new Date(Course.time_begin*1000);
+	var endDate=new Date(Course.time_end*1000);
+	var durationInMin=Math.floor((Course.time_end-Course.time_begin)/60);
 	console.log("TOP:tr.calendar[begin_hour="+beginDate.getHours()
 		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 		+"]");
@@ -49,7 +49,12 @@ function createNewCourseElementClass(Course) {
 		}
 	var height=bottom-top;
 	var width=$($("td.daycolumn")[0]).width();
-        var res="<div class='course fullspace-x' style='background-color:white;z-index:2;position:absolute;min-height:"+
+// 	var subject_name="";
+// 	var subject_name2="<span></span>";
+// 	$(subject_name2).load("functions/get_info.php",{action:'get_subject_name',id:Course.subject},function(data){console.log("data="+data);$(subject_name2).append(data);});
+// 	console.log("subjct_name2="+$(subject_name2).html());
+// 	
+	var res="<div class='course fullspace-x' style='background-color:white;z-index:2;position:absolute;min-height:"+
 			height+"px; max-height:"+height+"px; "+
 			"max-width:"+width+"px; width:"+width+"px;min-width:"+Math.floor(width/3)+"px'"+
 			" begin_hour="+beginDate.getHours()+
@@ -60,6 +65,7 @@ function createNewCourseElementClass(Course) {
 			" id="+
 			Course.sqlId+"><p><b>"+
 			Course.subject_name;
+			
 			if(getTypeName(Course.courseType)!="")
 				res=res+" "+getTypeName(Course.courseType);
 			if(typeof Course.room !== 'undefined')
@@ -67,7 +73,39 @@ function createNewCourseElementClass(Course) {
 			else
 				res=res+"</b></p></div>";
 		
-    return res;
+			return res;
+// 	$.post("functions/get_info.php",
+// 	       {action:'get_subject_name',id:Course.subject},
+// 		function(data)
+// 		{
+// 			//console.log("subject_name="+subject_name);
+// 			//console.log("data="+data);//console.log("data="+data+"...");
+// 			//console.dir(data);
+// 			subject_name=data;
+// 			console.log("1subject_name="+subject_name);
+// 			var res="<div class='course fullspace-x' style='background-color:white;z-index:2;position:absolute;min-height:"+
+// 			height+"px; max-height:"+height+"px; "+
+// 			"max-width:"+width+"px; width:"+width+"px;min-width:"+Math.floor(width/3)+"px'"+
+// 			" begin_hour="+beginDate.getHours()+
+// 			" begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)+
+// 			" end_hour="+endDate.getHours()+
+// 			" end_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)+
+// 			" weekday="+(beginDate.getDay()-1)%7+
+// 			" id="+
+// 			Course.sqlId+"><p><b>"+
+// 			subject_name;
+// 			if(getTypeName(Course.courseType)!="")
+// 				res=res+" "+getTypeName(Course.courseType);
+// 			if(typeof Course.room !== 'undefined')
+// 				res=res+"</b></p><p><i>"+Course.room+"</i></p></div>";
+// 			else
+// 				res=res+"</b></p></div>";
+// 		
+// 			return res;
+// 
+// 		}
+// 	);
+        
 }
 
 //Note: par défaut, les cours concernent tous les élèves affiliés à lEDT. Il faudra préciser un évènement de groupe pour
@@ -75,8 +113,8 @@ function createNewCourseElementClass(Course) {
 function displayNewCourseElementClass(Course) {
 	console.log("displayNewCourseElementClass/@param="+Course);	
 	Course=jQuery.parseJSON(Course);
-	var beginDate=new Date(Course.begin*1000);
-	var endDate=new Date(Course.end*1000);
+	var beginDate=new Date(Course.time_begin*1000);
+	var endDate=new Date(Course.time_end*1000);
 	var weekday=beginDate.getDay(); //0 is for Sunday and so on
 	var beginM=TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN);
 	var beginH=beginDate.getHours();
