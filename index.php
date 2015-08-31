@@ -14,7 +14,6 @@
 	<script src="scripts/d3.v3.min.js" charset="utf-8"></script>
 	<title>Style2/Frame3</title>
 	
-
 </head>
 <body>
 
