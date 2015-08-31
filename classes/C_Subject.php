@@ -11,8 +11,10 @@ if (0 > version_compare(PHP_VERSION, '5'))
 	die('This file was written for PHP 5');
 }
 include_once("functions/error_handling.php");
+require_once('classes/C_Database.php');
 require_once('classes/C_Person.php');
 require_once('classes/C_Group.php');
+require_once('classes/C_Teacher.php');
 class Subject
 {
 	// --- ATTRIBUTES ---
@@ -206,11 +208,12 @@ class Subject
 
 					$params  = array($newTeacher->getSqlId());
 					$result2 = Database::currentDB()->executeQuery($query, $params);
-
-					if ($result2 and ($newTeacher instanceof Teacher))
-					{
-						$this->timetable->shareWith($newTeacher);
-					}
+					if($result2){
+					//if ($result2 and ($newTeacher instanceof Teacher))
+					//{
+						//$this->timetable->shareWith($newTeacher);
+					//}
+					}else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
 				}
 			}
 			else
@@ -329,23 +332,24 @@ class Subject
 
 			if ($ressource['id_speaker1'])
 			{
-				$newTeacher = new Teacher();
-				$newTeacher->loadFromDB(intval($ressource['id_speaker1']));
-				$this->addTeacher($newTeacher);
-
-				if ($ressource['id_speaker2'])
-				{
-					$newTeacher = new Teacher();
-					$newTeacher->loadFromDB(intval($ressource['id_speaker2']));
-					$this->addTeacher($newTeacher);
-
-					if ($ressource['id_speaker3'])
-					{
-						$newTeacher = new Teacher();
-						$newTeacher->loadFromDB(intval($ressource['id_speaker3']));
-						$this->addTeacher($newTeacher);
-					}
-				}
+			//TODO make difference b/w Teacher and Speaker
+// 				$newTeacher = new Teacher();
+// 				$newTeacher->loadFromDB(intval($ressource['id_speaker1']));
+// 				$this->addTeacher($newTeacher);
+// 
+// 				if ($ressource['id_speaker2'])
+// 				{
+// 					$newTeacher = new Teacher();
+// 					$newTeacher->loadFromDB(intval($ressource['id_speaker2']));
+// 					$this->addTeacher($newTeacher);
+// 
+// 					if ($ressource['id_speaker3'])
+// 					{
+// 						$newTeacher = new Teacher();
+// 						$newTeacher->loadFromDB(intval($ressource['id_speaker3']));
+// 						$this->addTeacher($newTeacher);
+// 					}
+// 				}
 			}
 			
 			if ($ressource['id_group'])

@@ -13,6 +13,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 	die('This file was written for PHP 5');
 }
 include_once("functions/error_handling.php");
+require_once('classes/C_Database.php');
 require_once('types/T_Courses.php');
 require_once('classes/C_Timetable.php');
 require_once('classes/C_Subject.php');

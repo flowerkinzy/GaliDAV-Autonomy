@@ -66,11 +66,11 @@ class Person
 
 			if (!$result)
 			{
-				Database::currentDB()->showError("ligne n° " . __LINE__ . " //fonction : " . __CLASS__);
+				Database::currentDB()->showError("ligne n° " . __LINE__ . " class : " . __CLASS__);
 			}
 			else
 			{
-				$query       = "SELECT id FROM " . self::TABLENAME . " ORDER BY date_creation DESC;";
+				$query       = "SELECT id FROM " . self::TABLENAME . " ORDER BY date_creation DESC, id DESC;";
 				$result      = Database::currentDB()->executeQuery($query);
 				$tmp         = pg_fetch_assoc($result);
 				$this->sqlId = $tmp['id'];
@@ -174,7 +174,7 @@ class Person
 			}
 			else
 			{
-				Database::currentDB()->showError("ligne n° " . __LINE__ . " //fonction : " . __CLASS__);
+				Database::currentDB()->showError("ligne n° " . __LINE__ . " Classe: " . __CLASS__);
 			}
 		}
 	}
@@ -298,7 +298,7 @@ class Person
 			}
 			else
 			{
-				Databases::currentDB()->showError("ligne n° " . __LINE__ . " //fonction : " . __CLASS__);
+				Databases::currentDB()->showError("ligne n° " . __LINE__ . " Classe: " . __CLASS__);
 			}
 		}
 	}
@@ -329,7 +329,7 @@ class Person
 			}
 			else
 			{
-				Database::currentDB()->showError("ligne n° " . __LINE__ . " //fonction : " . __CLASS__);
+				Database::currentDB()->showError("ligne n° " . __LINE__ . " Classe : " . __CLASS__);
 			}
 		}
 	}
@@ -412,6 +412,7 @@ class Person
 		}
 		else
 		{
+			Database::currentDB()->showError("ligne n°" . __LINE__ . " class :" . __CLASS__);
 			return FALSE;
 		}
 	}
@@ -458,6 +459,7 @@ class Person
 	/**
 	 * \brief Removes the person from database.
 	*/
+	
 	public function removeFromDB()
 	{
 		$params    = array($this->sqlId);
@@ -500,7 +502,7 @@ class Person
 			{
 				Database::currentDB()->showError("ligne n°" . __LINE__ . " class :" . __CLASS__);
 			}
-
+			/*
 			$DB = new Database("davical_app", "davical");
 
 			if (!$DB->connect())
@@ -533,6 +535,7 @@ class Person
 
 				$DB->close();
 			}
+			*/
 		}
 
 		$query = "DELETE FROM " . PersonStatus::TABLENAME . " WHERE id_person = $1;";
@@ -549,11 +552,13 @@ class Person
 			Database::currentDB()->showError("ligne n°" . __LINE__ . " class :" . __CLASS__);
 		}
 	}
+	
 
 	/**
 	 * \brief  Converts data about the person in HTML format.
 	 * \return \e String containing data about the person.
 	*/
+	/*
 	public function toHTML()
 	{
 		$result = "<p>Nom:&emsp;&emsp; " . $this->familyName . "<br/>Prenom:&emsp; &emsp; " . $this->firstName . "</p>";
@@ -583,6 +588,6 @@ class Person
 		}
 
 		return $result;
-	}
+	}*/
 }
 ?>

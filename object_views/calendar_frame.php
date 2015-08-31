@@ -1,7 +1,7 @@
 <?php 
 include_once("classes/C_Class.php");
-include_once("./classes/C_Course.php");
-include_once("./classes/C_Subject.php");
+//include_once("classes/C_Course.php");
+include_once("classes/C_Subject.php");
 error_reporting(E_ALL);
 error_log("KFK - Has loaded ".__FILE__);
  ?>

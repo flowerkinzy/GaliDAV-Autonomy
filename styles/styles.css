@@ -195,8 +195,8 @@ div.ui-dialog[aria-describedby="newOrModifyCourse"]{
 	z-index:3;
 	
 }
-div.ui-dialog[aria-describedby="newOrModifyCourse"] input[type='submit']{
-	margin-left:40%;;
+#button_validate_new_event{
+	margin-left:40%;
 	margin-right:auto;
 	margin-top:1%;
 	width:20%;

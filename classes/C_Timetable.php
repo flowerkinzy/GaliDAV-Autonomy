@@ -2,7 +2,7 @@
 /**
  * \file    C_Timetable.php
  * \brief   Defines the class Timetable.
- * \details A timetable or calendar in the GaliDAV database can be a calendar of a class, a group, a subject or a teacher, since AgenDAV doesn’t implement a hierarchy of calendars. Moreover, a class is linked to a current calendar and a validated calendar. Groups, subjects and teachers don’t require a validated calendar.
+ * \details A timetable or calendar in the GaliDAV database can be a calendar of a class, a group, a subject or a share, since AgenDAV doesn’t implement a hierarchy of calendars. Moreover, a class is linked to a current calendar and a validated calendar. Groups, subjects and teachers don’t require a validated calendar.
             It is expected that every change to a current calendar affects all the calendars that are linked to it.
             See the class Groupe and its table named linkedTo.
             User changes are possible on class and subject current calendars. The system is in charge of updating all calendars related.
@@ -15,7 +15,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 {
 	die('This file was written for PHP 5');
 }
-
+require_once('classes/C_Database.php');
 require_once('classes/C_Course.php');
 require_once('classes/C_Modification.php');
 require_once('classes/C_User.php');

@@ -10,7 +10,7 @@ if (0 > version_compare(PHP_VERSION, '5'))
 {
 	die('This file was written for PHP 5');
 }
-
+require_once('classes/C_PersonStatus.php');
 require_once('classes/C_User.php');
 require_once('classes/C_Timetable.php');
 

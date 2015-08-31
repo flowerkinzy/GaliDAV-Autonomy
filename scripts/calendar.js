@@ -166,7 +166,7 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 		left:"10%",
 		resizable:false
 	});
-	$("#newOrModifyCourse button").on("click",function(event){
+	$("#button_validate_new_event").on("click",function(event){
 		event.stopPropagation();
 		event.preventDefault;
 		var beginUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_begin").spinner("value")*60*60);
@@ -247,7 +247,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	
 	$(form).append("<div id='div_input_room'><p class='label'>Choisir une salle:</p><input id='input_room' name='room' type='text' autocomplete /></div>");
 	
-	$(form).append("<div><button value='Créer cours!'>Créer cours!</button></div>");
+	$(form).append("<div><button value='Créer cours!' id='button_validate_new_event'>Créer cours!</button></div>");
 	$(div).append(form);
 	
 	$(minpickerB).spinner({
