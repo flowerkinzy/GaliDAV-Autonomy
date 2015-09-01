@@ -142,7 +142,7 @@ class Timetable
 				{
 					//$anIdCollection = (int)CreateCalendar($aTeacher->getLogin(), $aTeacher->getFullName() . " EDT");
 					//$this->setIdCollection($anIdCollection);
-					$this->teacherOwner = $aTeacher->sqId();;
+					$this->teacherOwner = $aTeacher->sqId();
 				}
 				else
 				{
