@@ -1,0 +1,82 @@
+<div id="create-event-dialog">
+		<form class="create-event-dialog-form" method="post" action="#">
+			<div class="form-headband"></div>
+			<div class="form-title">
+				<h2> Create Course Form </h2>
+			</div>	
+
+			<ul>
+				<li>
+					<label class="description"> Course </label>
+					<input type="text" maxlength="255" value=""> 
+				</li>		
+
+				<li>
+					<label class="description"> Classroom </label>
+					<input type="text" maxlength="255" value=""> 
+				</li>		
+
+				<li>
+					<label class="description">Begin Hour </label>
+					<span>
+						<input type="text" size="2" maxlength="2" value="HH"> : 
+					</span>
+					<span>
+						<input type="text" size="2" maxlength="2" value="MM"> :
+					</span>
+					<span>
+						<select>
+							<option value="AM"> AM </option>
+							<option value="PM"> PM </option>
+						</select>
+					</span> 
+				</li>		
+
+				<li>
+					<label class="description"> End Hour </label>
+					<span>
+						<input size="2" type="text" maxlength="2" value="HOR"> : 
+					</span>
+					<span>
+						<input size="2" type="text" maxlength="2" value="MIN"> : 
+					</span>
+					<span>
+						<select>
+							<option value="AM"> AM </option>
+							<option value="PM"> PM </option>
+						</select>
+					</span> 
+				</li>		
+
+				<li>
+					<label class="description">Begin Date </label>
+					<span>
+						<input size="2" type="text" maxlength="2" value="DD"> /
+					</span>
+					<span>
+						<input size="2" type="text" maxlength="2" value="MM"> /
+					</span>
+					<span>
+				 		<input size="2" type="text" maxlength="2" value="YY">
+					</span>
+				</li>		
+
+				<li>
+					<label class="description">End Date </label>
+					<span>
+						<input size="2" maxlength="2" value="DD" type="text"> /
+					</span>
+					<span>
+						<input size="2" maxlength="2" value="MM" type="text"> /
+					</span>
+					<span>
+				 		<input size="2" maxlength="4" value="YY" type="text">
+					</span>
+				</li>
+					
+				<li>    
+					<input class="create-event-button" type="submit" value="Submit">
+				</li>
+			</ul>
+		</form>	
+	</div>
