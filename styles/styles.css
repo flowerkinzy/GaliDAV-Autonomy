@@ -406,3 +406,67 @@ fieldset {
 	text-shadow: 1px 1px 1px #000;
 	border: solid 2px #3d3d3d;
 }
+
+/* Event Edit Dialog */
+#create-event-dialog {
+	border: dotted 1px;
+	max-width: 40%;	
+	min-width: 40%;
+	height: auto;
+	background: -webkit-linear-gradient(left, rgba(237,237,237,1) 0%, rgba(255,255,255,1) 0%, rgba(249,249,249,1) 52%, rgba(246,246,246,1) 83%);
+}
+
+.create-event-dialog-form {
+	max-height: 100%;
+	max-width: 100%;
+}
+
+.description{
+	color: #3d3d3d;
+	display: block;
+	font-weight: 700;
+	text-shadow: none;
+}
+
+#create-event-dialog input{
+	text-align: center;
+	font-size: 80%;
+
+	border-bottom:1px solid #ddd;
+	border-left:1px solid #c3c3c3;
+	border-right:1px solid #c3c3c3;
+	border-top:1px solid #7c7c7c;
+	color:#333;
+	font-size:100%;
+	margin:0;
+}
+.form-headband {
+	background-color: #444444;
+	height: 30px;
+	width: auto;
+}
+
+.form-title {
+	border-bottom: 1px dotted #7c7c7c;
+	margin: 0;
+}
+
+.form-title h2{
+	font-size: 110%;
+	color: #3d3d3d;
+	font-weight: 700;
+	margin: 0;
+	padding: 2px;
+}
+
+li {
+	list-style-type:none;	
+	padding: 3px;
+}
+
+.create-event-button {
+	color: #3d3d3d;
+	font-weight: 700;
+	width: 30%;
+}
+
