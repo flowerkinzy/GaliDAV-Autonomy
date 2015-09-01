@@ -1,8 +1,8 @@
 <div id="widget-zone-left">
 	<div id="widget-left-button">
-		<button>
+		<!--<button>
 			Create Event
-		</button>
+		</button>-->
 	</div>
 
 	<div class="widget-left">

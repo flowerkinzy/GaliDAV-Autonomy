@@ -545,21 +545,17 @@ class Timetable
 	*/
 	public function addCourse($newCourse) 
 	{
-		if(is_int($newCourse)){
-			$Co=new Course();
-			$Co->loadFromDB($newCourse);
-
-			
-			//if(is_int($Co->getSqlId()$newCourse=$Co;
+		if($newCourse instanceof Course){
+			$newCourse=$newCourse->getSqlId();
 		}
-		if ($newCourse instanceof Course && !$this->containsCourse($newCourse->getSqlId()))
+
+		if (is_int($newCourse) && !$this->containsCourse($newCourse))
 		{
 			
-			$query = "INSERT  INTO " . Course::belongsToTABLENAME . " (id_course, id_calendar) VALUES(" . $newCourse->getSqlId() . "," . $this->sqlId . ") ;";
-
+			$query = "INSERT  INTO " . Course::belongsToTABLENAME . " (id_course, id_calendar) VALUES(" . $newCourse . "," . $this->sqlId . ") ;";
 			if (Database::currentDB()->executeQuery($query))
 			{
-				$this->coursesList[] = $newCourse->getSqlId();
+				$this->coursesList[] = $newCourse;
 				//$aSubject = new Subject();
 				//$aSubject->loadFromDB($newCourse->getSubject());
 				//When creating a course, it is automatically added to subject & teacher calendars;
@@ -712,11 +708,14 @@ class Timetable
 	 * \brief  Loads a course from the given ressource.
 	 * \param  $ressource The ressource from which a course will be loaded.
 	*/
-	public function loadCourseFromRessource($ressource)
+	public function loadCoursesListFromCursor($cursor)
 	{
-		//$newCourse = new Cours();
-		//$newCourse->loadFromDB(intval($ressource['id_course']));
-		$this->addCourse(intval($ressource['id_course']));
+		$this->coursesList=array();
+		$res=pg_fetch_assoc($cursor);
+		while($res){
+			$this->coursesList[]=intval($res['id_course']);
+			$res=pg_fetch_assoc($cursor);
+		}
 	}
 
 	// This method expects an array describing a ressource from a select query on modification table
@@ -802,9 +801,7 @@ class Timetable
 
 		if ($ressource['id_teacher'])
 		{
-			$newUser = new User();
-			$newUser->loadFromDB(intval($ressource['id_teacher']));
-			$this->teacher = $newUser;
+			$this->teacher = intval($ressource['id_teacher']);
 		}
 		else
 		{
@@ -838,14 +835,19 @@ class Timetable
 
 		if ($result2 = Database::currentDB()->executeQuery($query, $params))
 		{
-			$result2    = pg_fetch_assoc($result2);
-			$newSubject = new Subject();
-			$newSubject->loadFromDB(intval($result2['id']));
-			$this->subject = $newSubject;
+			
+			$this->subject =intval($result2['id']);
 		}
 		else
 		{
 			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+		}
+		
+		$query = "SELECT id_course FROM " . Course::belongsToTABLENAME . " WHERE id_calendar = $1;";
+		if ($result2 = Database::currentDB()->executeQuery($query, $params))
+		{
+			
+			$this->loadCoursesListFromCursor($result2);
 		}
 	}
 

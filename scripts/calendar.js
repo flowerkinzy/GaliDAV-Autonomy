@@ -1,4 +1,5 @@
 var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0); 
+var CALENDAR_DEFAULT_ID = 1;
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
@@ -32,6 +33,9 @@ var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0);
  	$("td.daycolumn>div").on("click",function(){
 		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"));
 	});
+	
+	loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
+	
 //FIN documentReady
 });
 	
@@ -181,14 +185,14 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 		param.type=$("#select_choose_type").val();
 		param.room=$("#input_room").val();
 		if($("#select_choose_subject").val()>0)param.id_subject=1;//$("#select_choose_subject").val();
-		console.log("param=..."); console.dir(param);
+		console.log("button_validate_new_event/param=..."); console.dir(param);
  		$("#newOrModifyCourse").dialog("close");
 
 		$.post("functions/courses_functions.php",
 		      param,
 			function(data)
 			{
-				//console.log("data="+data+"...");
+				//console.log("create_course: data="+data+"...");
 				//console.dir(data);
 				try{
 					var obj=jQuery.parseJSON(data);
@@ -318,4 +322,31 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	
 	
 	return div;
+}
+
+function loadTimetableForWeek(idTimetable,firstweekdayutc){
+	
+	var param=new Object();
+	param.begin=Math.floor(firstweekdayutc/1000);
+	param.end=param.begin+(5*24*60*60);
+	param.id=idTimetable;
+	param.action='load_courses_between';
+	$.post("functions/courses_functions.php",
+		      param,
+			function(list)
+			{
+				console.log("loadTimetableForWeek/list="+list+"...");
+				try{
+					list=jQuery.parseJSON(list);
+					for(i=0;i<list.length;i++)
+					{
+						displayNewCourseElementClass(list[i]);
+					}
+				}catch(err){
+					$("body").append(list);
+				}
+
+			}
+	  );
+		
 }

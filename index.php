@@ -21,9 +21,7 @@
 	<?php error_reporting(E_ALL);
 				include_once("functions/error_handling.php");
 				require_once("config/path.php");
-				require_once("classes/C_Database.php");
-				if(!Database::currentDB()->initialize())
-					Database::currentDB()->showError();
+				
 				?>
 	<div id="wrap" class='fullspace'>
 		<?php 	error_reporting(E_ALL); 
@@ -33,5 +31,34 @@
 			<?php include("./object_views/calendar_frame.php"); ?>
 		</div>
 	</div>
+	
+	<?php
+		require_once("classes/C_Database.php");
+		require_once("classes/C_Class.php");
+		require_once("classes/C_Subject.php");
+		require_once("classes/C_Timetable.php");
+		require_once("classes/C_Course.php");
+		/*
+		if(!Database::currentDB()->initialize()){
+ 			Database::currentDB()->showError();
+ 		}
+		else{
+			$INFO2=new C_Class("INFO2");
+			$M=new Subject('Math',$INFO2->getSqlId());
+			$begin=((9*60)+15)*60;//Par défaut, le jeudi 1er janvier 70 à 10h15
+			//$begin=($timeintervalinmin*60)*(int)(time()/($timeintervalinmin*60));//heure courante. N'affiche rien si trop tôt/tard.
+			$end=$begin+90*60; 
+
+ 			//$C=new Course($M->getSqlId(),$begin,$end); 
+ 			//$C->setRoom("C102");
+ 			//$C->setCourseType(CM);
+ 			
+
+			
+		}
+		*/
+	
+	?>
 </body>
 </html>
+

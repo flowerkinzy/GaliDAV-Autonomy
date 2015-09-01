@@ -381,18 +381,103 @@ class Course
 	 * \brief Integrates this course into the given timetable.
 	 * \param $aTimetable The timetable in which the course will be integrated.
 	*/
+	//DEPRECATED
 	public function integrateInTimetable(Timetable $aTimetable)
 	{
 		$aTimetable->addCourse($this);
 	}
 
+	
+	/**
+	 * \brief  Loads data from the database.
+	 * \param  $id The SQL id of the timetable to load.
+	 * \param  $onlyClassCalendar \e Boolean ???
+	 * \return TRUE if data loaded successfully, FALSE otherwise.
+	*/
+	public function loadFromDB($id = NULL)
+	{
+		
+		if ($id == NULL) // if we do not want to load a particular course
+		{
+			if (is_int($this->sqlId)) // check if the current course object is defined
+			{
+				$id = $this->sqlId; // if yes, we want to “reload” data about this object from the database (UPDATE)
+			}
+		}
 
+		if ($id == NULL) // if no, the first course object of the DB, will be chosen to be loaded
+		{
+			$query = "SELECT * FROM " . self::TABLENAME . ";";
+			$result = Database::currentDB()->executeQuery($query);
+		}
+		else // (if yes) from here, we load data about the course that has $id as sqlId
+		{
+			$query = "SELECT * FROM " . self::TABLENAME . " WHERE id = $1;";
+			$params = array($id);
+			$result = Database::currentDB()->executeQuery($query, $params);
+		}
+
+		if ($result)
+		{
+			$ressource = pg_fetch_assoc($result); // ressource is now an array containing values for each SQLcolumn of the timetable table
+			$this->loadFromRessource($ressource);
+			return TRUE;
+		}
+		else Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+		return FALSE;
+	}
+
+	/**
+	 * \brief Loads all data from the given ressource.
+	 * \param $ressource The ressource from which data will be loaded.
+	*///id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER, creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT 'now' NOT NULL";
+	/*
+	private $sqlId       = NULL;
+	private $number      = NULL;
+	private $time_begin	=	NULL;
+	private $time_end	=	NULL;
+	private $room        = NULL;
+	private $courseType = NULL;
+	private $subject     = NULL;
+	*/
+	public function loadFromRessource($ressource)
+	{
+		// we change values of attributes
+		
+		$this->sqlId = intval($ressource['id']);
+		$this->number=NULL;
+		if($ressource['number']){
+			$this->number=intval($ressource['number']);
+		}
+		$this->time_begin=NULL;
+		if($ressource['begins_at']){
+			$this->time_begin=strtotime($ressource['begins_at']);
+		}
+		$this->time_end=NULL;
+		if($ressource['ends_at']){
+			$this->time_end=strtotime($ressource['ends_at']);
+		}
+		$this->room=NULL;
+		if($ressource['room']){
+			$this->room=$ressource['room'];
+		}
+		$this->courseType=NULL;
+		if($ressource['type']){
+			$this->room=intval($ressource['type']);
+		}
+		$this->subject=NULL;
+		if($ressource['id_subject']){
+			$this->subject=intval($ressource['id_subject']);
+		}		
+	}
+
+	
 	/**
 	 * \brief Removes the course from database.
 	*/
 	public function removeFromDB()
 	{
-		//TODO
+		//TODO complete
 	}
 
 	/**
