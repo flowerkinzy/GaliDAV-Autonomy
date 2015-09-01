@@ -1,4 +1,4 @@
-var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0); 
+var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTimezoneOffset()*60*1000); 
 var CALENDAR_DEFAULT_ID = 1;
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
@@ -173,6 +173,7 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 	$("#button_validate_new_event").on("click",function(event){
 		event.stopPropagation();
 		event.preventDefault;
+		console.log("FIRST_DAY_OF_WEEK_UTC unix ="+Math.floor(FIRST_DAY_OF_WEEK_UTC/1000));
 		var beginUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_begin").spinner("value")*60*60);
 		beginUTC += ($("#input_pick_min_begin").spinner("value")*60);
 		var endUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_end").spinner("value")*60*60);

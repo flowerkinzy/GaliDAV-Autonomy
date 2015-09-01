@@ -38,7 +38,10 @@
 		require_once("classes/C_Subject.php");
 		require_once("classes/C_Timetable.php");
 		require_once("classes/C_Course.php");
-		/*
+		
+
+ 		
+		
 		if(!Database::currentDB()->initialize()){
  			Database::currentDB()->showError();
  		}
@@ -56,7 +59,7 @@
 
 			
 		}
-		*/
+		
 	
 	?>
 </body>
