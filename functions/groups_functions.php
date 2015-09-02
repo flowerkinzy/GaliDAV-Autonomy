@@ -12,8 +12,9 @@ if (0 > version_compare(PHP_VERSION, '5'))
 
 include_once("functions/error_handling.php");
 
-require_once("classes/C_Group.php")
-require_once("classes/C_Timetable.php")
+require_once("classes/C_Group.php");
+require_once("classes/C_Timetable.php");
+require_once("classes/C_Course.php");
 
 function create_new_group($name, $isAClass = FALSE, $studentsList = array(), $linkedGroupsList = array())
 {
@@ -32,7 +33,7 @@ function create_new_group($name, $isAClass = FALSE, $studentsList = array(), $li
 
 	if (is_array($studentList))
 	{
-		$group->setStudentsList($studentList)
+		$group->setStudentsList($studentList);
 	}
 
 	$sql_error = Database::currentDB()->sqlErrorMessage;
@@ -44,7 +45,7 @@ function create_new_group($name, $isAClass = FALSE, $studentsList = array(), $li
 
 	if (is_array($linkedGroupsList))
 	{
-		$group->setLinkedGroupsList($linkedGroupsList)
+		$group->setLinkedGroupsList($linkedGroupsList);
 	}
 
 	$sql_error = Database::currentDB()->sqlErrorMessage;
@@ -55,5 +56,39 @@ function create_new_group($name, $isAClass = FALSE, $studentsList = array(), $li
 	}
 
 	return json_encode($group->to_array());
+}
+
+
+function get_timetable_groups_between($id_calendar, $begin, $end)
+{
+	$result = array();
+
+	if (is_int($id_calendar) && is_int($begin) && is_int($end))
+	{
+		$timetable = new Timetable();
+
+		$timetable->loadFromDB($id_calendar);
+
+		if (is_int($timetable->getSqlId()))
+		{
+			$coursesList = $timetable->getCoursesListBetween($begin, $end);
+
+			foreach ($coursesList as $oneCourseId)
+			{
+				$course = new Course();
+
+				$course->loadFromDB($oneCourseId);
+
+				if (is_int($course->getSqlId()))
+				{
+					$result[] = json_encode($course->to_array());
+				}
+			}
+		}
+
+		$result = json_encode($result);
+	}
+
+	return $result;
 }
 ?>
