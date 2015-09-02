@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 error_log("KFK - Has loaded ".__FILE__);
 
 require_once("classes/C_Database.php");
-require_once("./queries.php");
+require_once("functions/queries.php");
 if(isset($_GET['action'])){
 	if($_GET['action']=="get_lists_subjects" && isset( $_GET["id_group"])){
 		echo XoptionSubjects($_GET["id_group"]);

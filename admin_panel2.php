@@ -5,6 +5,8 @@
 */
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+include_once("functions/error_handling.php");
+require_once("config/path.php");
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -45,7 +47,8 @@ error_reporting(E_ALL);
 
 <?php 
 //require_once("test_davical_operations.php");
-require_once("ListePersonnes.php");
+//require_once("ListePersonnes.php");
+require_once("functions/lists.php");
 	//Reconstruit toutes les tables de la base
 	//Database::currentDB()->initialize();
 	  
