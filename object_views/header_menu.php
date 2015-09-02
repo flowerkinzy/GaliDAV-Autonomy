@@ -17,8 +17,8 @@
 			<li class="view-filter-option" type="button-left"><a>Day</a></li>
 			<li class="view-filter-option" type="button-left"><a>Agenda</a></li>
 			-->
-			<li class="view-filter-option" type="button-right"><a>Next</a></li>
-			<li class="view-filter-option" type="button-right"><a>Previous</a></li>
+			<li class="view-filter-option" type="button-right"><a id='button_next_week'>Next</a></li>
+			<li class="view-filter-option" type="button-right"><a id='button_previous_week'>Previous</a></li>
 
 		</ul>
 	</div>

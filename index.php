@@ -41,7 +41,7 @@
 		
 
  		
-		
+		/*
 		if(!Database::currentDB()->initialize()){
  			Database::currentDB()->showError();
  		}
@@ -58,8 +58,13 @@
  			
 
 			
-		}
-		
+		}*/
+		$begin=((9*60)+15)*60;//Par défaut, le jeudi 1er janvier 70 à 10h15
+			//$begin=($timeintervalinmin*60)*(int)(time()/($timeintervalinmin*60));//heure courante. N'affiche rien si trop tôt/tard.
+		$end=$begin+90*60; 
+		//$C=new Course(1,$begin,$end); 
+ 			//$C->setRoom("C102");
+ 			//$C->setCourseType(CM);
 	
 	?>
 </body>

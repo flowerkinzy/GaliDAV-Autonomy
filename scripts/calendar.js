@@ -3,15 +3,17 @@ var CALENDAR_DEFAULT_ID = 1;
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
-			$button="<button style='padding:0;cursor:default;' ";
-			$button=$button+"begin_hour="+$(this).attr("begin_hour")+" ";
-			$button=$button+"begin_min="+$(this).attr("begin_min")+" ";
-			$button=$button+"end_min="+$(this).attr("end_min")+" ";
-			$button=$button+"> \> </button>";
+			console.log("Double-click on calendar cell");
+			var button="<button style='padding:0;cursor:default;' ";
+			button=button+"begin_hour="+$(this).attr("begin_hour")+" ";
+			button=button+"begin_min="+$(this).attr("begin_min")+" ";
+			button=button+"end_min="+$(this).attr("end_min")+" ";
+			button=button+"> \> </button>";
+		//	console.log("button="+button);
 			adaptCoursesHeightAfterHidingRow($(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_min"),$(this).height());
-			//rowheight=$(this).height();
+			
 			$(this).parent().children().children().hide();
-			$("#calendar_core_table").append($button);
+			$("#calendar_core_table").append(button);
 			
 		
 			adapt_button_position();
@@ -23,6 +25,7 @@ var CALENDAR_DEFAULT_ID = 1;
 				adaptCoursesHeightAfterShowingRow($(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_min"),
 					$("tr.calendar[begin_hour="+$(this).attr("begin_hour")+"][begin_min="+$(this).attr("begin_min")+"]").height());
 			});
+
 		}
 	});
 	
@@ -32,6 +35,17 @@ var CALENDAR_DEFAULT_ID = 1;
 	
  	$("td.daycolumn>div").on("click",function(){
 		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"));
+	});
+	
+	$("#button_next_week").parent().on("click",function(){
+			$("div.course").remove();
+			FIRST_DAY_OF_WEEK_UTC=FIRST_DAY_OF_WEEK_UTC+(7*24*60*60*1000);
+			loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
+	});
+	$("#button_previous_week").parent().on("click",function(){
+			$("div.course").remove();
+			FIRST_DAY_OF_WEEK_UTC=FIRST_DAY_OF_WEEK_UTC-(7*24*60*60*1000);
+			loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
 	});
 	
 	loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
@@ -55,7 +69,7 @@ function adapt_button_position(){
 }
 
 function getCoursesOfDayHappeningAt(weekday,beginH,beginM,endM){
-	//criteria1="[weekday="+weekday+"]";
+
 	coursesOfDayList=$("td.daycolumn[weekday="+weekday+"] div.course").get();
 	if(coursesOfDayList.length>0)console.log("$(td.daycolumn[weekday="+weekday+"] div.course).get().length="+coursesOfDayList.length);
 	//console.dir(coursesOfDayList);
@@ -66,8 +80,8 @@ function getCoursesOfDayHappeningAt(weekday,beginH,beginM,endM){
 		iendH=parseInt($(coursesOfDayList[i]).attr("end_hour"));
 		ibeginM=parseInt($(coursesOfDayList[i]).attr("begin_min"));
 		iendM=parseInt($(coursesOfDayList[i]).attr("end_min"));
-		console.log("BeginH:"+beginH+"/BeginM"+beginM+"/EndM:"+endM);
-		console.log("ibeginH:"+ibeginH+"/ibeginM"+ibeginM+"/iendH:"+iendH+"/iendM:"+iendM);
+		//console.log("BeginH:"+beginH+"/BeginM"+beginM+"/EndM:"+endM);
+		//console.log("ibeginH:"+ibeginH+"/ibeginM"+ibeginM+"/iendH:"+iendH+"/iendM:"+iendM);
 		if(ibeginH<=beginH){
 			if(iendH>=beginH){
 				if(ibeginH==beginH){
@@ -78,8 +92,8 @@ function getCoursesOfDayHappeningAt(weekday,beginH,beginM,endM){
 							ok=true;
 						else if(iendM>=endM)
 							ok=true;
-						else console.log("false4");
-					}else console.log("false3");
+						else ;//console.log("false4");
+					}else ;// console.log("false3");
 				}
 				else{
 					if(iendH>beginH)
@@ -87,11 +101,11 @@ function getCoursesOfDayHappeningAt(weekday,beginH,beginM,endM){
 					else if(iendH==beginH){
 						 if(iendM>=endM)
 							ok=true;
-						else console.log("false6");
-					}else console.log("false5");
+						else ;//console.log("false6");
+					}else ;// console.log("false5");
 				}
-			}else console.log("false2");
-		}else console.log("false1");
+			}else ;//console.log("false2");
+		}else ;//console.log("false1");
 		if(ok){
 			console.log("ok");
 			resultingList.push(coursesOfDayList[i]);
@@ -108,14 +122,14 @@ function getCoursesOfWeekHappeningAt(beginH,beginM,endM){
 	for(j_day=0;j_day<=4;j_day++){
 		list=getCoursesOfDayHappeningAt(j_day,beginH,beginM,endM);
 		if(list!=[] && list.length>0){
-			console.log("list.length=="+list.length);
-			console.dir(list);
+			//console.log("list.length=="+list.length);
+			//console.dir(list);
 		}
 		resultingList=resultingList.concat(list);
 	}
 	if(resultingList!=[]){
-		console.log("Week: resultingList.length="+resultingList.length);
-		console.dir(resultingList);
+		//console.log("Week: resultingList.length="+resultingList.length);
+		//console.dir(resultingList);
 	}
 	return resultingList;
 }
@@ -125,12 +139,12 @@ function adaptCoursesHeightAfterHidingRow(beginH,beginM,endM, rowHeight){
 	var i;
 	var currentHeight;
 	var finalHeight;
-	console.log("Final list.length="+list.length);
+	//console.log("Final list.length="+list.length);
 	for(i=0;i<list.length;i++){
 		currentHeight=$(list[i]).height();
 		finalHeight=currentHeight-rowHeight;
-		console.log("rowHeight="+rowHeight+"; current="+currentHeight+";")
-		console.log("final height:"+finalHeight);
+		//console.log("rowHeight="+rowHeight+"; current="+currentHeight+";")
+		//console.log("final height:"+finalHeight);
 		$(list[i]).height(finalHeight);
 		$(list[i]).css("max-height",finalHeight+"px");
 		$(list[i]).css("min-height",finalHeight+"px");
@@ -146,8 +160,8 @@ function adaptCoursesHeightAfterShowingRow(beginH,beginM,endM, rowHeight){
 	for(i=0;i<list.length;i++){
 		currentHeight=$(list[i]).height();
 		finalHeight=currentHeight+rowHeight;
-		console.log("rowHeight="+rowHeight+"; current="+currentHeight+";")
-		console.log("final height:"+finalHeight);
+		//console.log("rowHeight="+rowHeight+"; current="+currentHeight+";")
+		//console.log("final height:"+finalHeight);
 		$(list[i]).height(finalHeight);
 		$(list[i]).css("max-height",finalHeight+"px");
 		$(list[i]).css("min-height",finalHeight+"px");

@@ -128,7 +128,7 @@ class Database
 
 		if (!$connection)
 		{
-			echo "Impossible de se connecter à la base de données " . $this->dbname . " avec le rôle " . $this->user . ".\n";
+			echo "Impossible de se connecter à la base de données " . $this->databaseName . " avec le rôle " . $this->user . ".\n";
 
 			exit;
 		}
