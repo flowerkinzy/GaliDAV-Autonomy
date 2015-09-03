@@ -4,10 +4,13 @@
 	<link rel="stylesheet" type="text/css" href="scripts/jquery-ui/jquery-ui.css">
 	<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
 	<link rel="stylesheet" type="text/css" href="./styles/styles.css">
+	<link rel="stylesheet" type="text/css" href="./styles/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="./styles/fonts/css/font-awesome.css">
 	<!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>-->
 	<script src="scripts/jquery-ui/external/jquery/jquery.js"></script>
 	<script src="scripts/jquery-ui/jquery-ui.js"></script>
 	<script src="config/calendar_vars.js"></script>
+	<script src="styles/bootstrap.min.js"></script>
 	
 	<script src="scripts/calendar.js"></script>
 	<script src="scripts/course.js"></script>
@@ -24,11 +27,18 @@
 				
 				?>
 	<div id="wrap" class='fullspace'>
-		<?php 	error_reporting(E_ALL); 
-				include("./object_views/header_menu.php"); 
-				include("./object_views/widget_zone_left.php"); ?>
+		<div class="navbar-fixed-top">
+			<?php 	error_reporting(E_ALL); 
+				include("./object_views/header_menu.php"); ?>
+		</div>
+		<div id="widget-zone-left">
+			<?php	include("./object_views/widget_zone_left.php"); ?>
+		</div>
 		<div class="timetable fullspace" id="frame_timetable">
 			<?php include("./object_views/calendar_frame.php"); ?>
+		</div>
+		<div id="footer-menu" class="navbar-fixed-bottom">
+			<?php include("./object_views/footer_menu.php"); ?>
 		</div>
 	</div>
 	

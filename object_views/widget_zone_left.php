@@ -1,23 +1,12 @@
-<div id="widget-zone-left">
-	<div id="widget-left-button">
-		<!--<button>
+
+	<!--<div id="widget-left-button">
+		<button>
 			Create Event
-		</button>-->
-	</div>
+		</button>
+	</div>-->
 
-	<div class="widget-left">
-		<p class="widget-left-title"> Calendars </p>
-		<textbox class="widget-left-textbox">
-			Calendrier 1 <br>
-			Calendrier 2 <br>
-		</textbox>
-	</div>
 
-	<div class="widget-left">
-		<p class="widget-left-title"> Shared Calendars </p>
-		<textbox class="widget-left-textbox">
-			Calendrier 1 <br>
-			Calendrier 2 <br>
-		</textbox>
-	</div>
-</div>
+	<legend> Calendars </legend>
+	<a class="btn"> Calendrier 1 </a>
+	<a class="btn"> Calendrier 2 </a>
+
