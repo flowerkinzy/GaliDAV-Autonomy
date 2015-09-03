@@ -12,12 +12,12 @@
 		<ul id="view-filter">
 			
 			<li class="view-filter-option col-md-4" type="logo">
-				<p> GaliDAV </p>
+				<img src="./object_views/logoGalidavMini.png">
 			</li>
-			<li class="view-filter-option col-md-2">
+			<li class="view-filter-option col-md-2" type="label">
 				<p> Nom EDT </p>
 			</li>
-			<li class="view-filter-option col-md-2">
+			<li class="view-filter-option col-md-2" type="label">
 				<p> Semaine du ../.. au ../.. </p>
 			</li>
 			<!--<li class="view-filter-option" type="button-left"><a>Month</a></li>

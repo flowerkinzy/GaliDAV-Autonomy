@@ -264,9 +264,8 @@ p.label{
 	max-height: 5%;
 	min-height: 4%;
 	background-color: #222;
-	/*padding: 10px;*/
-	border: 1px solid #222;
-	
+	border-bottom : 1px solid #fff;
+	/*padding: 10px;*/	
 	overflow:hidden;
 }
 
@@ -304,8 +303,11 @@ a .view-filter-option:active, a .view-filter-option:focus, a .view-filter-option
 	
 }
 
-.view-filter-option{
+.view-filter-option {
 	display: inline;
+}
+
+.view-filter-option[type="label"] {
 	text-align: center;
 	padding: 6px 12px;
 }
@@ -325,8 +327,9 @@ a .view-filter-option:active, a .view-filter-option:focus, a .view-filter-option
 	overflow-y: auto;
 	bottom: 34px;
 	overflow-x: hidden;
-	padding-bottom: 40px;
+	padding: 15px 5px;
 }
+
 /*
 .widget-left {
   -webkit-box-sizing: content-box;
