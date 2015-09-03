@@ -1,11 +1,11 @@
 
-	<div id="widget-left-button">
+	<!--<div id="widget-left-button">
 		<button>
 			Create Event
 		</button>
-	</div>
+	</div>-->
 
 	<legend> Calendars </legend>
-	<div class="well"> Calendrier 1 </div>
-	<div class="well"> Calendrier 2 </div>
+	<a class="btn"> Calendrier 1 </a>
+	<a class="btn"> Calendrier 2 </a>
 

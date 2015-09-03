@@ -25,8 +25,8 @@
 			<li class="view-filter-option" type="button-left"><a>Day</a></li>
 			<li class="view-filter-option" type="button-left"><a>Agenda</a></li>
 			-->
-			<a><li class="view-filter-option btn pull-right" type="button-right">Next</li></a>
-			<a><li class="view-filter-option btn pull-right" type="button-right">Previous</li></a>
+			<a><li class="view-filter-option btn pull-right" type="button-right"><i class="fa fa-chevron-right"></i> Next</li></a>
+			<a><li class="view-filter-option btn pull-right" type="button-right">Previous <i class="fa fa-chevron-left"></i></li></a>
 
 		</ul>
 	</div>
