@@ -40,12 +40,12 @@ var GROUP_DEFAULT_ID=4;
 		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"));
 	});
 	
-	$("#button_next_week").parent().on("click",function(){
+	$("#button_next_week").on("click",function(){
 			$("div.course").remove();
 			FIRST_DAY_OF_WEEK_UTC=FIRST_DAY_OF_WEEK_UTC+(7*24*60*60*1000);
 			loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
 	});
-	$("#button_previous_week").parent().on("click",function(){
+	$("#button_previous_week").on("click",function(){
 			$("div.course").remove();
 			FIRST_DAY_OF_WEEK_UTC=FIRST_DAY_OF_WEEK_UTC-(7*24*60*60*1000);
 			loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
