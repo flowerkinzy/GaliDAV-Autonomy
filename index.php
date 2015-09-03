@@ -30,11 +30,18 @@
 					Database::currentDB()->showError();
 				?>
 	<div id="wrap" class='fullspace'>
-		<?php 	error_reporting(E_ALL); 
-				include("./object_views/header_menu.php"); 
-				include("./object_views/widget_zone_left.php"); ?>
+		<div class="navbar-fixed-top">
+			<?php 	error_reporting(E_ALL); 
+				include("./object_views/header_menu.php"); ?>
+		</div>
+		<div id="widget-zone-left">
+			<?php	include("./object_views/widget_zone_left.php"); ?>
+		</div>
 		<div class="timetable fullspace" id="frame_timetable">
 			<?php include("./object_views/calendar_frame.php"); ?>
+		</div>
+		<div id="footer-menu" class="navbar-fixed-bottom">
+			<?php include("./object_views/footer_menu.php"); ?>
 		</div>
 	</div>
 </body>
