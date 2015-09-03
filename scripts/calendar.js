@@ -232,7 +232,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	var divBegin=$("<div class=timespinnersframe></div>");
 	var hourpickerB=$("<input onblur='checkHourField(this)' id='input_pick_hour_begin' required >");
 	var minpickerB=$("<input onblur='checkMinField(this)' id='input_pick_min_begin' required >");
-	$(divBegin).append("<p class='label'>Heure de début:</p>");
+	$(divBegin).append("<p class='formlabel'>Heure de début:</p>");
 	$(divBegin).append(hourpickerB);
 	
 	$(divBegin).append(minpickerB);
@@ -244,7 +244,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	
 	var hourpickerE=$("<input onblur='checkHourField(this)' id='input_pick_hour_end' required >");
 	var minpickerE=$("<input onblur='checkMinField(this)' id='input_pick_min_end' required >");
-	$(divEnd).append("<p class='label'>Heure de fin:</p>");
+	$(divEnd).append("<p class='formlabel'>Heure de fin:</p>");
 	$(divEnd).append(hourpickerE);
 	$(divEnd).append(minpickerE);	
 	$(form).append(divEnd);
@@ -255,7 +255,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 		$(divSubject).append(data);
 	});
 	$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
-	$(divSubject).parent().prepend("<p class='label'>Choisir une matière:</p>");
+	$(divSubject).parent().prepend("<p class='formlabel'>Choisir une matière:</p>");
 	$(form).append($(divSubject).parent());
 	
 	var selectType=$("<select name='type' id='select_choose_type'></select>");
@@ -263,11 +263,11 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 		$(selectType).append("<option value="+i+" >"+getTypeName(i));
 	}
 	$(selectType).wrap("<div id='div_select_choose_type'></div>");
-	$(selectType).parent().prepend("<p class='label'>Type de cours:</p>");
+	$(selectType).parent().prepend("<p class='formlabel'>Type de cours:</p>");
 	$(form).append($(selectType).parent());
 	
 	
-	$(form).append("<div id='div_input_room'><p class='label'>Choisir une salle:</p><input id='input_room' name='room' type='text' autocomplete /></div>");
+	$(form).append("<div id='div_input_room'><p class='formlabel'>Choisir une salle:</p><input id='input_room' name='room' type='text' autocomplete /></div>");
 	
 	$(form).append("<div><button value='Créer cours!' id='button_validate_new_event'>Créer cours!</button></div>");
 	$(div).append(form);
