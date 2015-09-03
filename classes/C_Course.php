@@ -176,21 +176,21 @@ class Course
 	}
 
 	/**
-	 * \brief  Getter for the attribute $coursesType.
-	 * \return The value of $coursesType.
+	 * \brief  Getter for the attribute $courseType.
+	 * \return The value of $courseType.
 	*/
-	public function getCoursesType()
+	public function getCourseType()
 	{
-		return $this->coursesType;
+		return $this->courseType;
 	}
 
 	/**
-	 * \brief  Getter for the attribute $coursesType.
-	 * \return The string value of $coursesType.
+	 * \brief  Getter for the attribute $courseType.
+	 * \return The string value of $courseType.
 	*/
-	public function getCoursesTypeString()
+	public function getCourseTypeString()
 	{
-		switch ($this->coursesType)
+		switch ($this->courseType)
 		{
 			case (CM):
 				return "CM";
@@ -320,8 +320,8 @@ class Course
 	}
 
 	/**
-	 * \brief  Setter for the attribute $coursesType.
-	 * \param  $newCoursesType Contains the new value of $coursesType.
+	 * \brief  Setter for the attribute $courseType.
+	 * \param  $newCoursesType Contains the new value of $courseType.
 	*/
 	public function setCourseType($newCoursesType)
 	{
@@ -463,10 +463,10 @@ class Course
 		}
 		$this->courseType=NULL;
 		if($ressource['type']){
-			$this->room=intval($ressource['type']);
+			$this->courseType=intval($ressource['type']);
 		}
 		$this->subject=NULL;
-		if($ressource['id_subject']){
+		if($ressource['id_subject']!=NULL){
 			$this->subject=intval($ressource['id_subject']);
 		}		
 	}
@@ -486,7 +486,7 @@ class Course
 	*/
 	public function toHTML()
 	{
-		$result = "<p>Matière:&emsp; &emsp; " . $this->subject->getName() . "<br/>Type de cours:&emsp; &emsp;" . $this->coursesType . "&emsp; &emsp;&emsp; &emsp;Numero:&emsp; &emsp; " . $this->number . "<br/>Horaires:&emsp; du " . $this->getBeginString() . " au " . $this->getEndString() . "<br/>Salle: &emsp; &emsp; " . $this->room . "</p>";
+		$result = "<p>Matière:&emsp; &emsp; " . $this->subject->getName() . "<br/>Type de cours:&emsp; &emsp;" . $this->courseType . "&emsp; &emsp;&emsp; &emsp;Numero:&emsp; &emsp; " . $this->number . "<br/>Horaires:&emsp; du " . $this->getBeginString() . " au " . $this->getEndString() . "<br/>Salle: &emsp; &emsp; " . $this->room . "</p>";
 
 		return $result;
 	}

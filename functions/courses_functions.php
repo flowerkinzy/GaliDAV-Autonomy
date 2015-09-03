@@ -28,7 +28,7 @@ error_log("KFK - Has loaded ".__FILE__);
 	}
 	
 	
-	if(is_int($type))$C->setCourseType($type);
+	if(is_int($type))$C->setCourseType(intval($type));
 	if(Database::currentDB()->sqlErrorMessage!="")return "";
 	if(is_string($room))$C->setRoom($room);
 	if(Database::currentDB()->sqlErrorMessage=="") return json_encode($C->to_array());

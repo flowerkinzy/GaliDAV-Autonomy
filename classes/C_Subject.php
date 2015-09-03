@@ -35,9 +35,10 @@ class Subject
 	*/
 	public function __construct($newName = NULL, $newGroup = NULL)
 	{
+	
 		if($newGroup instanceof Group)$newGroup =$newGroup->getSqlId();
-		if (is_string($newName) && is_int($newGroup)){		
-
+		
+		if (is_string($newName) && is_int($newGroup)){
 			$this->name = $newName;
 	 		$params     = array($newName);
 			$params[]   = $newGroup;

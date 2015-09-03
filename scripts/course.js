@@ -25,15 +25,15 @@ function createNewCourseElementClass(Course) {
 	var beginDate=new Date(Course.time_begin*1000);
 	var endDate=new Date(Course.time_end*1000);
 	var durationInMin=Math.floor((Course.time_end-Course.time_begin)/60);
-	console.log("TOP:tr.calendar[begin_hour="+beginDate.getHours()
-		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)
-		+"]");
+// 	console.log("TOP:tr.calendar[begin_hour="+beginDate.getHours()
+// 		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)
+// 		+"]");
 	var top=$("tr.calendar[begin_hour="+beginDate.getHours()
 		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 		+"]").offset().top;
-	console.log("BOTTOM:tr.calendar[begin_hour="+endDate.getHours()
-		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)
-		+"]");
+// 	console.log("BOTTOM:tr.calendar[begin_hour="+endDate.getHours()
+// 		+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)
+// 		+"]");
 		var endmin=TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN);
 		
 		if(endmin==0){
@@ -50,7 +50,11 @@ function createNewCourseElementClass(Course) {
 	var height=bottom-top;
 	var width=$($("td.daycolumn")[0]).width();
  	
-	var res="<div class='course fullspace-x' style='background-color:white;z-index:2;position:absolute;min-height:"+
+	var res="<div class='course fullspace-x'";
+	if(getTypeName(Course.courseType)=="EXAMEN" || getTypeName(Course.courseType)=="RATTRAPAGE")res = res + "style='background-color:red;";
+	else if(Course.subject==0 || Course.subject==undefined)res = res + "style='background-color:white;";
+	else res = res + "style='background-color:"+getColorFromId(Course.subject)+";";
+	res = res + "z-index:2;position:absolute;min-height:"+
 			height+"px; max-height:"+height+"px; "+
 			"max-width:"+width+"px; width:"+width+"px;min-width:"+Math.floor(width/3)+"px'"+
 			" begin_hour="+beginDate.getHours()+
@@ -59,8 +63,9 @@ function createNewCourseElementClass(Course) {
 			" end_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)+
 			" weekday="+(beginDate.getDay()-1)%7+
 			" id="+
-			Course.sqlId+"><p><b>"+
-			Course.subject_name;
+			Course.sqlId+"><p><b>";
+			if(Course.subject_name!= undefined)res =res + Course.subject_name;
+			
 			
 			if(getTypeName(Course.courseType)!="")
 				res=res+" "+getTypeName(Course.courseType);
@@ -77,7 +82,7 @@ function createNewCourseElementClass(Course) {
 //Note: par défaut, les cours concernent tous les élèves affiliés à lEDT. Il faudra préciser un évènement de groupe pour
 //avoir 2+ cours sur la même plage horaires. (Et donc empêcher le cours de prendre toute la place);
 function displayNewCourseElementClass(Course) {
-	console.log("displayNewCourseElementClass/@param="+Course);	
+	//console.log("displayNewCourseElementClass/@param="+Course);	
 	Course=jQuery.parseJSON(Course);
 	var beginDate=new Date(Course.time_begin*1000);
 	var endDate=new Date(Course.time_end*1000);
@@ -100,3 +105,13 @@ function displayNewCourseElementClass(Course) {
 		}
 }
 
+function getColorFromId(id){
+	var range=255;
+	var min=70;
+	var max=220;
+	var R=min+Math.floor((max*id)%(range-min));
+	var G=min+Math.floor(R*id)%(range-min);
+	var B=min+Math.floor((R*range)+(G*id))%(max-min);
+	var result="#"+R.toString(16)+G.toString(16)+B.toString(16);
+	return result;
+}

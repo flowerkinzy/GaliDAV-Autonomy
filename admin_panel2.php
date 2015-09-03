@@ -14,7 +14,7 @@ require_once("config/path.php");
 	<head>
 		<meta http-equiv = "Content-Type" content = "text/html;charset = utf-8">
 		<link rel="stylesheet" href="styles/agendav-1.2.6.2.css">
-		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+		<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">-->
 		<title>Tests GaliDAV</title>
 	</head>
 	<body>
@@ -59,8 +59,8 @@ require_once("functions/lists.php");
 		unset($_GET['GMESSAGE_ERROR']);
 	}
 ?>
-<form action="test_davical_operations.php" method="POST" style="position:absolute;left:0px;top:50px;width:150px;"><input type='hidden' name='action' value="clear_db"/><input type=submit value="Effacer toutes les données"/></form>
-<form action="test_davical_operations.php" method="POST" style="position:absolute;left:180px;top:50px;width:150px;"><input type='hidden' name='action' value="init_db"/><input type=submit value="(Re)créer une base vierge"/></form>
+<form action="functions/admin_panel_operations.php" method="POST" style="position:absolute;left:0px;top:50px;width:150px;"><input type='hidden' name='action' value="clear_db"/><input type=submit value="Effacer toutes les données"/></form>
+<form action="functions/admin_panel_operations.php" method="POST" style="position:absolute;left:180px;top:50px;width:150px;"><input type='hidden' name='action' value="init_db"/><input type=submit value="(Re)créer une base vierge"/></form>
 
 <div id=admin_panel style='width:80%;height:450px;padding:auto;margin-left:auto;margin-right:auto;overflow:auto'>
 	<table style='width:100%;height:100%;'>
@@ -76,7 +76,7 @@ require_once("functions/lists.php");
 			<?php if(isset($_GET['action'])) {
 				if($_GET['action']=='add_user'){
 				echo("
-				<form action='test_davical_operations.php' method='POST'>
+				<form action='functions/admin_panel_operations.php' method='POST'>
 				<input type='hidden' name='action' value='add_user'0/>
 				<table style=margin-left:auto;margin-right:auto;>
 				<tr><th>Nom</th><td><input type='text' name='familyname' required/></td></tr>
@@ -96,7 +96,7 @@ require_once("functions/lists.php");
 			
 				if($_GET['action']=='add_person'){
 				echo("
-				<form action='test_davical_operations.php' method='POST'>
+				<form action='functions/admin_panel_operations.php' method='POST'>
 				<input type='hidden' name='action' value='add_person'/>
 				<table style=margin-left:auto;margin-right:auto;>
 				<tr><th>Nom</th><td><input type='text' name='familyname' required/></td></tr>
@@ -111,7 +111,7 @@ require_once("functions/lists.php");
 			
 			if($_GET['action']=='add_group'){
 				echo("
-				<form action='test_davical_operations.php' method='POST'>
+				<form action='functions/admin_panel_operations.php' method='POST'>
 				<input type='hidden' name='action' value='add_group'/>
 				<table style=margin-left:auto;margin-right:auto;>
 				<tr><th>Nom:</th><td><input type='text' name='name' required/></td></tr>
@@ -123,11 +123,13 @@ require_once("functions/lists.php");
 			}
 			if($_GET['action']=='add_subject'){
 			echo("
-				<form action='test_davical_operations.php' method='POST'>
+				<form action='functions/admin_panel_operations.php' method='POST'>
 				<input type='hidden' name='action' value='add_subject'/>
 				<table style=margin-left:auto;margin-right:auto;>
 				<tr><th>Matière </th><td><input type='text' name='subjectname' required/></td></tr>
-				<tr><th>Classe</th><td><select name='groupname'/><?php echo XoptionGroups();?></td></tr>
+				<tr><th>Classe</th><td><select name='groupname'/>");
+			echo XoptionGroups();
+			echo ("</td></tr>
 				<tr><th>Intervenant1:</th><td><select name='speaker1'/>"); echo XoptionSpeakers(); echo("</select></td></tr>
 				<tr><th>Intervenant2: </th><td><select name='speaker2'/>"); echo XoptionSpeakers(); echo("</select></td></tr>
 				<tr><th>Intervenant3: </th><td><select name='speaker3'/>"); echo XoptionSpeakers(); echo("</select></td></tr>

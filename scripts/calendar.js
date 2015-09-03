@@ -1,5 +1,6 @@
 var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTimezoneOffset()*60*1000); 
-var CALENDAR_DEFAULT_ID = 1;
+var CALENDAR_DEFAULT_ID = 7;
+var GROUP_DEFAULT_ID=4;
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
@@ -172,7 +173,7 @@ function adaptCoursesHeightAfterShowingRow(beginH,beginM,endM, rowHeight){
 function displayFormNewEvent(BeginH,BeginM,weekday){
 	$("#newOrModifyCourse").remove();
 	
-	$(createFormNewEvent(BeginH,BeginM,weekday)).appendTo("#wrap");
+	$(createFormNewEvent(BeginH,BeginM,weekday)).appendTo("#body");
 	
 	$("#newOrModifyCourse").dialog({
 		title:"Nouveau cours",
@@ -199,7 +200,7 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 		param.end=endUTC;
 		param.type=$("#select_choose_type").val();
 		param.room=$("#input_room").val();
-		if($("#select_choose_subject").val()>0)param.id_subject=1;//$("#select_choose_subject").val();
+		if($("#select_choose_subject").val()>0)param.id_subject=$("#select_choose_subject").val();
 		console.log("button_validate_new_event/param=..."); console.dir(param);
  		$("#newOrModifyCourse").dialog("close");
 
@@ -247,7 +248,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	$(form).append(divEnd);
 	
 	var divSubject=$("<select name='subject' id='select_choose_subject'></select>");
-	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:1},function(data){
+	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:GROUP_DEFAULT_ID},function(data){
 		$(divSubject).append("<option value=0 >--");
 		$(divSubject).append(data);
 	});
@@ -350,7 +351,7 @@ function loadTimetableForWeek(idTimetable,firstweekdayutc){
 		      param,
 			function(list)
 			{
-				console.log("loadTimetableForWeek/list="+list+"...");
+				//console.log("loadTimetableForWeek/list="+list+"...");
 				try{
 					list=jQuery.parseJSON(list);
 					for(i=0;i<list.length;i++)
