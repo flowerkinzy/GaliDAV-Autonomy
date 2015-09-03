@@ -358,11 +358,30 @@ function loadTimetableForWeek(idTimetable,firstweekdayutc){
 					{
 						displayNewCourseElementClass(list[i]);
 					}
+					adaptDaysOfWeekDate(firstweekdayutc);
 				}catch(err){
 					$("body").append(list);
 				}
 
 			}
 	  );
+	
 		
+}
+
+function adaptDaysOfWeekDate(firstweekdayutc){
+	var day_names=["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"];
+	//var date=new Date(firstweekdayutc);
+// 	$("td.datesrow div").html(day_names[$(this).parent().attr("weekday")]
+// 		+" "+new Date(firstweekdayutc+($(this).parent().attr("weekday")*24*60*60*1000)).getDate()
+// 		+"/"+(new Date(firstweekdayutc+($(this).parent().attr("weekday")*24*60*60*1000)).getMonth()+1));
+	for(i=0;i<5;i++){
+			$("td.datesrow[weekday="+i+"] div").text(day_names[i]
+				+" "+new Date(firstweekdayutc+(i*24*60*60*1000)).getDate()
+				+"/"+(new Date(firstweekdayutc+(i*24*60*60*1000)).getMonth()+1));
+	}
+	//$("td.datesrow").text($(this).attr("weekday"));
+	//console.log($("td.datesrow div").parent().attr("weekday"));
+	//$("td.datesrow div").text(day_names[parseInt($(this).attr("weekday"))]);
+	//$("td.datesrow div").text($(this).attr("weekday"));
 }
