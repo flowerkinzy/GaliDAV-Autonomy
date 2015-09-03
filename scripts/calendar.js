@@ -229,8 +229,8 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	var form=$("<div></div>");
 	$(form).append("<input id='input_weekday' type=hidden name='weekday' value="+weekday+" />");
 	var divBegin=$("<div class=timespinnersframe></div>");
-	var hourpickerB=$("<input id='input_pick_hour_begin' required >");
-	var minpickerB=$("<input id='input_pick_min_begin' required >");
+	var hourpickerB=$("<input onblur='checkHourField(this)' id='input_pick_hour_begin' required >");
+	var minpickerB=$("<input onblur='checkMinField(this)' id='input_pick_min_begin' required >");
 	$(divBegin).append("<p class='label'>Heure de début:</p>");
 	$(divBegin).append(hourpickerB);
 	
@@ -241,8 +241,8 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	var EndHdefault=Math.floor(((parseInt(BeginH)*60)+parseInt(BeginM)+90)/60)
 	var EndMdefault=Math.floor((parseInt(BeginH)*60)+parseInt(BeginM)+90)%60;
 	
-	var hourpickerE=$("<input id='input_pick_hour_end' required >");
-	var minpickerE=$("<input id='input_pick_min_end' required >");
+	var hourpickerE=$("<input onblur='checkHourField(this)' id='input_pick_hour_end' required >");
+	var minpickerE=$("<input onblur='checkMinField(this)' id='input_pick_min_end' required >");
 	$(divEnd).append("<p class='label'>Heure de fin:</p>");
 	$(divEnd).append(hourpickerE);
 	$(divEnd).append(minpickerE);	
@@ -385,4 +385,26 @@ function adaptDaysOfWeekDate(firstweekdayutc){
 	//console.log($("td.datesrow div").parent().attr("weekday"));
 	//$("td.datesrow div").text(day_names[parseInt($(this).attr("weekday"))]);
 	//$("td.datesrow div").text($(this).attr("weekday"));
+}
+
+function checkHourField(field){
+	var time = parseInt(field.value);
+	
+	if( (time > 23) || (time <0) ) {
+		field.style.backgroundColor = "#FF0000";
+	}
+	else {
+		field.style.backgroundColor = "#fff";
+	}
+}
+
+function checkMinField(field){
+	var time = parseInt(field.value);
+	
+	if((time%15) != 0) {
+		field.style.backgroundColor = "#FF0000";
+	}
+	else {
+		field.style.backgroundColor = "#fff";
+	}
 }
