@@ -36,6 +36,7 @@ var GROUP_DEFAULT_ID=4;
 	});
 	
  	$("td.daycolumn>div").on("click",function(){
+		console.log("click on cell");
 		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"));
 	});
 	
@@ -174,7 +175,7 @@ function adaptCoursesHeightAfterShowingRow(beginH,beginM,endM, rowHeight){
 function displayFormNewEvent(BeginH,BeginM,weekday){
 	$("#newOrModifyCourse").remove();
 	
-	$(createFormNewEvent(BeginH,BeginM,weekday)).appendTo("#body");
+	$(createFormNewEvent(BeginH,BeginM,weekday)).appendTo("body");
 	
 	$("#newOrModifyCourse").dialog({
 		title:"Nouveau cours",
@@ -388,23 +389,70 @@ function adaptDaysOfWeekDate(firstweekdayutc){
 }
 
 function checkHourField(field){
-	var time = parseInt(field.value);
 	
-	if( (time > 23) || (time <0) ) {
-		field.style.backgroundColor = "#FF0000";
+	for(i=0;i<field.value.length;i++){
+			if(isNaN(parseInt(field.value.charAt(i)))){
+				//field.style.backgroundColor = "#FF0000";
+				field.value="";
+				$("#button_validate_new_event").attr("disabled","disabled");
+				return;
+			}
 	}
-	else {
-		field.style.backgroundColor = "#fff";
+	var time = parseInt(field.value);
+	if( isNaN(time) ||(time > 23) || (time <0) ) {
+		//field.style.backgroundColor = "#FF0000";
+		//field.value="";
+		$("#button_validate_new_event").attr("disabled","disabled");
+	}else if($("#input_pick_hour_begin").val()!="" && $("#input_pick_min_begin").val()!=""
+			&& $("#input_pick_hour_end").val()!="" && $("#input_pick_min_end").val()!="")
+	{
+		if($("#input_pick_hour_end").spinner("value")>$("#input_pick_hour_begin").spinner("value")){
+			$("#button_validate_new_event").removeAttr("disabled");
+		}
+		if($("#input_pick_hour_end").spinner("value")==$("#input_pick_hour_begin").spinner("value")
+			&& ($("#input_pick_min_end").spinner("value")>$("#input_pick_min_begin").spinner("value"))){
+			$("#button_validate_new_event").removeAttr("disabled");
+		}
+			
 	}
+				
+	//else {
+		//field.style.backgroundColor = "#fff";
+		//$("#button_validate_new_event").removeAttr("disabled");
+	//}
 }
 
 function checkMinField(field){
+	for(i=0;i<field.value.length;i++){
+			if(isNaN(parseInt(field.value.charAt(i)))){
+				//field.style.backgroundColor = "#FF0000";
+				field.value="";
+				$("#button_validate_new_event").attr("disabled","disabled");
+				return;
+			}
+	}
 	var time = parseInt(field.value);
+	if( isNaN(time) ||(time > 59) || (time <0) || (time%TIME_INTERVAL_IN_MIN) != 0) {
+		//field.style.backgroundColor = "#FF0000";
+		field.value="";
+		$("#button_validate_new_event").attr("disabled","disabled");
+	}else if($("#input_pick_hour_begin").val()!="" && $("#input_pick_min_begin").val()!=""
+			&& $("#input_pick_hour_end").val()!="" && $("#input_pick_min_end").val()!="")
+	{
+		if($("#input_pick_hour_end").spinner("value")>$("#input_pick_hour_begin").spinner("value")){
+			$("#button_validate_new_event").removeAttr("disabled");
+		}
+		if($("#input_pick_hour_end").spinner("value")==$("#input_pick_hour_begin").spinner("value")
+			&& ($("#input_pick_min_end").spinner("value")>$("#input_pick_min_begin").spinner("value"))){
+			$("#button_validate_new_event").removeAttr("disabled");
+		}
+			
+	}
 	
-	if((time%15) != 0) {
-		field.style.backgroundColor = "#FF0000";
-	}
-	else {
-		field.style.backgroundColor = "#fff";
-	}
+// 	if((time%TIME_INTERVAL_IN_MIN) != 0) {
+// 		field.style.backgroundColor = "#FF0000";
+// 	}
+// 	else {
+// 		field.style.backgroundColor = "#fff";
+// 	}
 }

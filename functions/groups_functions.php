@@ -16,6 +16,8 @@ require_once("classes/C_Group.php");
 require_once("classes/C_Timetable.php");
 require_once("classes/C_Course.php");
 
+//Flora NOTE: since group is created by admin dans admin_panel, and it is probable that group linking would be made there,
+// it is better to focus on student list of a group
 function create_new_group($name, $isAClass = FALSE, $studentsList = array(), $linkedGroupsList = array())
 {
 	$group = new Group($name, $isAClass);
