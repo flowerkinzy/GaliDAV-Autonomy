@@ -35,10 +35,7 @@ var GROUP_DEFAULT_ID=4;
 		$(this).children().toggle();
 	});
 	
- 	$("td.daycolumn>div").on("click",function(){
-		console.log("click on cell");
-		displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"));
-	});
+ 	
 	
 	$("#button_next_week").on("click",function(){
 			$("div.course").remove();
@@ -50,6 +47,22 @@ var GROUP_DEFAULT_ID=4;
 			FIRST_DAY_OF_WEEK_UTC=FIRST_DAY_OF_WEEK_UTC-(7*24*60*60*1000);
 			loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
 	});
+	
+	
+	$("#button_modify_timetable").on("click",function(){
+		$(this).detach();
+		$("#button_validate_timetable").detach();
+		$("td.daycolumn>div").on("click",function(){
+			console.log("click on cell");
+			displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"));
+		});
+		$("div.course").on("click",function(event){event.stopPropagation();alert("Cours non encore modifiables");});
+		
+		//TODO insérer boutons Annuler/Enregistrer
+	});
+	
+	
+
 	
 	loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
 	
@@ -361,6 +374,10 @@ function loadTimetableForWeek(idTimetable,firstweekdayutc){
 						displayNewCourseElementClass(list[i]);
 					}
 					adaptDaysOfWeekDate(firstweekdayutc);
+					var date_1=new Date(firstweekdayutc);
+					var date_2=new Date(firstweekdayutc+4*24*60*60*1000);
+					$("#week_dates").html("Semaine du "+date_1.getDate()+"/"+(date_1.getMonth()+1)+" au "+date_2.getDate()+"/"+(date_2.getMonth()+1));
+				
 				}catch(err){
 					$("body").append(list);
 				}
@@ -456,3 +473,6 @@ function checkMinField(field){
 // 		field.style.backgroundColor = "#fff";
 // 	}
 }
+
+
+

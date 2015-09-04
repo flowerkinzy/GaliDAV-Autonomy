@@ -18,7 +18,7 @@
 				<p> Nom EDT </p>
 			</li>
 			<li class="view-filter-option col-md-2" type="label">
-				<p> Semaine du ../.. au ../.. </p>
+				<p id="week_dates">  </p>
 			</li>
 			<!--<li class="view-filter-option" type="button-left"><a>Month</a></li>
 			<li class="view-filter-option" type="button-left"><a>Week</a></li>
