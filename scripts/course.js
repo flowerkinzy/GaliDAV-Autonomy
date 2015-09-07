@@ -1,4 +1,4 @@
-var NUMBER_OF_COURSES_TYPES=6;
+var NUMBER_OF_COURSES_TYPES=7;
 
 function getTypeName(type){
 	
@@ -15,6 +15,8 @@ function getTypeName(type){
 			return "EXAMEN";
 		case 5:
 			return "RATTRAPAGE";
+		case 6:
+			return "REUNION";
 		default:
 			return "";
 	}
@@ -48,14 +50,15 @@ function createNewCourseElementClass(Course) {
 				+"]").height();
 		}
 	var height=bottom-top;
-	var width=$($("td.daycolumn")[0]).width();
+	var width=$($("td.daycolumn")[0]).width()-1;
  	
 	var res="<div class='course fullspace-x'";
 	if(getTypeName(Course.courseType)=="EXAMEN" || getTypeName(Course.courseType)=="RATTRAPAGE")res = res + "style='background-color:red;";
+	else if(getTypeName(Course.courseType)=="REUNION")res = res + "style='background-color:orange;";
 	else if(Course.subject==0 || Course.subject==undefined)res = res + "style='background-color:white;";
 	else res = res + "style='background-color:"+getColorFromId(Course.subject)+";";
 	res = res + "z-index:2;position:absolute;min-height:"+
-			height+"px; max-height:"+height+"px; "+
+			height+"px; max-height:"+height+"px; height:"+height+"px; "+
 			"max-width:"+width+"px; width:"+width+"px;min-width:"+Math.floor(width/3)+"px'"+
 			" begin_hour="+beginDate.getHours()+
 			" begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)+
@@ -63,16 +66,19 @@ function createNewCourseElementClass(Course) {
 			" end_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)+
 			" weekday="+(beginDate.getDay()-1)%7+
 			" id="+
-			Course.sqlId+"><p><b>";
+			Course.sqlId+" type="+Course.courseType;
+			if(Course.subject==0 || Course.subject==undefined)res=res+" id_subject=0 ><p>";
+			else res=res+" id_subject="+Course.subject+" ><p>";
 			if(Course.subject_name!= undefined)res =res + Course.subject_name;
 			
 			
 			if(getTypeName(Course.courseType)!="")
 				res=res+" "+getTypeName(Course.courseType);
+			if(Course.name!= undefined)res = res+"</p><p name>"+Course.name;
 			if(typeof Course.room !== 'undefined')
-				res=res+"</b></p><p><i>"+Course.room+"</i></p></div>";
+				res=res+"</p><p room>"+Course.room+"</p></div>";
 			else
-				res=res+"</b></p></div>";
+				res=res+"</p></div>";
 		
 			return res;
 

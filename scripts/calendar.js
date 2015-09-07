@@ -1,6 +1,6 @@
 var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTimezoneOffset()*60*1000); 
-var CALENDAR_DEFAULT_ID = 7;
-var GROUP_DEFAULT_ID=4;
+var CALENDAR_DEFAULT_ID = 1;
+var GROUP_DEFAULT_ID=1;
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
@@ -48,15 +48,24 @@ var GROUP_DEFAULT_ID=4;
 			loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
 	});
 	
+	$("div.course,td.daycolumn>div").on("click",function(){
+		alert("Vous n'avez pas les droits pour modifier\nou vous n'avez pas activé la modification");
+	});
 	
 	$("#button_modify_timetable").on("click",function(){
 		$(this).detach();
 		$("#button_validate_timetable").detach();
+		$("div.course").off("click");
+		$("td.daycolumn>div").off("click");
 		$("td.daycolumn>div").on("click",function(){
 			console.log("click on cell");
-			displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"));
+			displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"),GROUP_DEFAULT_ID);
 		});
-		$("div.course").on("click",function(event){event.stopPropagation();alert("Cours non encore modifiables");});
+		
+		$("div.course").on("click",function(event){
+			event.stopPropagation();
+			displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"));			
+		});
 		
 		//TODO insérer boutons Annuler/Enregistrer
 	});
@@ -65,8 +74,11 @@ var GROUP_DEFAULT_ID=4;
 
 	
 	loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
+
 	
-//FIN documentReady
+/*****************************
+ * *****FIN documentReady*****
+ * ***************************/
 });
 	
 	
@@ -87,7 +99,7 @@ function adapt_button_position(){
 function getCoursesOfDayHappeningAt(weekday,beginH,beginM,endM){
 
 	coursesOfDayList=$("td.daycolumn[weekday="+weekday+"] div.course").get();
-	if(coursesOfDayList.length>0)console.log("$(td.daycolumn[weekday="+weekday+"] div.course).get().length="+coursesOfDayList.length);
+	//if(coursesOfDayList.length>0)console.log("$(td.daycolumn[weekday="+weekday+"] div.course).get().length="+coursesOfDayList.length);
 	//console.dir(coursesOfDayList);
 	var resultingList=[];
 	var ok=false;
@@ -123,9 +135,9 @@ function getCoursesOfDayHappeningAt(weekday,beginH,beginM,endM){
 			}else ;//console.log("false2");
 		}else ;//console.log("false1");
 		if(ok){
-			console.log("ok");
+			//console.log("ok");
 			resultingList.push(coursesOfDayList[i]);
-		}else console.log("false");
+		}//else console.log("false");
 	}
 	if(resultingList!=[] && resultingList.length>0)console.log("Day:"+weekday+" resultingList.length="+resultingList.length);
 	return resultingList;
@@ -185,10 +197,15 @@ function adaptCoursesHeightAfterShowingRow(beginH,beginM,endM, rowHeight){
 	}
 }
 
-function displayFormNewEvent(BeginH,BeginM,weekday){
+
+/*************************************
+ * *********Create an Event *********
+ * ***********************************/
+function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 	$("#newOrModifyCourse").remove();
 	
 	$(createFormNewEvent(BeginH,BeginM,weekday)).appendTo("body");
+	
 	
 	$("#newOrModifyCourse").dialog({
 		title:"Nouveau cours",
@@ -198,7 +215,8 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 		//height:"80%",
 		top:"25%",
 		left:"10%",
-		resizable:false
+		resizable:false,
+		modal:true
 	});
 	$("#button_validate_new_event").on("click",function(event){
 		event.stopPropagation();
@@ -215,9 +233,12 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 		param.end=endUTC;
 		param.type=$("#select_choose_type").val();
 		param.room=$("#input_room").val();
+		if($("#input_name").val()!="")param.name=$("#input_name").val();
+		param.id_group=id_group;
 		if($("#select_choose_subject").val()>0)param.id_subject=$("#select_choose_subject").val();
 		console.log("button_validate_new_event/param=..."); console.dir(param);
  		$("#newOrModifyCourse").dialog("close");
+	
 
 		$.post("functions/courses_functions.php",
 		      param,
@@ -237,6 +258,7 @@ function displayFormNewEvent(BeginH,BeginM,weekday){
 	});
 
 }
+
 
 function createFormNewEvent(BeginH,BeginM,weekday){
 	var div=$("<div id=newOrModifyCourse></div>"); //attributes To complete
@@ -279,7 +301,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	$(selectType).parent().prepend("<p class='formlabel'>Type de cours:</p>");
 	$(form).append($(selectType).parent());
 	
-	
+	$(form).append("<div id='div_input_name'><p class='formlabel'>Intitulé Supplémentaire:</p><input id='input_name' name='name' type='text'/></div>");
 	$(form).append("<div id='div_input_room'><p class='formlabel'>Choisir une salle:</p><input id='input_room' name='room' type='text' autocomplete /></div>");
 	
 	$(form).append("<div><button value='Créer cours!' id='button_validate_new_event'>Créer cours!</button></div>");
@@ -355,6 +377,206 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	return div;
 }
 
+/*************************************
+ * ********* Modify an Event *********
+ * ***********************************/
+function displayFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM){
+	var courseToModify=$("div.course[id="+courseId+"]");
+	$("#newOrModifyCourse").remove();
+	
+	var form=createFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM);
+	$(form).appendTo("body");
+	
+	
+	
+	$("#newOrModifyCourse").dialog({
+		title:"Modifier cours",
+		minWidth:"50%",
+		minHeight:"80%",
+		width:"50%",
+		//height:"80%",
+		top:"25%",
+		left:"10%",
+		resizable:false,
+		modal:true
+	});
+	$("#button_validate_new_event").on("click",function(event){
+		event.stopPropagation();
+		event.preventDefault;
+		console.log("FIRST_DAY_OF_WEEK_UTC unix ="+Math.floor(FIRST_DAY_OF_WEEK_UTC/1000));
+		var beginUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_begin").spinner("value")*60*60);
+		beginUTC += ($("#input_pick_min_begin").spinner("value")*60);
+		var endUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_end").spinner("value")*60*60);
+		endUTC += ($("#input_pick_min_end").spinner("value")*60);
+		//var param={begin: beginUTC,end: endUTC, type: $("#select_choose_type").val()};
+		var param=new Object();
+		param.action="create_course";
+		param.begin=beginUTC;
+		param.end=endUTC;
+		param.type=$("#select_choose_type").val();
+		param.room=$("#input_room").val();
+		if($("#input_name").val()!="")param.name=$("#input_name").val();
+		if($("#select_choose_subject").val()>0)param.id_subject=$("#select_choose_subject").val();
+		//console.log("button_validate_new_event/param=..."); console.dir(param);
+ 		$("#newOrModifyCourse").dialog("close");
+	
+
+// 		$.post("functions/courses_functions.php",
+// 		      param,
+// 			function(data)
+// 			{
+// 				//console.log("create_course: data="+data+"...");
+// 				//console.dir(data);
+// 				try{
+// 					var obj=jQuery.parseJSON(data);
+// 					displayNewCourseElementClass(data);
+// 				}catch(err){
+// 					$("body").append(data)
+// 				}
+// 
+// 			}
+// 		  );
+	});
+
+}
+
+function createFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM){
+	var courseToModify=$("div.course[id="+courseId+"]");
+	var div=$("<div id=newOrModifyCourse></div>"); //attributes To complete
+	var form=$("<div></div>");
+	//$(form).append("<input id='input_weekday' type=hidden name='weekday' value="+weekday+" />");
+	var divBegin=$("<div class=timespinnersframe></div>");
+	var hourpickerB=$("<input onblur='checkHourField(this)' id='input_pick_hour_begin' required >");
+	var minpickerB=$("<input onblur='checkMinField(this)' id='input_pick_min_begin' required >");
+	$(divBegin).append("<p class='formlabel'>Heure de début:</p>");
+	$(divBegin).append(hourpickerB);
+	
+	$(divBegin).append(minpickerB);
+	$(form).append(divBegin);
+	
+	var divEnd=$("<div class=timespinnersframe></div>");
+// 	var EndHdefault=Math.floor(((parseInt(BeginH)*60)+parseInt(BeginM)+90)/60)
+// 	var EndMdefault=Math.floor((parseInt(BeginH)*60)+parseInt(BeginM)+90)%60;
+	
+	var hourpickerE=$("<input onblur='checkHourField(this)' id='input_pick_hour_end' required >");
+	var minpickerE=$("<input onblur='checkMinField(this)' id='input_pick_min_end' required >");
+	$(divEnd).append("<p class='formlabel'>Heure de fin:</p>");
+	$(divEnd).append(hourpickerE);
+	$(divEnd).append(minpickerE);	
+	$(form).append(divEnd);
+	console.log("ID="+$(courseToModify).attr("id_subject"));
+	var divSubject=$("<select name='subject' id='select_choose_subject'></select>");
+	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:GROUP_DEFAULT_ID,id_selected:$(courseToModify).attr("id_subject")},function(data){
+		$(divSubject).append("<option value=0 >--");
+		$(divSubject).append(data);
+	});
+	$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
+	$(divSubject).parent().prepend("<p class='formlabel'>Changer la matière:</p>");
+	$(form).append($(divSubject).parent());
+	
+	var selectType=$("<select name='type' id='select_choose_type'></select>");
+	for(i=0;i<NUMBER_OF_COURSES_TYPES;i++){
+		if(i==$(courseToModify).attr("type"))$(selectType).append("<option value="+i+" selected >"+getTypeName(i));
+		else $(selectType).append("<option value="+i+" >"+getTypeName(i));
+	}
+	$(selectType).wrap("<div id='div_select_choose_type'></div>");
+	$(selectType).parent().prepend("<p class='formlabel'>Type de cours:</p>");
+	$(form).append($(selectType).parent());
+	
+	var input_name=$("<input id='input_name' name='name' type='text'/>");
+	if($(courseToModify).children("p[name]").get(0)!==undefined){
+		$(input_name).val($(courseToModify).children("p[name]").text());
+	}
+	var div_input_name=$("<div id='div_input_name'><p class='formlabel'>Intitulé Supplémentaire:</p></div>");
+	$(div_input_name).append(input_name);
+	//$(form).append("<div id='div_input_name'><p class='formlabel'>Intitulé Supplémentaire:</p><input id='input_name' name='name' type='text'/></div>");
+	$(form).append(div_input_name);
+	
+	var input_room=$("<input id='input_room' name='room' type='text' autocomplete/>");
+	if($(courseToModify).children("p[room]").get(0)!==undefined){
+		$(input_room).val($(courseToModify).children("p[room]").text());
+	}
+	var div_input_room=$("<div id='div_input_room'><p class='formlabel'>Changer la salle:</p></div>");
+	$(div_input_room).append(input_room);
+	//$(form).append("<div id='div_input_room'><p class='formlabel'>Changer la salle:</p><input id='input_room' name='room' type='text' autocomplete /></div>");
+	$(form).append(div_input_room);
+	
+	$(form).append("<div><button value='Valider!' id='button_validate_new_event'>Valider!</button></div>");
+	$(div).append(form);
+	
+	$(minpickerB).spinner({
+		step:15,
+		incremental:false,
+		min:0,
+		max:45
+	});
+	
+	$(hourpickerB).spinner({
+		min:HOUR_MIN,
+		max:HOUR_MAX,
+		stop: function( event, ui ) {
+			if($(hourpickerB).spinner("value")==HOUR_MAX){
+				$(minpickerB).spinner("option","max",(END_MIN-TIME_INTERVAL_IN_MIN));
+				if($(minpickerB).spinner("value")>(END_MIN-TIME_INTERVAL_IN_MIN))
+					$(minpickerB).spinner("value",(END_MIN-TIME_INTERVAL_IN_MIN));
+			}else{
+				$(minpickerB).spinner("option","max",45);
+			}
+			if($(hourpickerB).spinner("value")==HOUR_MIN){
+				if($(minpickerB).spinner("value")<BEGIN_MIN)
+					$(minpickerB).spinner("value",BEGIN_MIN);
+			}else{
+				$(minpickerB).spinner("option","min",0);
+			}
+		}
+	});
+ 	if(BeginH==HOUR_MIN)$(minpickerB).spinner("option","min",BEGIN_MIN);
+ 	if(BeginH==HOUR_MAX)$(minpickerB).spinner("option","max",(END_MIN-TIME_INTERVAL_IN_MIN));
+	$(minpickerE).spinner({
+		step:15,
+		incremental:false,
+		min:0,
+		max:45
+	});
+	$(hourpickerE).spinner({
+		min:HOUR_MIN,
+		max:HOUR_MAX,
+		stop: function( event, ui ) {
+			if($(hourpickerE).spinner("value")==HOUR_MAX){
+				$(minpickerE).spinner("option","max",END_MIN);
+				if($(minpickerE).spinner("value")>END_MIN)
+					$(minpickerE).spinner("value",END_MIN);
+			}else{
+				$(minpickerE).spinner("option","max",45);
+			}
+			if($(hourpickerE).spinner("value")==HOUR_MIN){
+				$(minpickerE).spinner("option","min",(BEGIN_MIN+TIME_INTERVAL_IN_MIN));
+				if($(minpickerE).spinner("value")>(BEGIN_MIN+TIME_INTERVAL_IN_MIN))
+					$(minpickerE).spinner("value",(BEGIN_MIN+TIME_INTERVAL_IN_MIN));
+			}else{
+				$(minpickerE).spinner("option","min",0);
+			}
+		}
+	});
+	if(EndH==HOUR_MIN)$(minpickerB).spinner("option","min",(BEGIN_MIN+TIME_INTERVAL_IN_MIN)%60);
+ 	if(EndH==HOUR_MAX)$(minpickerB).spinner("option","max",END_MIN);
+	
+	$(hourpickerB).spinner("widget").attr("id","spinner_pick_hour_begin");
+	$(minpickerB).spinner("widget").attr("id","spinner_pick_min_begin");
+	$(hourpickerE).spinner("widget").attr("id","spinner_pick_hour_end");
+	$(minpickerE).spinner("widget").attr("id","spinner_pick_min_end");
+	$(hourpickerB).spinner("value",BeginH);
+	$(minpickerB).spinner("value",BeginM);
+	$(hourpickerE).spinner("value",EndH);
+	$(minpickerE).spinner("value",EndM);	
+	
+	
+	
+	return div;
+}
+/***********************************/
+
+
 function loadTimetableForWeek(idTimetable,firstweekdayutc){
 	
 	var param=new Object();
@@ -420,7 +642,8 @@ function checkHourField(field){
 		//field.style.backgroundColor = "#FF0000";
 		//field.value="";
 		$("#button_validate_new_event").attr("disabled","disabled");
-	}else if($("#input_pick_hour_begin").val()!="" && $("#input_pick_min_begin").val()!=""
+	}
+	if($("#input_pick_hour_begin").val()!="" && $("#input_pick_min_begin").val()!=""
 			&& $("#input_pick_hour_end").val()!="" && $("#input_pick_min_end").val()!="")
 	{
 		if($("#input_pick_hour_end").spinner("value")>$("#input_pick_hour_begin").spinner("value")){
@@ -453,16 +676,18 @@ function checkMinField(field){
 		//field.style.backgroundColor = "#FF0000";
 		field.value="";
 		$("#button_validate_new_event").attr("disabled","disabled");
-	}else if($("#input_pick_hour_begin").val()!="" && $("#input_pick_min_begin").val()!=""
+	}
+	if($("#input_pick_hour_begin").val()!="" && $("#input_pick_min_begin").val()!=""
 			&& $("#input_pick_hour_end").val()!="" && $("#input_pick_min_end").val()!="")
 	{
 		if($("#input_pick_hour_end").spinner("value")>$("#input_pick_hour_begin").spinner("value")){
 			$("#button_validate_new_event").removeAttr("disabled");
 		}
-		if($("#input_pick_hour_end").spinner("value")==$("#input_pick_hour_begin").spinner("value")
+		else if($("#input_pick_hour_end").spinner("value")==$("#input_pick_hour_begin").spinner("value")
 			&& ($("#input_pick_min_end").spinner("value")>$("#input_pick_min_begin").spinner("value"))){
 			$("#button_validate_new_event").removeAttr("disabled");
 		}
+		else $("#button_validate_new_event").attr("disabled","disabled");
 			
 	}
 	

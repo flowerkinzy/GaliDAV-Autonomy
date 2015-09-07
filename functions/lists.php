@@ -6,8 +6,9 @@ error_log("KFK - Has loaded ".__FILE__);
 require_once("classes/C_Database.php");
 require_once("functions/queries.php");
 if(isset($_GET['action'])){
-	if($_GET['action']=="get_lists_subjects" && isset( $_GET["id_group"])){
-		echo XoptionSubjects($_GET["id_group"]);
+	if($_GET['action']=="get_lists_subjects" && isset($_GET["id_group"])){
+		if(isset($_GET["id_selected"]))echo XoptionSubjects($_GET["id_group"],intval($_GET["id_selected"]));
+		else echo XoptionSubjects($_GET["id_group"]);
 		//echo "<option>1<option>2";
 	}
 
@@ -157,7 +158,7 @@ function XoptionGroups()
 	return $out;
 }
 
-function XoptionSubjects($idGroup)
+function XoptionSubjects($idGroup,$idSelected=NULL)
 {
 	// $out = "<datalist class = optionOfGroup id = listsubjects'>";
 	$out = "";
@@ -167,7 +168,8 @@ function XoptionSubjects($idGroup)
 	while ($subject != NULL)
 	{
 		// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
-		$out .= "<option value=".$subject['id']." >" . $subject['name'];
+		if(is_int($idSelected) && $subject['id']==$idSelected) $out .= "<option value=".$subject['id']." selected >" . $subject['name'];
+		else $out .= "<option value=".$subject['id']." >" . $subject['name'];
 		$subject = pg_fetch_assoc($res);
 	}
 

@@ -22,7 +22,7 @@ class Modification
 	private $modifiedCourse = NULL;
 
 	const TABLENAME  = "gmodification";
-	const SQLcolumns = "id_course INTEGER REFERENCES gcourse(id), id_user INTEGER REFERENCES guser(id_person), date TIMESTAMP DEFAULT 'now'";
+	const SQLcolumns = "id_course INTEGER REFERENCES gcourse(id), id_user INTEGER REFERENCES guser(id_person), date TIMESTAMP DEFAULT now()";
 
 	// --- OPERATIONS ---
 	/**

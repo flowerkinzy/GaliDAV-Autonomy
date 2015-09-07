@@ -36,7 +36,7 @@ class Timetable
 	protected $idCollection = NULL;
 
 	const TABLENAME = "gcalendar";
-	const SQLcolumns = "id serial PRIMARY KEY, id_collection BIGINT UNIQUE, id_teacher INTEGER REFERENCES guser(id_person), is_class_calendar BOOLEAN DEFAULT FALSE, is_validated_calendar BOOLEAN DEFAULT FALSE, is_being_modified_by INTEGER REFERENCES guser(id_person), date_creation TIMESTAMP DEFAULT 'now'";
+	const SQLcolumns = "id serial PRIMARY KEY, id_collection BIGINT UNIQUE, id_teacher INTEGER REFERENCES guser(id_person), is_class_calendar BOOLEAN DEFAULT FALSE, is_validated_calendar BOOLEAN DEFAULT FALSE, is_being_modified_by INTEGER REFERENCES guser(id_person), date_creation TIMESTAMP DEFAULT now()";
 
 	// --- OPERATIONS ---
 	/**

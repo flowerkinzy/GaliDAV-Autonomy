@@ -28,9 +28,10 @@ class Course
 	private $room        = NULL;
 	private $courseType = NULL;
 	private $subject     = NULL;
+	private $name	=	NULL;
 
 	const TABLENAME           = "gcourse";
-	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER, creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT 'now' NOT NULL";
+	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER, creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL";
 	const belongsToTABLENAME  = "gcourse_belongs_to";
 	const belongsToSQLcolumns = "id_course INTEGER REFERENCES gcourse(id), id_calendar INTEGER REFERENCES gcalendar(id), CONSTRAINT gcourse_belongs_to_pk PRIMARY KEY(id_course, id_calendar)";
 
@@ -44,12 +45,13 @@ class Course
 	 * \param $newBegin   ???
 	 * \param $newEnd     ???
 	*/
-	public function __construct($newSubject=NULL, $newBegin=NULL, $newEnd=NULL)
+	public function __construct($newSubject=NULL, $newBegin=NULL, $newEnd=NULL,$optionalGroup=NULL)
 	{
 		
 		if(is_int($newBegin) && is_int($newEnd)){
 			if($newBegin>=$newEnd)echo "<script>console.log('Horaires de cours non conforme');</script>";
 			else{
+				if($optionalGroup instanceof Group)$optionalGroup=$optionalGroup->getSqlId();
 				if($newSubject instanceof Subject)$newSubject=$newSubject->getSqlId();
 				if(is_int($newSubject))
 					$query="INSERT INTO " . self::TABLENAME . " (begins_at, ends_at,id_subject) VALUES ($1, $2,$3);";
@@ -79,24 +81,28 @@ class Course
 						
 						
 						$result=pg_fetch_assoc($result);
-						$this->subject = $newSubject;
+						if(is_int($newSubject))$this->subject = $newSubject;
 						$this->time_begin   = $newBegin;
 						$this->time_end    = $newEnd;
  						$this->sqlId     = intval($result['id']);
-						if(is_int($newSubject)){
+						if(is_int($newSubject)|| is_int($optionalGroup)){
 							$S=new Subject();
-							$S->loadFromDB($newSubject);
+							if(is_int($newSubject))$S->loadFromDB($newSubject);
+							
+							$T=new Timetable();
 							
 							if(is_int($S->getSqlId())){
-								$T=new Timetable();
-								
 								$T->loadFromDB($S->getTimetable());
 								$T->addCourse($this);
-								$G=new Group();
-								$G->loadFromDB($S->getGroup());
-								$T=new Timetable();
-								$T->loadFromDB($G->getTimetable());
-								$T->addCourse($this);
+							}
+							$G=new Group();
+							if(is_int($S->getSqlId()))$G->loadFromDB($S->getGroup());
+							else $G->loadFromDB($optionalGroup);
+							$T=new Timetable();
+							$T->loadFromDB($G->getTimetable());
+							$T->addCourse($this);
+							//TODO add to all depending groups' calendars
+							if(is_int($S->getSqlId())){
 								foreach ($S->getTeachedByList() as $idSpeaker) // for all speakers of this course
 								{
 									$aSpeaker=new Teacher();
@@ -110,15 +116,17 @@ class Course
 
 								}
 							}
+						
 						}
-					}
+						
 					
-				//TODO add to all related calendars
+					}
 				}
 				
 			}	
 		}
 	}
+	
 
 	// getters
 	/**
@@ -242,6 +250,24 @@ class Course
 			if (Database::currentDB()->executeQuery($query, $params))
 			{
 				$this->number = $newNumber;
+			}
+			else
+			{
+				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+			}
+		}
+	}
+	
+	public function setName($name)
+	{
+		if (is_string($name))
+		{
+			$query  = "UPDATE " . self::TABLENAME . " SET name = $1 WHERE id = " . $this->sqlId . ";";
+			$params = array($name);
+
+			if (Database::currentDB()->executeQuery($query, $params))
+			{
+				$this->name = $name;
 			}
 			else
 			{
@@ -430,15 +456,6 @@ class Course
 	/**
 	 * \brief Loads all data from the given ressource.
 	 * \param $ressource The ressource from which data will be loaded.
-	*///id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER, creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT 'now' NOT NULL";
-	/*
-	private $sqlId       = NULL;
-	private $number      = NULL;
-	private $time_begin	=	NULL;
-	private $time_end	=	NULL;
-	private $room        = NULL;
-	private $courseType = NULL;
-	private $subject     = NULL;
 	*/
 	public function loadFromRessource($ressource)
 	{
@@ -468,7 +485,11 @@ class Course
 		$this->subject=NULL;
 		if($ressource['id_subject']!=NULL){
 			$this->subject=intval($ressource['id_subject']);
-		}		
+		}
+		$this->name=NULL;
+		if($ressource['name']!=NULL){
+			$this->name=$ressource['name'];
+		}
 	}
 
 	

@@ -15,5 +15,5 @@ define("TD", 1);
 define("TP", 2);
 define("CONFERENCE", 3);
 define("EXAMEN", 4);
-define("RATTRAPAGE", 5);
+define("REUNION", 6);
 ?>

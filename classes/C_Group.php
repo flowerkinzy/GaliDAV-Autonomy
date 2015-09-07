@@ -416,12 +416,10 @@ class Group
 	{
 		if(is_int($begin) && is_int($end)){
 			$result=array();
-			foreach($this->coursesList as $courseId){
-				$C=new Course();
-				$C->loadFromDB($courseId);
-				if($C->getBegin() >=$begin && $C->getEnd() <= $end)$result[]=$courseId;
-			}
-			if($result!=[])return $result;
+			$T=new Timetable();
+			$T->loadFromDB($this->timetable);
+			if(is_int($T->getSqlId()))
+				return $T->getCoursesListBetween($begin,$end);
 		}
 		return null;
 	}

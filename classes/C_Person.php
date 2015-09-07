@@ -29,7 +29,7 @@ class Person
 	protected $emailAddress2 = NULL;
 
 	const TABLENAME  = "gperson";
-	const SQLcolumns = "id serial PRIMARY KEY, familyname VARCHAR(30) NOT NULL, firstname VARCHAR(30) NOT NULL, emailaddress1 VARCHAR(60), emailaddress2 VARCHAR(60), date_creation TIMESTAMP DEFAULT 'now'";
+	const SQLcolumns = "id serial PRIMARY KEY, familyname VARCHAR(30) NOT NULL, firstname VARCHAR(30) NOT NULL, emailaddress1 VARCHAR(60), emailaddress2 VARCHAR(60), date_creation TIMESTAMP DEFAULT now()";
 
 	// --- OPERATIONS ---
 	/**
