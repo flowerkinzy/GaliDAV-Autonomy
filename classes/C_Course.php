@@ -104,6 +104,11 @@ class Course
 							}
 							
 							$this->id_group=$G->getSqlId();
+							$query="UPDATE " . self::TABLENAME . " SET id_original_group=".$this->id_group." where id=".$this->sqlId.";";
+							if(!Database::currentDB()->executeQuery($query)){
+								Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+							}
+							
 							//echo("<h1>group</h1>".+print_r($G));
 							$T=new Timetable();
 							$T->loadFromDB($G->getTimetable());
