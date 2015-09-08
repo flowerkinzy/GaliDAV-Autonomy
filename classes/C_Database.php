@@ -295,7 +295,7 @@ class Database
 
 			$out .= "</div>";
 			echo $out;
-			if(is_defined("GALIDAV_DEBUG"))die("<pre>SQLError</pre>");//FIXME It's just for test!!
+			if(defined("GALIDAV_DEBUG"))die("<pre>SQLError</pre>");//FIXME It's just for test!!
 			
 			return $out;
 		}

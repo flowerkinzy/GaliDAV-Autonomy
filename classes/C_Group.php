@@ -61,7 +61,7 @@ class Group
 			if($newIsAClass)
 				$query           = "INSERT INTO " . self::TABLENAME . " (name, is_class) VALUES ($1, true);";
 			 else
-				$query           = "INSERT INTO " . self::TABLENAME . " (name, is_class) VALUES ($1, FALSE);";
+				$query           = "INSERT INTO " . self::TABLENAME . " (name, is_class) VALUES ($1, false);";
 			$params[]        = $newName;
 			$result          = Database::currentDB()->executeQuery($query, $params);
 			if (!$result)
@@ -154,7 +154,8 @@ class Group
 	*/
 	public function setStudentsList($newStudentsList = NULL)
 	{
-		foreach ($this->studentsList as $oneStudent)
+		$mylist=$this->studentsList;
+		foreach ($mylist as $oneStudent)
 		{
 			$this->removeStudent($oneStudent);
 		}
@@ -512,7 +513,7 @@ class Group
 			}
 
 			// We load each element of the arraylist of students (students are people registered in people table).
-			$this->studentsList   = NULL;
+			$this->studentsList   = array();
 			$query                = "SELECT * FROM " . self::composedOfTABLENAME . " WHERE id_group = " . $this->sqlId . ";";
 			$result               = Database::currentDB()->executeQuery($query);
 			$ressource            = pg_fetch_assoc($result);
@@ -524,7 +525,7 @@ class Group
 			}
 
 			// We load each element of the arraylist of linked groups (which are groups registerd in group table).
-			$this->linkedGroupsList   = NULL;
+			$this->linkedGroupsList   = array();
 			$query                    = "SELECT * FROM " . self::linkedToTABLENAME . " WHERE id_depending_group = " . $this->sqlId . ";";
 			$result                   = Database::currentDB()->executeQuery($query);
 			$ressource                = pg_fetch_assoc($result);
@@ -579,10 +580,6 @@ class Group
 	{
 		$this->setStudentsList(); // remove all students from the group (DB)
 		$this->setLinkedGroupsList(); // remove all links with other groups/classes (DB)
-		$params = array(intval($this->sqlId));
-		$T=new Timetable();
-		$T->loadFromDB($this->timetable);
-		$T->removeFromDB();
 		
 		$query  = "SELECT id FROM " . Subject::TABLENAME . " WHERE id_group = $1;";
 		$result = Database::currentDB()->executeQuery($query, $params);
@@ -605,24 +602,15 @@ class Group
 			}
 		}
 
-		$query = "DELECT FROM " . self::TABLENAME . " WHERE id = $1;";
-
+		$query = "DELETE FROM " . self::TABLENAME . " WHERE id = $1;";
+		$params = array(intval($this->sqlId));
 		if (Database::currentDB()->executeQuery($query, $params))
 		{			
-			/*$DB = new Database("davical_app", "davical");
-
-			if (!$DB->connect())
-			{
-				echo("Pas de connexion vers davical.");
-			}
-			else
-			{
-				$params = array($this->name);
-				$query2 = "DELETE FROM dav_principal WHERE username = $1;";
-				$DB->executeQuery($query2, $params);
-				$DB->close();
-			}
-			*/
+			
+			
+			$T=new Timetable();
+			$T->loadFromDB($this->timetable);
+			$T->removeFromDB();
 		}
 		else
 		{

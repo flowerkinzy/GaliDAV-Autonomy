@@ -11,6 +11,18 @@ if(isset($_GET['action'])){
 		else echo XoptionSubjects($_GET["id_group"]);
 		//echo "<option>1<option>2";
 	}
+	if($_GET['action']=="get_list_classes"){
+		echo get_all_classes();
+		//echo "<option>1<option>2";
+	}
+	if($_GET['action']=="get_linked_groups" && isset($_GET["id"])){
+		echo get_linked_groups(intval($_GET["id"]));
+		//echo "<option>1<option>2";
+	}
+	if($_GET['action']=="get_list_classes_with_linked_groups"){
+		echo get_all_classes_with_linked_groups();
+		//echo "<option>1<option>2";
+	}
 
 
 
@@ -183,7 +195,7 @@ function XPerson($ressource)
 	if (is_array($ressource))
 	{
 		$out = "";
-		$out .= "<form action = 'test_davical_operations.php' method = 'POST'>" . $ressource['familyname'] . " " . $ressource['firstname'];
+		$out .= "<form action = 'functions/admin_panel_operations.php' method = 'POST'>" . $ressource['familyname'] . " " . $ressource['firstname'];
 		$out .= "<input type = 'hidden' name = 'action' value = 'delete_person' /><input type = 'hidden' name = 'id' value = " . $ressource['id'] . " /><input type = 'submit' value = 'Supprimer' /></form>";
 
 		return $out;	
@@ -195,7 +207,7 @@ function XGroup($ressource)
 	if (is_array($ressource))
 	{
 		$out = "";
-		$out .= "<form action = 'test_davical_operations.php' method = 'POST'>" . $ressource['name'];
+		$out .= "<form action = 'functions/admin_panel_operations.php' method = 'POST'>" . $ressource['name'];
 		$out .= "<input type = 'hidden' name = 'action' value = 'delete_group' /><input type = 'hidden' name = 'id' value = " . $ressource['id'] . " /><input type = 'submit' value = 'Supprimer' /></form>";
 
 		return $out;
@@ -212,6 +224,44 @@ function XSubject($ressource)
 
 		return $out;	
 	}
+}
+
+function get_all_classes(){
+	
+}
+
+function get_all_classes_with_linked_groups(){
+	$res = Database::currentDB()->executeQuery(query_all_classes());
+	$class = pg_fetch_assoc($res);
+	$result=array();
+	while ($class!= NULL)
+	{
+		$obj=array();
+		$obj["id"]=intval($class['id']);
+		$obj["id_timetable"]=intval($class['id_current_timetable']);
+		$obj["name"]=$class['name'];
+		$obj["linked_groups"]=get_linked_groups(intval($class['id']));
+		$result[]=json_encode($obj);
+		$class = pg_fetch_assoc($res);
+	}
+	if(count($result)==0)return "";
+	return json_encode($result);
+}
+
+function get_linked_groups($idgroup){
+	$res = Database::currentDB()->executeQuery(query_all_linked_groups($idgroup));
+	$class = pg_fetch_assoc($res);
+	$result=array();
+	while ($class!= NULL)
+	{
+		$obj=array();
+		$obj["id"]=intval($class['id']);
+		$obj["id_timetable"]=intval($class['id_current_timetable']);
+		$obj["name"]=$class['name'];
+		$result[]=json_encode($obj);
+		$class = pg_fetch_assoc($res);
+	}
+	return json_encode($result);
 }
 
 ?>

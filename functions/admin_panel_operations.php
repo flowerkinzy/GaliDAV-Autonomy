@@ -126,8 +126,9 @@ if (isset($_POST['action']))
 
 	if ($_POST['action'] == 'add_group')
 	{
-		if( $_POST['isaclass']==true)$aGroup = new C_Class($_POST['name']);
+		if( $_POST['isaclass']=="true")$aGroup = new C_Class($_POST['name']);
 		else $aGroup = new Group($_POST['name'],false);
+		//var_dump($_POST['isaclass']);
 		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
 	}
 

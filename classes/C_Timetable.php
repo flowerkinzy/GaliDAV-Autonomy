@@ -856,10 +856,11 @@ class Timetable
 	*/
 	public function removeFromDB()
 	{
+		
 		$this->setModifList();
 		$this->setTeacherOwner();
 		$this->setSubject();
-		$query = "DELETE * FROM " . self::TABLENAME . " WHERE id = " . $this->sqlId . ";";
+		$query = "DELETE FROM " . self::TABLENAME . " WHERE id = " . $this->sqlId . ";";
 
 		if (Database::currentDB()->executeQuery($query))
 		{
