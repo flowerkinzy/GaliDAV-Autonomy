@@ -84,9 +84,9 @@ function get_course_from_id($id){
 				}
 			}
 		}
-		$result=json_encode($result);
+
 	}
-	return $result;
+	return json_encode($result);
 }
 
 

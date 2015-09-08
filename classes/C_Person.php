@@ -425,7 +425,7 @@ class Person
 	{
 		if (is_array($ressource))
 		{
-			$this->sqlId         = inval($ressource['id']);
+			$this->sqlId         = intval($ressource['id']);
 			$this->familyName    = $ressource['familyname'];
 			$this->firstName     = $ressource['firstname'];
 			$this->emailAddress1 = $ressource['emailaddress1'];

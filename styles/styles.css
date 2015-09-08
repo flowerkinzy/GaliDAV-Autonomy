@@ -202,22 +202,22 @@ div.course>p{
 	margin-bottom:auto;
 	min-width:100%;
 	max-height:35%;
-	font-size:130%;
+	font-size:150%;
 	 box-sizing: border-box;
 }
-div.course>p:nth-last-of-type(3){
+div.little-course>p:nth-last-of-type(3){
 	min-height:22%;
 	max-height:50%;
 	font-size:100%;
 	font-weight:bold;
 	margin:0;
 }
-div.course>p:nth-last-of-type(3)+p{
+div.little-course>p:nth-last-of-type(3)+p{
 	margin-bottom:0;
 	margin-top:1px;
 	font-size:100%;
 }
-div.course>p:nth-last-of-type(3)+p+p{
+div.little-course>p:nth-last-of-type(3)+p+p{
 	margin:0;
 	font-size:100%;
 }

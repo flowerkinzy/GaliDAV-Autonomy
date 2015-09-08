@@ -1,7 +1,6 @@
+var CURRENT_GROUP_ID=0;
+var CURRENT_CALENDAR_ID=0;
 var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTimezoneOffset()*60*1000); 
-var CALENDAR_DEFAULT_ID = 1;
-var GROUP_DEFAULT_ID=1;
-
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
@@ -41,12 +40,12 @@ var GROUP_DEFAULT_ID=1;
 	$("#button_next_week").on("click",function(){
 			$("div.course").remove();
 			FIRST_DAY_OF_WEEK_UTC=FIRST_DAY_OF_WEEK_UTC+(7*24*60*60*1000);
-			loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
+			loadTimetableForWeek(CURRENT_CALENDAR_ID,FIRST_DAY_OF_WEEK_UTC);
 	});
 	$("#button_previous_week").on("click",function(){
 			$("div.course").remove();
 			FIRST_DAY_OF_WEEK_UTC=FIRST_DAY_OF_WEEK_UTC-(7*24*60*60*1000);
-			loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
+			loadTimetableForWeek(CURRENT_CALENDAR_ID,FIRST_DAY_OF_WEEK_UTC);
 	});
 	
 	$("div.course,td.daycolumn>div").on("click",function(){
@@ -62,7 +61,7 @@ var GROUP_DEFAULT_ID=1;
 		$("td.daycolumn>div").off("click");
 		$("td.daycolumn>div").on("click",function(){
 			console.log("click on cell");
-			displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"),GROUP_DEFAULT_ID);
+			displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"),CURRENT_GROUP_ID);
 		});
 		
 		$("div.course").on("click",function(event){
@@ -73,21 +72,13 @@ var GROUP_DEFAULT_ID=1;
 		//TODO insérer bouton Fermer le mode modification
 	});
 	
-	$("#footer-menu").on("click","#button_stop_modify",function(){
-		$("div.course").off("click");
-		$("td.daycolumn>div").off("click");
-		$("div.course,td.daycolumn>div").on("click",function(){
-			alert("Vous n'avez pas les droits pour modifier\nou vous n'avez pas activé la modification");
-		});
-		$(this).after("<a class='btn col-md-1'  id='button_modify_timetable' ><i class='fa fa-edit'></i> Modifier</a><a class='btn col-md-1' id='button_validate_timetable'><i class='fa fa-check-square-o'></i> Valider</a>");
-		$(this).remove();
-		
-	});
+	$("#footer-menu").on("click","#button_stop_modify",function(){stopModification();});
 	
 	
-
-	
-	loadTimetableForWeek(CALENDAR_DEFAULT_ID,FIRST_DAY_OF_WEEK_UTC);
+	$("#frame_timetable").hide();
+	$("#button_next_week,#button_previous_week").hide();
+	$("#button_modify_timetable,#button_validate_timetable").hide();
+	//loadTimetableForWeek(CURRENT_CALENDAR_ID,FIRST_DAY_OF_WEEK_UTC);
 
 	
 /*****************************
@@ -253,7 +244,7 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 		console.log("button_validate_new_event/param=..."); console.dir(param);
  		$("#newOrModifyCourse").dialog("close");
 	
-
+		//TODO check there is no blocking course
 		$.post("functions/courses_functions.php",
 		      param,
 			function(data)
@@ -303,7 +294,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	$(form).append(divEnd);
 	
 	var divSubject=$("<select name='subject' id='select_choose_subject'></select>");
-	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:GROUP_DEFAULT_ID},function(data){
+	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:CURRENT_GROUP_ID},function(data){
 		$(divSubject).append("<option value=0 >--");
 		$(divSubject).append(data);
 	});
@@ -421,7 +412,7 @@ function displayFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM,weekday){
 	$("#button_validate_new_event").on("click",function(event){
 		event.stopPropagation();
 		event.preventDefault;
-		console.log("FIRST_DAY_OF_WEEK_UTC unix ="+Math.floor(FIRST_DAY_OF_WEEK_UTC/1000));
+		//console.log("FIRST_DAY_OF_WEEK_UTC unix ="+Math.floor(FIRST_DAY_OF_WEEK_UTC/1000));
 		var beginUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+(weekday*24*60*60)+($("#input_pick_hour_begin").spinner("value")*60*60);
 		beginUTC += ($("#input_pick_min_begin").spinner("value")*60);
 		var endUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+(weekday*24*60*60)+($("#input_pick_hour_end").spinner("value")*60*60);
@@ -439,6 +430,7 @@ function displayFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM,weekday){
 		console.log("button_validate_new_event/param=..."); console.dir(param);
  		$("#newOrModifyCourse").dialog("close");
 
+		//TODO check there is no blocking course
  		$.post("functions/courses_functions.php",
  		      param,
  			function(data)
@@ -487,12 +479,12 @@ function createFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM){
 	$(divEnd).append(hourpickerE);
 	$(divEnd).append(minpickerE);	
 	$(form).append(divEnd);
-	console.log("ID="+$(courseToModify).attr("id_subject"));
+	//console.log("ID="+$(courseToModify).attr("id_subject"));
 	var divSubject=$("<select name='subject' id='select_choose_subject'></select>");
-	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:GROUP_DEFAULT_ID,id_selected:$(courseToModify).attr("id_subject")},function(data){
+	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:CURRENT_GROUP_ID,id_selected:$(courseToModify).attr("id_subject")},function(data){
 		$(divSubject).append("<option value=0 >--");
 		$(divSubject).append(data);
-	});
+	});$("#footer-menu").on("click","#button_stop_modify",stopModification());
 	$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
 	$(divSubject).parent().prepend("<p class='formlabel'>Changer la matière:</p>");
 	$(form).append($(divSubject).parent());
@@ -618,6 +610,7 @@ function loadTimetableForWeek(idTimetable,firstweekdayutc){
 					{
 						displayNewCourseElementClass(list[i]);
 					}
+					
 					adaptDaysOfWeekDate(firstweekdayutc);
 					var date_1=new Date(firstweekdayutc);
 					var date_2=new Date(firstweekdayutc+4*24*60*60*1000);
@@ -658,7 +651,7 @@ function adaptDaysOfWeekDate(firstweekdayutc){
 }
 
 function checkHourField(field){
-	
+	$("#button_validate_new_event").removeAttr("disabled");
 	for(i=0;i<field.value.length;i++){
 			if(isNaN(parseInt(field.value.charAt(i)))){
 				//field.style.backgroundColor = "#FF0000";
@@ -685,6 +678,7 @@ function checkHourField(field){
 		}
 			
 	}
+	else $("#button_validate_new_event").attr("disabled","disabled");
 				
 	//else {
 		//field.style.backgroundColor = "#fff";
@@ -693,6 +687,7 @@ function checkHourField(field){
 }
 
 function checkMinField(field){
+	$("#button_validate_new_event").removeAttr("disabled");
 	for(i=0;i<field.value.length;i++){
 			if(isNaN(parseInt(field.value.charAt(i)))){
 				//field.style.backgroundColor = "#FF0000";
@@ -717,9 +712,10 @@ function checkMinField(field){
 			&& ($("#input_pick_min_end").spinner("value")>$("#input_pick_min_begin").spinner("value"))){
 			$("#button_validate_new_event").removeAttr("disabled");
 		}
-		else $("#button_validate_new_event").attr("disabled","disabled");
+		
 			
 	}
+	else $("#button_validate_new_event").attr("disabled","disabled");
 	
 // 	if((time%TIME_INTERVAL_IN_MIN) != 0) {
 // 		field.style.backgroundColor = "#FF0000";
@@ -729,5 +725,18 @@ function checkMinField(field){
 // 	}
 }
 
-
+function stopModification(){
+		//TODO complete pour informer le serveur
+	$("div.course").off("click");
+	$("td.daycolumn>div").off("click");
+	$("div.course,td.daycolumn>div").on("click",function(){
+		alert("Vous n'avez pas les droits pour modifier\nou vous n'avez pas activé la modification");
+	});
+	
+	if($("#button_stop_modify").get(0)!=undefined){
+		$("#button_stop_modify").after("<a class='btn col-md-1'  id='button_modify_timetable' ><i class='fa fa-edit'></i> Modifier</a><a class='btn col-md-1' id='button_validate_timetable'><i class='fa fa-check-square-o'></i> Valider</a>");
+		$("#button_stop_modify").remove();
+	}
+	
+}
 

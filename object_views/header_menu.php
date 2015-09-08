@@ -15,7 +15,7 @@
 				<img src="./object_views/logoGalidavMini.png">
 			</li>
 			<li class="view-filter-option col-md-2" type="label">
-				<p> Nom EDT </p>
+				<p id="name_timetable"> </p>
 			</li>
 			<li class="view-filter-option col-md-2" type="label">
 				<p id="week_dates">  </p>

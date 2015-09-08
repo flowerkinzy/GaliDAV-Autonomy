@@ -49,10 +49,56 @@ function createNewCourseElementClass(Course) {
 				+"][end_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 				+"]").height();
 		}
-	var height=bottom-top;
-	var width=$($("td.daycolumn")[0]).width()-1;
+		
+	//TODO check if there is another course!!!
+	/**
+	 * 
+	 * 
+	 * Then change the width of the already present course,+ adpt this course width
+	 * 
+	 */
+	var containingDiv=$("td.daycolumn[begin_hour="+
+			beginDate.getHours()+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)
+			+"][weekday="+(beginDate.getDay()-1)%7+"]>div");
+	if($(containingDiv).html()!=undefined)console.log("content of containingDiv="+$(containingDiv).html());
+	var numberOfCourses;
+ 	if($(containingDiv).children()==undefined)numberOfCourses=0;
+	else numberOfCourses=$(containingDiv).children().length;
+		console.log("numberOfCourses="+numberOfCourses);
+// 	//if(numberOfCourses==0){
+		var height=bottom-top;
+		var width=$($("td.daycolumn")[0]).width()-1;
+		var margin_left=0;
+// 	//}
+	if(numberOfCourses==1){
+		
+		height=bottom-top;
+		
+		width=Math.floor($($("td.daycolumn")[0]).width()/2)-1;
+		margin_left=width+1;
+		$(containingDiv).children().css("width",width+"px");
+		$(containingDiv).children().css("max-width",width+"px");
+		$(containingDiv).children().css("margin-left",margin_left+"px");
+	}
+	if(numberOfCourses==2){
+		
+		height=bottom-top;
+		
+		width=Math.floor($($("td.daycolumn")[0]).width()/3)-1;
+		margin_left=width;
+		$(containingDiv).children().css("width",width+"px");
+		$(containingDiv).children().css("max-width",width+"px");
+		$(containingDiv).children().get(0).css("margin-left",margin_left+"px");
+		$(containingDiv).children().get(1).css("margin-left",(margin_left*2)+"px");
+	}
+		
+	/**
+	 ******************/
+	
  	
-	var res="<div class='course fullspace-x'";
+	var res="<div "
+	if(height<=40)res =res+"class='course fullspace-x short-course'";
+	else res =res+"class='course fullspace-x'";
 	if(getTypeName(Course.courseType)=="EXAMEN" || getTypeName(Course.courseType)=="RATTRAPAGE")res = res + "style='background-color:red;";
 	else if(getTypeName(Course.courseType)=="REUNION")res = res + "style='background-color:orange;";
 	else if(Course.subject==0 || Course.subject==undefined)res = res + "style='background-color:white;";

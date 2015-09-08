@@ -298,6 +298,29 @@ class Group
 		return FALSE;
 	}
 	
+	public function getDependingGroupsList()
+	{
+		$list=array();
+		$params[] = $this->sqlId;
+		$query    = "SELECT id_depending_group FROM " . self::linkedToTABLENAME . " WHERE id_linked_group = $1;";
+		$result = Database::currentDB()->executeQuery($query, $params);
+		
+		if ($result)
+		{
+			$ressource=pg_fetch_assoc($result);
+			while($ressource){
+				$list[]=intval($ressource["id_depending_group"]);
+				$ressource=pg_fetch_assoc($result);
+			}
+		}
+		else
+		{
+
+			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+		}
+		return $list;
+	}
+	
 	/**
 	 * \brief  Adds a student.
 	 * \param  $newStudent The student to add.
@@ -507,7 +530,7 @@ class Group
 			$this->name     = $ressource['name'];
 			$this->isAClass = $ressource['is_class'];
 
-			if (is_int($ressource['id_current_timetable']))
+			if ($ressource['id_current_timetable'])
 			{
 				$this->timetable = intval($ressource['id_current_timetable']);
 			}

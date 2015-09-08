@@ -87,7 +87,7 @@ class Course
  						$this->sqlId     = intval($result['id']);
 						if(is_int($newSubject)|| is_int($optionalGroup)){
 							$S=new Subject();
-							if(is_int($newSubject))$S->loadFromDB($newSubject);
+							if(is_int($newSubject) && $newSubject>0)$S->loadFromDB($newSubject);
 							
 							$T=new Timetable();
 							
@@ -97,11 +97,26 @@ class Course
 							}
 							$G=new Group();
 							if(is_int($S->getSqlId()))$G->loadFromDB($S->getGroup());
-							else $G->loadFromDB($optionalGroup);
+							else {
+								//echo("<pre>optionalGroup used</pre>");
+								$G->loadFromDB($optionalGroup);
+							}
+							//echo("<h1>group</h1>".+print_r($G));
 							$T=new Timetable();
 							$T->loadFromDB($G->getTimetable());
 							$T->addCourse($this);
+							
 							//TODO add to all depending groups' calendars
+							$list=$G->getDependingGroupsList();
+							foreach($list as $groupid){
+								$G2=new Group();
+								$G2->loadFromDB($groupid);
+								$T2=new Timetable();
+								$T2->loadFromDB($G2->getTimetable());
+								$T2->addCourse($this);
+							
+							}
+							
 							if(is_int($S->getSqlId())){
 								foreach ($S->getTeachedByList() as $idSpeaker) // for all speakers of this course
 								{
