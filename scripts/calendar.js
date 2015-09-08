@@ -60,7 +60,7 @@ var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTim
 		$("div.course").off("click");
 		$("td.daycolumn>div").off("click");
 		$("td.daycolumn>div").on("click",function(){
-			console.log("click on cell");
+			//console.log("click on cell");
 			displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"),CURRENT_GROUP_ID);
 		});
 		
@@ -274,6 +274,10 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 			}
 		  );
 	});
+	$("#input_until_date").next().on("click",function(data){
+		console.log("effacer date");
+		$("#input_until_date").datepicker("setDate",null);
+	});
 
 }
 
@@ -299,7 +303,12 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	var minpickerE=$("<input onblur='checkMinField(this)' id='input_pick_min_end' required >");
 	$(divEnd).append("<p class='formlabel'>Heure de fin:</p>");
 	$(divEnd).append(hourpickerE);
-	$(divEnd).append(minpickerE);	
+	$(divEnd).append(minpickerE);
+	var divUntildate=$("<span id='div_input_until_date'></span>");
+	$(divUntildate).append("<span class='formlabel'> Répéter ce cours jusqu'au:</span>");
+	$(divUntildate).append("<input id='input_until_date'/>");
+	$(divUntildate).append("<button>x</button>");
+	$(divEnd).append($(divUntildate));
 	$(form).append(divEnd);
 	
 	var divSubject=$("<select name='subject' id='select_choose_subject'></select>");
@@ -310,6 +319,10 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
 	$(divSubject).parent().prepend("<p class='formlabel'>Choisir une matière:</p>");
 	$(form).append($(divSubject).parent());
+	
+	
+	
+	
 	
 	var selectType=$("<select name='type' id='select_choose_type'></select>");
 	for(i=0;i<NUMBER_OF_COURSES_TYPES;i++){
@@ -391,6 +404,15 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	$(hourpickerE).spinner("value",EndHdefault);
 	$(minpickerE).spinner("value",EndMdefault);	
 	
+	$(divUntildate).children("input").datepicker({
+		minDate: new Date(FIRST_DAY_OF_WEEK_UTC+(weekday+7)*24*60*60*1000),
+		dateFormat: "dd/mm/yy",
+		firstDay:1,
+		beforeShowDay: $.datepicker.noWeekends,
+		dayNamesMin: [ "Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa" ],
+		dayNames: [ "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi" ],
+		monthNames: ["Janvier","Février","Mars","Avril","Mai", "Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"]
+	});
 	
 	return div;
 }
