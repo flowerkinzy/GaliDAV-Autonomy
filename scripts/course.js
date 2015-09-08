@@ -60,11 +60,11 @@ function createNewCourseElementClass(Course) {
 	var containingDiv=$("td.daycolumn[begin_hour="+
 			beginDate.getHours()+"][begin_min="+TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN)
 			+"][weekday="+(beginDate.getDay()-1)%7+"]>div");
-	if($(containingDiv).html()!=undefined)console.log("content of containingDiv="+$(containingDiv).html());
+	//if($(containingDiv).html()!=undefined)console.log("content of containingDiv="+$(containingDiv).html());
 	var numberOfCourses;
  	if($(containingDiv).children()==undefined)numberOfCourses=0;
 	else numberOfCourses=$(containingDiv).children().length;
-		console.log("numberOfCourses="+numberOfCourses);
+		//console.log("numberOfCourses="+numberOfCourses);
 // 	//if(numberOfCourses==0){
 		var height=bottom-top;
 		var width=$($("td.daycolumn")[0]).width()-1;
@@ -88,8 +88,20 @@ function createNewCourseElementClass(Course) {
 		margin_left=width;
 		$(containingDiv).children().css("width",width+"px");
 		$(containingDiv).children().css("max-width",width+"px");
-		$(containingDiv).children().get(0).css("margin-left",margin_left+"px");
-		$(containingDiv).children().get(1).css("margin-left",(margin_left*2)+"px");
+		$($(containingDiv).children().get(0)).css("margin-left",margin_left+"px");
+		$($(containingDiv).children().get(1)).css("margin-left",(margin_left*2)+"px");
+	}
+	if(numberOfCourses>=3){
+		
+		height=bottom-top;
+		
+		width=Math.floor($($("td.daycolumn")[0]).width()/4)-1;
+		margin_left=width;
+		$(containingDiv).children().css("width",width+"px");
+		$(containingDiv).children().css("max-width",width+"px");
+		$($(containingDiv).children().get(0)).css("margin-left",margin_left+"px");
+		$($(containingDiv).children().get(1)).css("margin-left",(margin_left*2)+"px");
+		$($(containingDiv).children().get(2)).css("margin-left",(margin_left*3)+"px");
 	}
 		
 	/**
@@ -134,28 +146,34 @@ function createNewCourseElementClass(Course) {
 
 //Note: par défaut, les cours concernent tous les élèves affiliés à lEDT. Il faudra préciser un évènement de groupe pour
 //avoir 2+ cours sur la même plage horaires. (Et donc empêcher le cours de prendre toute la place);
-function displayNewCourseElementClass(Course) {
+function displayNewCourseElementClass(CourseJS) {
 	//console.log("displayNewCourseElementClass/@param="+Course);	
-	Course=jQuery.parseJSON(Course);
-	var beginDate=new Date(Course.time_begin*1000);
-	var endDate=new Date(Course.time_end*1000);
-	var weekday=beginDate.getDay(); //0 is for Sunday and so on
-	var beginM=TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN);
-	var beginH=beginDate.getHours();
-	var endM=TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN);
-	var endH=endDate.getHours();
-	if(weekday<1 || weekday>5);
-	else if(beginH < HOUR_MIN || beginH> HOUR_MAX);
-	else if(endH < HOUR_MIN || endH> HOUR_MAX);
-	else if(beginH==HOUR_MIN && beginM < BEGIN_MIN);
-	else if(beginH==HOUR_MAX && beginM >= END_MIN);
-	else if(endH==HOUR_MIN && endM <= BEGIN_MIN);
-	else if(endH==HOUR_MAX && endM > END_MIN);
-	else{
-		$("td.daycolumn[begin_hour="
-			+beginH+"][begin_min="+beginM+"][weekday="+(weekday-1)%7+"]>div")
-				.append(createNewCourseElementClass(Course));
+	try{
+		Course=jQuery.parseJSON(CourseJS);
+
+		var beginDate=new Date(Course.time_begin*1000);
+		var endDate=new Date(Course.time_end*1000);
+		var weekday=beginDate.getDay(); //0 is for Sunday and so on
+		var beginM=TIME_INTERVAL_IN_MIN*Math.floor(beginDate.getMinutes()/TIME_INTERVAL_IN_MIN);
+		var beginH=beginDate.getHours();
+		var endM=TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN);
+		var endH=endDate.getHours();
+		if(weekday<1 || weekday>5);
+		else if(beginH < HOUR_MIN || beginH> HOUR_MAX);
+		else if(endH < HOUR_MIN || endH> HOUR_MAX);
+		else if(beginH==HOUR_MIN && beginM < BEGIN_MIN);
+		else if(beginH==HOUR_MAX && beginM >= END_MIN);
+		else if(endH==HOUR_MIN && endM <= BEGIN_MIN);
+		else if(endH==HOUR_MAX && endM > END_MIN);
+		else{
+			$("td.daycolumn[begin_hour="
+				+beginH+"][begin_min="+beginM+"][weekday="+(weekday-1)%7+"]>div")
+					.append(createNewCourseElementClass(Course));
 		}
+	}catch(err){
+			console.log("Le cours n'a pas pu être reconstitué: "+CourseJS);
+			console.log(err);
+	}
 	
 }
 

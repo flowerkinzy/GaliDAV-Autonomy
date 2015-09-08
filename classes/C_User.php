@@ -44,9 +44,9 @@ class User extends Person
 		{
 			$this->login    = $newLogin;
 			$this->password = $newPassword;
-			$hashPassword   = session_salted_sha1($newPassword); // The password has to be crypted in order to save it.
+			//$hashPassword   = session_salted_sha1($newPassword); // The password has to be crypted in order to save it.
 			$fullName       = $newFamilyName . " " . $newFirstName;
-			CreateUserAccount($newLogin, $fullName, $hashPassword, $newEmailAddress1);
+			//CreateUserAccount($newLogin, $fullName, $hashPassword, $newEmailAddress1);
 			$params2[] = $this->sqlId;
 			$params2[] = $newLogin;
 			$query     = "INSERT INTO " . self::TABLENAME . " (id_person, login) VALUES ($1, $2);";
@@ -87,7 +87,7 @@ class User extends Person
 	*/
 	protected function setPassword($newPassword)
 	{
-		$params[] = session_salted_sha1($newPassword);
+		//$params[] = session_salted_sha1($newPassword);
 		$params[] = $this->login;
 
 		$query    = "UPDATE " . self::TABLENAME . " SET password = $1 WHERE login = $2;";

@@ -204,6 +204,7 @@ div.course>p{
 	max-height:35%;
 	font-size:150%;
 	 box-sizing: border-box;
+	 word-break:normal;
 }
 div.little-course>p:nth-last-of-type(3){
 	min-height:22%;

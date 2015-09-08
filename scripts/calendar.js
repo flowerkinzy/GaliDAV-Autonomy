@@ -4,8 +4,8 @@ var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTim
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
-			console.log("Double-click on calendar cell");
-			var button="<button style='padding:0;cursor:default;' ";
+			//console.log("Double-click on calendar cell");
+			var button="<button class='hide_row' style='padding:0;cursor:default;' ";
 			button=button+"begin_hour="+$(this).attr("begin_hour")+" ";
 			button=button+"begin_min="+$(this).attr("begin_min")+" ";
 			button=button+"end_min="+$(this).attr("end_min")+" ";
@@ -65,9 +65,14 @@ var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTim
 		});
 		
 		$("div.course").on("click",function(event){
-			event.stopPropagation();
-			displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
-		});
+			
+			if(parseInt($(this).attr("id_group"))!=CURRENT_GROUP_ID);//alert("Ce cours dépend d'un autre groupe");
+			else{
+				event.stopPropagation();
+				displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
+			}
+				
+			});
 		
 		//TODO insérer bouton Fermer le mode modification
 	});
@@ -88,7 +93,7 @@ var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTim
 	
 	
 function adapt_button_position(){
-	B=$("button").detach();
+	B=$("button.hide_row").detach();
 		for(i=0;i<B.length;i++){
 
 			$(B[i]).appendTo("#calendar_core_table");
@@ -255,9 +260,12 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 					var obj=jQuery.parseJSON(data);
 					displayNewCourseElementClass(data);
 					$("div.course[id="+obj.sqlId+"]").on("click",function(event){
-						event.stopPropagation();
-						if(parseInt($(this).attr("id_group"))=!CURRENT_GROUP_ID)alert("Ce cours dépend d'un autre groupe");
-						else displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
+						if(parseInt($(this).attr("id_group"))!=CURRENT_GROUP_ID);//alert("Ce cours dépend d'un autre groupe");
+						else{
+							event.stopPropagation();
+							displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));				
+						}
+							
 					});
 				}catch(err){
 					$("body").append(data)
@@ -517,7 +525,7 @@ function createFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM){
 	//$(form).append("<div id='div_input_room'><p class='formlabel'>Changer la salle:</p><input id='input_room' name='room' type='text' autocomplete /></div>");
 	$(form).append(div_input_room);
 	
-	$(form).append("<div><button value='Valider!' id='button_validate_new_event'>Valider!</button></div>");
+	$(form).append("<div><button value='Valider!' id='button_validate_new_event'>Valider!</button><button  id='button_delete_event'>Supprimer!</button></div>");
 	$(div).append(form);
 	
 	$(minpickerB).spinner({
@@ -594,7 +602,8 @@ function createFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM){
 
 
 function loadTimetableForWeek(idTimetable,firstweekdayutc){
-	
+	$("button.hide_row").remove();
+	$("tr.calendar").show();
 	var param=new Object();
 	param.begin=Math.floor(firstweekdayutc/1000);
 	param.end=param.begin+(5*24*60*60);
