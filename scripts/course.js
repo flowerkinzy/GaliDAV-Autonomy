@@ -109,6 +109,7 @@ function displayNewCourseElementClass(Course) {
 			+beginH+"][begin_min="+beginM+"][weekday="+(weekday-1)%7+"]>div")
 				.append(createNewCourseElementClass(Course));
 		}
+	
 }
 
 function getColorFromId(id){

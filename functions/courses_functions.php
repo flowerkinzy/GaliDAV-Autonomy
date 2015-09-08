@@ -29,7 +29,27 @@ error_log("KFK - Has loaded ".__FILE__);
 	}
 	
 	
-	if(is_int($type))$C->setCourseType(intval($type));
+	if(is_int($type))$C->setCourseType($type);
+	if(is_string($name))$C->setName($name);
+	if(is_string($room))$C->setRoom($room);
+	return json_encode($C->to_array());
+	
+}
+
+function modify_course($id,$begin, $end,$type,$room=null,$id_subject=NULL,$name=NULL){
+
+	$C = new Course();
+	$C->loadFromDB($id);
+	//$C = new Course(null,$begin,$end,$id_group);
+	if(Database::currentDB()->sqlErrorMessage!="")return "";
+	if($C->getSqlId()==null)return "";
+	if(is_int($begin) && is_int($end)){
+		$C->setBegin($begin);
+		$C->setEnd($end);
+	}
+	
+	$C->setSubject($id_subject);
+	if(is_int($type))$C->setCourseType($type);
 	if(is_string($name))$C->setName($name);
 	if(is_string($room))$C->setRoom($room);
 	return json_encode($C->to_array());
@@ -93,6 +113,27 @@ if(isset($_POST['action'])){
 
 		echo $result;
 	}
+	
+	if($_POST['action']=='modify_course' && isset($_POST['id'])){
+		$result="<pre>none</pre>";
+		//echo $result;
+			if(isset($_POST['id_subject']) && isset($_POST['room'])){
+				if(isset($_POST['name']))
+					$result=modify_course(intval($_POST['id']),intval($_POST['begin']),intval($_POST['end']),intval($_POST['type']),$_POST['room'],intval($_POST['id_subject']),$_POST['name']);
+				else
+					$result=modify_course(intval($_POST['id']), intval($_POST['begin']),intval($_POST['end']),intval($_POST['type']),$_POST['room'],intval($_POST['id_subject']));
+			}else if(isset($_POST['room'])){
+				if(isset($_POST['name']))$result=modify_course(intval($_POST['id']), intval($_POST['begin']),intval($_POST['end']),intval($_POST['type']),$_POST['room'],NULL,$_POST['name']);
+				else $result=modify_course(intval($_POST['id']),intval($_POST['begin']),intval($_POST['end']),intval($_POST['type']),$_POST['room']);
+			}
+			else {
+				if(isset($_POST['name']))$result=modify_course(intval($_POST['id']), intval($_POST['begin']),intval($_POST['end']),intval($_POST['type']),NULL,NULL,$_POST['name']);
+				else $result=modify_course(intval($_POST['id']), intval($_POST['begin']),intval($_POST['end']),intval($_POST['type']));
+			}
+
+		echo $result;
+	}
+
 	
 	if($_POST['action']=='load_courses_between'){
 		if(isset($_POST['begin']) && isset($_POST['end']) && isset($_POST['id']))

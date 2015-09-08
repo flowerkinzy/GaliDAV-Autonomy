@@ -372,20 +372,23 @@ class Course
 	 * \brief  Setter for the attribute $subject.
 	 * \param  $newSubject Contains the new value of $subject.
 	*/
-	public function setSubject(Subject $newSubject=NULL)
+	public function setSubject($newSubject=NULL)
 	{
 		if ($newSubject!=NULL)
 		{
-			$query  = "UPDATE " . self::TABLENAME . " SET id_subject = $1 WHERE id = " . $this->sqlId . ";";
-			$params = array($newSubject->getSqlId());
+			if($newSubject instanceof Subject)$newSubject=$newSubject->getSqlId();
+			if(is_int($newSubject)){
+				$query  = "UPDATE " . self::TABLENAME . " SET id_subject = $1 WHERE id = " . $this->sqlId . ";";
+				$params = array($newSubject);
 
-			if (Database::currentDB()->executeQuery($query, $params))
-			{
-				$this->subject=$newSubject;
-			}
-			else
-			{
-				Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+				if (Database::currentDB()->executeQuery($query, $params))
+				{
+					$this->subject=$newSubject;
+				}
+				else
+				{
+					Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+				}
 			}
 		}else{
 			$query  = "UPDATE " . self::TABLENAME . " SET id_subject =NULL WHERE id = " . $this->sqlId . ";";
@@ -466,11 +469,11 @@ class Course
 		if($ressource['number']){
 			$this->number=intval($ressource['number']);
 		}
-		$this->time_begin=NULL;
+		$this->time_begin=0;
 		if($ressource['begins_at']){
 			$this->time_begin=strtotime($ressource['begins_at']);
 		}
-		$this->time_end=NULL;
+		$this->time_end=0;
 		if($ressource['ends_at']){
 			$this->time_end=strtotime($ressource['ends_at']);
 		}
@@ -478,7 +481,7 @@ class Course
 		if($ressource['room']){
 			$this->room=$ressource['room'];
 		}
-		$this->courseType=NULL;
+		$this->courseType=0;
 		if($ressource['type']){
 			$this->courseType=intval($ressource['type']);
 		}

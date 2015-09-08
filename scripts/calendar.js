@@ -1,6 +1,7 @@
 var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTimezoneOffset()*60*1000); 
 var CALENDAR_DEFAULT_ID = 1;
 var GROUP_DEFAULT_ID=1;
+
  $( document ).ready(function() {
 	$("tr.calendar").on("dblclick","td.hourcolumn",function (){
 		if($(this).parent().children().children().children().length==0){ //Checks if there is no activity starting at that time
@@ -52,9 +53,11 @@ var GROUP_DEFAULT_ID=1;
 		alert("Vous n'avez pas les droits pour modifier\nou vous n'avez pas activé la modification");
 	});
 	
-	$("#button_modify_timetable").on("click",function(){
-		$(this).detach();
-		$("#button_validate_timetable").detach();
+	$("#footer-menu").on("click","#button_modify_timetable",function(){
+		$(this).after("<a class='btn col-md-2'  id='button_stop_modify' > Fermer le mode modification</a>");
+		$(this).remove();
+		$("#button_validate_timetable").remove();
+		
 		$("div.course").off("click");
 		$("td.daycolumn>div").off("click");
 		$("td.daycolumn>div").on("click",function(){
@@ -64,10 +67,21 @@ var GROUP_DEFAULT_ID=1;
 		
 		$("div.course").on("click",function(event){
 			event.stopPropagation();
-			displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"));			
+			displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
 		});
 		
-		//TODO insérer boutons Annuler/Enregistrer
+		//TODO insérer bouton Fermer le mode modification
+	});
+	
+	$("#footer-menu").on("click","#button_stop_modify",function(){
+		$("div.course").off("click");
+		$("td.daycolumn>div").off("click");
+		$("div.course,td.daycolumn>div").on("click",function(){
+			alert("Vous n'avez pas les droits pour modifier\nou vous n'avez pas activé la modification");
+		});
+		$(this).after("<a class='btn col-md-1'  id='button_modify_timetable' ><i class='fa fa-edit'></i> Modifier</a><a class='btn col-md-1' id='button_validate_timetable'><i class='fa fa-check-square-o'></i> Valider</a>");
+		$(this).remove();
+		
 	});
 	
 	
@@ -249,6 +263,10 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 				try{
 					var obj=jQuery.parseJSON(data);
 					displayNewCourseElementClass(data);
+					$("div.course[id="+obj.sqlId+"]").on("click",function(event){
+						event.stopPropagation();
+						displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
+					});
 				}catch(err){
 					$("body").append(data)
 				}
@@ -380,7 +398,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 /*************************************
  * ********* Modify an Event *********
  * ***********************************/
-function displayFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM){
+function displayFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM,weekday){
 	var courseToModify=$("div.course[id="+courseId+"]");
 	$("#newOrModifyCourse").remove();
 	
@@ -404,38 +422,43 @@ function displayFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM){
 		event.stopPropagation();
 		event.preventDefault;
 		console.log("FIRST_DAY_OF_WEEK_UTC unix ="+Math.floor(FIRST_DAY_OF_WEEK_UTC/1000));
-		var beginUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_begin").spinner("value")*60*60);
+		var beginUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+(weekday*24*60*60)+($("#input_pick_hour_begin").spinner("value")*60*60);
 		beginUTC += ($("#input_pick_min_begin").spinner("value")*60);
-		var endUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+($("#input_weekday").val()*24*60*60)+($("#input_pick_hour_end").spinner("value")*60*60);
+		var endUTC=Math.floor(FIRST_DAY_OF_WEEK_UTC/1000)+(weekday*24*60*60)+($("#input_pick_hour_end").spinner("value")*60*60);
 		endUTC += ($("#input_pick_min_end").spinner("value")*60);
 		//var param={begin: beginUTC,end: endUTC, type: $("#select_choose_type").val()};
 		var param=new Object();
-		param.action="create_course";
+		param.id=courseId;
+		param.action="modify_course";
 		param.begin=beginUTC;
 		param.end=endUTC;
 		param.type=$("#select_choose_type").val();
 		param.room=$("#input_room").val();
 		if($("#input_name").val()!="")param.name=$("#input_name").val();
 		if($("#select_choose_subject").val()>0)param.id_subject=$("#select_choose_subject").val();
-		//console.log("button_validate_new_event/param=..."); console.dir(param);
+		console.log("button_validate_new_event/param=..."); console.dir(param);
  		$("#newOrModifyCourse").dialog("close");
-	
 
-// 		$.post("functions/courses_functions.php",
-// 		      param,
-// 			function(data)
-// 			{
-// 				//console.log("create_course: data="+data+"...");
-// 				//console.dir(data);
-// 				try{
-// 					var obj=jQuery.parseJSON(data);
-// 					displayNewCourseElementClass(data);
-// 				}catch(err){
-// 					$("body").append(data)
-// 				}
-// 
-// 			}
-// 		  );
+ 		$.post("functions/courses_functions.php",
+ 		      param,
+ 			function(data)
+ 			{
+ 				console.log("create_course: data="+data+"...");
+ 				//console.dir(data);
+				try{
+					var obj=jQuery.parseJSON(data);
+					$(courseToModify).remove();
+					displayNewCourseElementClass(data);
+					$("div.course[id="+courseId+"]").on("click",function(event){
+						event.stopPropagation();
+						displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
+					});
+				}catch(err){
+					$("body").append(data)
+				}
+
+			}
+		  );
 	});
 
 }
@@ -600,6 +623,13 @@ function loadTimetableForWeek(idTimetable,firstweekdayutc){
 					var date_2=new Date(firstweekdayutc+4*24*60*60*1000);
 					$("#week_dates").html("Semaine du "+date_1.getDate()+"/"+(date_1.getMonth()+1)+" au "+date_2.getDate()+"/"+(date_2.getMonth()+1));
 				
+					if($("#button_stop_modify").get(0)!=undefined){
+						$("div.course").on("click",function(event){
+							event.stopPropagation();
+							displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
+						});
+					}
+					
 				}catch(err){
 					$("body").append(list);
 				}
