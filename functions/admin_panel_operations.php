@@ -147,7 +147,7 @@ if (isset($_POST['action']))
 
 		echo($aPerson->toHTML());
 		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
-		die;
+		//die;
 	}
 
 	if ($_POST['action'] == 'delete_person')
@@ -156,21 +156,21 @@ if (isset($_POST['action']))
 		$aPerson->loadFromDB(intval($_POST['id']));
 		$aPerson->removeFromDB();
 		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
-		die;
+		//die;
 	}
 
 	if ($_POST['action'] == 'clear_db')
 	{
 		Database::currentDB()->clear();
 		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
-		die;
+		//die;
 	}
 
 	if ($_POST['action'] == 'init_db')
 	{
 		Database::currentDB()->initialize();
 		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
-		die;
+		//die;
 	}
 
 	if ($_POST['action'] == 'delete_group')
@@ -188,7 +188,7 @@ if (isset($_POST['action']))
 
 		$aGroup->removeFromDB();
 		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
-		die;
+		//die;
 	}
 
 	if ($_POST['action'] == 'modify_group')

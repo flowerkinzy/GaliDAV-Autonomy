@@ -29,9 +29,10 @@ class Course
 	private $courseType = NULL;
 	private $subject     = NULL;
 	private $name	=	NULL;
+	private $id_group	=	NULL;
 
 	const TABLENAME           = "gcourse";
-	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER, creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL";
+	const SQLcolumns          = "id serial PRIMARY KEY, name VARCHAR(30), room VARCHAR(30), begins_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, ends_at TIMESTAMP WITHOUT TIME ZONE NOT NULL, id_subject INTEGER REFERENCES gsubject(id), type INTEGER, number INTEGER, id_original_group INTEGER REFERENCES ggroup(id), creation_timestamp TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL";
 	const belongsToTABLENAME  = "gcourse_belongs_to";
 	const belongsToSQLcolumns = "id_course INTEGER REFERENCES gcourse(id), id_calendar INTEGER REFERENCES gcalendar(id), CONSTRAINT gcourse_belongs_to_pk PRIMARY KEY(id_course, id_calendar)";
 
@@ -101,6 +102,8 @@ class Course
 								//echo("<pre>optionalGroup used</pre>");
 								$G->loadFromDB($optionalGroup);
 							}
+							
+							$this->id_group=$G->getSqlId();
 							//echo("<h1>group</h1>".+print_r($G));
 							$T=new Timetable();
 							$T->loadFromDB($G->getTimetable());
@@ -508,6 +511,11 @@ class Course
 		if($ressource['name']!=NULL){
 			$this->name=$ressource['name'];
 		}
+		$this->id_group=NULL;
+		if($ressource['id_original_group']!=NULL){
+			$this->id_group=$ressource['id_original_group'];
+		}
+		
 	}
 
 	
