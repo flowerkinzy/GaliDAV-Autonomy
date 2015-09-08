@@ -10,6 +10,6 @@
 <a class="btn col-md-1 col-md-offset-6" href="admin_panel2.php">
 	<i class="fa fa-cogs"></i> Admin
 </a>
-<a class="btn col-md-1">
+<a class="btn col-md-1" href="logout.php">
 	<i class="fa fa-sign-out"></i> Logout
 </a>
