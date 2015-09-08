@@ -112,7 +112,8 @@ function createNewCourseElementClass(Course) {
 			" end_min="+TIME_INTERVAL_IN_MIN*Math.floor(endDate.getMinutes()/TIME_INTERVAL_IN_MIN)+
 			" weekday="+(beginDate.getDay()-1)%7+
 			" id="+
-			Course.sqlId+" type="+Course.courseType;
+			Course.sqlId+" type="+Course.courseType+
+			" id_group="+Course.id_group;
 			if(Course.subject==0 || Course.subject==undefined)res=res+" id_subject=0 ><p>";
 			else res=res+" id_subject="+Course.subject+" ><p>";
 			if(Course.subject_name!= undefined)res =res + Course.subject_name;

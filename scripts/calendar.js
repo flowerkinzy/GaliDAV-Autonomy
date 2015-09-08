@@ -256,7 +256,8 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 					displayNewCourseElementClass(data);
 					$("div.course[id="+obj.sqlId+"]").on("click",function(event){
 						event.stopPropagation();
-						displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
+						if(parseInt($(this).attr("id_group")=!=CURRENT_GROUP_ID)alert("Ce cours dépend d'un autre groupe");
+						else displayFormModifyEvent($(this).attr("id"),$(this).attr("begin_hour"),$(this).attr("begin_min"),$(this).attr("end_hour"),$(this).attr("end_min"),$(this).parent().parent().attr("weekday"));			
 					});
 				}catch(err){
 					$("body").append(data)

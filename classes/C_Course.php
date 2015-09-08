@@ -235,6 +235,8 @@ class Course
 				return "Conférence";
 			case (RATTRAPAGE):
 				return "Rattrapage";
+			case (REUNION):
+				return "Réunion";
 			default:
 				return "Type inconnu";
 		}
@@ -518,7 +520,7 @@ class Course
 		}
 		$this->id_group=NULL;
 		if($ressource['id_original_group']!=NULL){
-			$this->id_group=$ressource['id_original_group'];
+			$this->id_group=intval($ressource['id_original_group']);
 		}
 		
 	}
