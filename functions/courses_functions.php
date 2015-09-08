@@ -156,6 +156,19 @@ if(isset($_POST['action'])){
 		}
 		echo $result;
 	}
+	
+	if($_POST['action']=='delete_course'){
+		if(isset($_POST['id']))
+		{
+			//$result="<pre>none</pre>";
+			$C=new Course();
+			$C->loadFromDB(intval($_POST['id']));
+			$C->removeFromDB();
+			//$result= get_timetable_courses_between(1,0,50*365*24*60*60);
+		
+		}
+		
+	}
 
 }
 	

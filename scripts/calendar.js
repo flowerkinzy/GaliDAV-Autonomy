@@ -461,6 +461,19 @@ function displayFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM,weekday){
 			}
 		  );
 	});
+	
+	$("#button_delete_event").on("click",function(event){
+		event.stopPropagation();
+		$("#newOrModifyCourse").dialog("close");
+		$.post("functions/courses_functions.php",
+		       {action:'delete_course',id:courseId},
+ 			function(data)
+ 			{
+				if(data!="")console.log("Erreur lors de la Suppression data="+data);
+ 				$("div.course[id="+courseId+"]").remove();
+			}
+		  );
+	});
 
 }
 
