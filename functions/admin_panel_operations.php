@@ -203,6 +203,30 @@ if (isset($_POST['action']))
 		{
 			echo("G id/name = " . $aGroup->getSqlId() . " / " . $aGroup->getName());
 		}
+		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
 	}
+	
+	if ($_POST['action'] == 'link_group')
+	{
+		$aGroupToLink = new Group();
+
+		if (!$aGroupToLink->loadFromDB(intval($_POST['linkedgroup'])))
+		{
+			die('Error: Group' . $_POST['linkedgroup'] . 'not found.');
+		}
+		else
+		{
+			$aClass = new C_Class();
+			if (!$aClass->loadFromDB(intval($_POST['class']))){
+				die('Error: Class ' . $_POST['class'] . ' not found.');
+			}else{
+				$aClass->addLinkedGroup(intval($_POST['linkedgroup']));
+				Database::currentDB()->showError();
+			}
+		}
+		//die("");
+		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
+	}
+	header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
 }
 ?>

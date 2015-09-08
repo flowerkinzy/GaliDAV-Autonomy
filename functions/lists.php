@@ -151,7 +151,7 @@ function XoptionSpeakers()
 	return $out;
 }
 
-function XoptionGroups()
+function XoptionGroups($excepted=NULL)
 {
 	// $out = "<datalist class = optionOfGroup id = listgroups'>";
 	$out = "";
@@ -161,7 +161,9 @@ function XoptionGroups()
 	while ($group != NULL)
 	{
 		// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
-		$out .= "<option value=".$group['id']." >" . $group['name'];
+		if(!is_int($excepted) || $excepted!=intval($group['id'])){
+			$out .= "<option value=".$group['id']." >" . $group['name'];
+		}
 		$group = pg_fetch_assoc($res);
 	}
 
@@ -170,6 +172,46 @@ function XoptionGroups()
 	return $out;
 }
 
+function XoptionClasses($excepted=NULL)
+{
+	// $out = "<datalist class = optionOfGroup id = listgroups'>";
+	$out = "";
+	$res = Database::currentDB()->executeQuery(query_all_classes());
+	$group = pg_fetch_assoc($res);
+
+	while ($group != NULL)
+	{
+		// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
+		if(!is_int($excepted) || $excepted!=intval($group['id'])){
+			$out .= "<option value=".$group['id']." >" . $group['name'];
+		}
+		$group = pg_fetch_assoc($res);
+	}
+
+	//$out .= "</datalist>";
+
+	return $out;
+}
+function XoptionSimpleGroups($excepted=NULL)
+{
+	// $out = "<datalist class = optionOfGroup id = listgroups'>";
+	$out = "";
+	$res = Database::currentDB()->executeQuery(query_all_simple_groups());
+	$group = pg_fetch_assoc($res);
+
+	while ($group != NULL)
+	{
+		// $out .= "<option value='" . $person['familyname'] . " " . $person['firstname'] . "'>";
+		if(!is_int($excepted) || $excepted!=intval($group['id'])){
+			$out .= "<option value=".$group['id']." >" . $group['name'];
+		}
+		$group = pg_fetch_assoc($res);
+	}
+
+	//$out .= "</datalist>";
+
+	return $out;
+}
 function XoptionSubjects($idGroup,$idSelected=NULL)
 {
 	// $out = "<datalist class = optionOfGroup id = listsubjects'>";

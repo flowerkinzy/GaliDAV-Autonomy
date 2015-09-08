@@ -381,12 +381,13 @@ class Group
 			$params[] = $newLinkedGroup;
 			$params[] = $this->sqlId;
 			$query    = "SELECT * FROM " . self::linkedToTABLENAME . " WHERE id_linked_group = $1 AND id_depending_group=$2;";
-
-			if (Database::currentDB()->executeQuery($query, $params))
+			$result=Database::currentDB()->executeQuery($query, $params);
+			if ($result && pg_fetch_assoc($result))
 			{
-				$this->linkedGroupsList[] = $newLinkedGroup;
+				
+				//echo("Déjà là");
 				// there’s nothing more to do since the DB seems to contain a link between the 2 groups
-				// $newLinkedGroup should already have $this in its linkedGroupsList array.
+				
 			}
 			else
 			{

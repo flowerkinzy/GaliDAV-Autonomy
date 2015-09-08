@@ -29,10 +29,12 @@ class C_Class extends Group
 	 * \brief C_Class’s constructor
 	 * \param $newName The name of the class.
 	*/
-	public function __construct($newName)
+	public function __construct($newName=NULL)
 	{
-		parent::__construct($newName, TRUE);
-		$this->validatedtimetable=(new ClassesTimetable($this,true))->getSqlId();
+		if($newName!=NULL){
+			parent::__construct($newName, TRUE);
+			$this->validatedtimetable=(new ClassesTimetable($this,true))->getSqlId();
+		}else parent::__construct();
 		
 	}
 
@@ -83,9 +85,9 @@ class C_Class extends Group
 	 * \param  $id The SQL id on the database.
 	 * \param  $canBeClass \e Boolean indicating if the group is a class. Here it is always set at TRUE.
 	*/
-	public function loadFromDB ($id = NULL, $canBeClass = TRUE)
+	public function loadFromDB ($id = NULL,$canBeClass=TRUE)
 	{
-		parent::loadFromDB($id);
+		return parent::loadFromDB($id,TRUE);
 		// TODO -load CourseModel
 		// -implement loadFromDB in Maquette
 	}

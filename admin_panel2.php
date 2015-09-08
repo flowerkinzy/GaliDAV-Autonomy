@@ -71,7 +71,8 @@ require_once("functions/lists.php");
 			<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><?php echo("<a href='$galidav_path/admin_panel2.php?action=add_user' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text'>Ajouter un utilisateur</div></a></li>
 			<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><?php echo("<a href='$galidav_path/admin_panel2.php?action=add_group' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text'>Ajouter une classe ou un groupe</div></a></li>
 			
-			<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><?php echo("<a href='$galidav_path/admin_panel2.php?action=add_subject' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text'>Ajouter une matière </div></a></li></ul><td>
+			<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><?php echo("<a href='$galidav_path/admin_panel2.php?action=add_subject' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text'>Ajouter une matière </div></a></li>
+			<li class='dropdown' style='margin-top:auto;margin-bottom:auto;'><?php echo("<a href='$galidav_path/admin_panel2.php?action=link_group' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-primary add_student' role='button' aria-disabled='false'>");?> <div class='ui-button-text'>Lier un groupe à une classe</div></a></li></ul><td>
 			<td class="loginform ui-corner-all add_student" style='width:50%;height:100%'>
 			<?php if(isset($_GET['action'])) {
 				if($_GET['action']=='add_user'){
@@ -127,7 +128,7 @@ require_once("functions/lists.php");
 				<input type='hidden' name='action' value='add_subject'/>
 				<table style=margin-left:auto;margin-right:auto;>
 				<tr><th>Matière </th><td><input type='text' name='subjectname' required/></td></tr>
-				<tr><th>Classe</th><td><select name='groupname'/>");
+				<tr><th>Groupe ou Classe</th><td><select name='groupname' required/>");
 			echo XoptionGroups();
 			echo ("</td></tr>
 				<tr><th>Intervenant1:</th><td><select name='speaker1'/>"); echo XoptionSpeakers(); echo("</select></td></tr>
@@ -137,11 +138,23 @@ require_once("functions/lists.php");
 				<input type='submit' value='Ajouter' style='width:80%;margin-left:auto;margin-right:auto;'/><br/>
 			</form>");
 			}
-			
+			if($_GET['action']=='link_group'){
+				echo("
+					<form action='functions/admin_panel_operations.php' method='POST'>
+					<input type='hidden' name='action' value='link_group'/>
+					<table style=margin-left:auto;margin-right:auto;>
+					<tr><th>Classe</th><td><select name='class' required/>");
+				echo XoptionClasses();
+				echo("</td></tr><tr><th>Groupe relié:</th><td><select name='linkedgroup' required/>");
+				echo XoptionSimpleGroups();
+				echo("</td></tr>");
+				echo("</table><input type='submit' value='Lier' style='width:80%;margin-left:auto;margin-right:auto;'/><br/></form>");
+
 			}
+		}
 			
-			else echo("Sélectionnez une action");
-			?>
+		else echo("Sélectionnez une action");
+		?>
 			
 			
 			

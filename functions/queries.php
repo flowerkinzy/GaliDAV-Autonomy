@@ -38,7 +38,11 @@ function query_all_groups()
 
 function query_all_classes()
 {
-	return "SELECT * FROM " . Group::TABLENAME . " WHERE is_class ORDER BY name;";
+	return "SELECT * FROM " . Group::TABLENAME . " WHERE is_class=true ORDER BY name;";
+}
+function query_all_simple_groups()
+{
+	return "SELECT * FROM " . Group::TABLENAME . " WHERE is_class=false ORDER BY name;";
 }
 
 function query_one_group($idOrName)
@@ -53,8 +57,14 @@ function query_one_group($idOrName)
 	}
 }
 
+
 function query_all_linked_groups($id){
 	return "SELECT * FROM " . Group::TABLENAME . " WHERE id IN(SELECT id_linked_group FROM ".Group::linkedToTABLENAME." WHERE id_depending_group=$id ) ORDER BY name;";
+}
+
+
+function query_all_non_linked_groups($id){
+	return "SELECT * FROM " . Group::TABLENAME . " WHERE id NOT IN(SELECT id_linked_group FROM ".Group::linkedToTABLENAME." WHERE id_depending_group=$id ) ORDER BY name;";
 }
 
 function query_all_subjects($idGroup)
