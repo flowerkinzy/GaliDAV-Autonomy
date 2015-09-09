@@ -20,19 +20,20 @@ else
 	$login = stripslashes($login);
 	$password = stripslashes($password);
 	$login = pg_escape_string($login);
-	$password = pg_escape_string($password);
 
-	$res = Database::currentDB()->executeQuery(query_login($login, $password));
-	if(pg_num_rows($res) == 1)
+	$dbPassword = Database::currentDB()->executeQuery(query_login($login));
+	
+	if(pg_num_rows($dbPassword) == 1)
 	{
-		$_SESSION['login']=$login;
-		header("location: index.php");
+		if(password_verify($password, pg_fetch_result($dbPassword, "password")))
+		{
+			$_SESSION['login']=$login;
+			header("location: index.php");
+		}
 	}
-	else
-	{
-		header("location: login.php");
-		$error = "Username or Password is invalid";
-	}
+	
+	header("location: login.php");
+	$error = "Username or Password is invalid";
 //}
 
 ?>

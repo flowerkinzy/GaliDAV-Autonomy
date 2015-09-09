@@ -89,8 +89,8 @@ function query_person_by_fullname($fullname)
 	return "SELECT * FROM " . Person::TABLENAME . " WHERE familyname || ' ' || firstname = '" . pg_escape_string($fullname) . "';";
 }
 
-function query_login($login, $password)
+function query_login($login)
 {
-	return "SELECT * FROM " . User::TABLENAME . " WHERE login='$login' ;"/*AND password='$password';"*/;
+	return "SELECT password FROM " . User::TABLENAME . " WHERE login='$login';";
 }
 ?>
