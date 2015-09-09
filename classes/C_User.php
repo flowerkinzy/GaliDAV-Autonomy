@@ -44,12 +44,13 @@ class User extends Person
 		{
 			$this->login    = $newLogin;
 			$this->password = $newPassword;
-			//$hashPassword   = session_salted_sha1($newPassword); // The password has to be crypted in order to save it.
+			$hashPassword   = password_hash($newPassword, PASSWORD_BCRYPT); // The password has to be crypted in order to save it.
 			$fullName       = $newFamilyName . " " . $newFirstName;
 			//CreateUserAccount($newLogin, $fullName, $hashPassword, $newEmailAddress1);
 			$params2[] = $this->sqlId;
 			$params2[] = $newLogin;
-			$query     = "INSERT INTO " . self::TABLENAME . " (id_person, login) VALUES ($1, $2);";
+			$params2[] = $hashPassword;
+			$query     = "INSERT INTO " . self::TABLENAME . " (id_person, login, password) VALUES ($1, $2, $3);";
 			$result    = Database::currentDB()->executeQuery($query, $params2);
 
 			if (!$result)
@@ -87,7 +88,7 @@ class User extends Person
 	*/
 	protected function setPassword($newPassword)
 	{
-		//$params[] = session_salted_sha1($newPassword);
+		$params[] = password_hash($newPassword, PASSWORD_BCRYPT);
 		$params[] = $this->login;
 
 		$query    = "UPDATE " . self::TABLENAME . " SET password = $1 WHERE login = $2;";
@@ -246,7 +247,7 @@ class User extends Person
 	public function toHTML()
 	{
 		$result = "<b>ID: &emsp;&emsp;" . $this->login . "</b><br/>";
-		$result = $result . parent::toHTML();
+		//$result = $result . parent::toHTML();
 
 		return $result;
 	}
