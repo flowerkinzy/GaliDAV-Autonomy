@@ -96,6 +96,6 @@ function query_login($login)
 
 function query_admins() 
 {
-	return "SELECT * FROM " . User::TABLENAME . " WHERE id IN(SELECT id_person from ".PersonStatus::TABLENAME." WHERE status=".PersonStatus::getIntValue(PersonStatus::ADMINISTRATOR).");";
+	return "SELECT * FROM " . User::TABLENAME . " WHERE id_person IN(SELECT id_person from ".PersonStatus::TABLENAME." WHERE status=".PersonStatus::getIntValue(PersonStatus::ADMINISTRATOR).");";
 }
 ?>

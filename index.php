@@ -1,3 +1,4 @@
+<?php session_start();if(!isset($_SESSION["login"]))header('Location: login.php'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -16,7 +17,9 @@
 	<script src="scripts/course.js"></script>
 	<script src="scripts/timetablemenu.js"></script>
 	<script src="scripts/d3.v3.min.js" charset="utf-8"></script>
+
 	<title>GaliDAV : gestion des emplois du temps</title>
+
 	
 </head>
 <body>
@@ -24,8 +27,7 @@
        
 	<?php error_reporting(E_ALL);
 				include_once("functions/error_handling.php");
-				require_once("config/path.php");
-				
+				require_once("config/path.php");				
 				?>
 	<div id="wrap" class='fullspace'>
 		<div class="navbar-fixed-top">

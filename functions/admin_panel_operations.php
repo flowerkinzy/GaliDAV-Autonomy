@@ -7,6 +7,8 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 include_once("functions/error_handling.php");
 
+require_once("functions/queries.php");
+
 require_once("classes/C_Subject.php");
 require_once("classes/C_Class.php");
 require_once("classes/C_Administrator.php");
