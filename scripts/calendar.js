@@ -81,7 +81,7 @@ var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTim
 	
 	
 	$("#frame_timetable").hide();
-	$("#button_next_week,#button_previous_week").hide();
+	$("#button_next_week,#button_previous_week,#button_compare_edt").hide();
 	$("#button_modify_timetable,#button_validate_timetable").hide();
 	//loadTimetableForWeek(CURRENT_CALENDAR_ID,FIRST_DAY_OF_WEEK_UTC);
 

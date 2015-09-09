@@ -10,7 +10,7 @@
 		$("#name_timetable").html($(this).text());
 		$("div.course").remove();
 		$("#frame_timetable").show();
-		$("#button_next_week,#button_previous_week").show();
+		$("#button_next_week,#button_previous_week,#button_compare_edt").show();
 		loadTimetableForWeek($(this).attr("id_timetable"),FIRST_DAY_OF_WEEK_UTC);
 		if($("#button_modify_timetable,#button_validate_timetable").get(0)!=undefined)$("#button_modify_timetable,#button_validate_timetable").show();
 		stopModification();
