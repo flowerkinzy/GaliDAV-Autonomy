@@ -1,4 +1,4 @@
-<?php if(!isset($_SESSION["login"]))header('Location: login.php'); ?>
+<?php //if(!isset($_SESSION["login"]))header('Location: login.php'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -17,11 +17,9 @@
 	<script src="scripts/course.js"></script>
 	<script src="scripts/timetablemenu.js"></script>
 	<script src="scripts/d3.v3.min.js" charset="utf-8"></script>
-<<<<<<< HEAD
-	<title>GaliDAV</title>
-=======
+
 	<title>GaliDAV : gestion des emplois du temps</title>
->>>>>>> 6468fbe8c0c267ccfbb21f2532c100fff93725c0
+
 	
 </head>
 <body>

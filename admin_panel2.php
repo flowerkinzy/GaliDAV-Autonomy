@@ -10,7 +10,7 @@ require_once("config/path.php");
 require_once("functions/queries.php");
 require_once("classes/C_User.php");
 
-if(!isset($_SESSION["login"])){
+/*if(!isset($_SESSION["login"])){
 	$result=Database::currentDB()->executeQuery(query_admins());
 	if($result && pg_fetch_assoc($result))header('Location: login.php');
 	//On accepte la requête s'il n'existe pas encore de compte admin
@@ -19,7 +19,7 @@ if(!isset($_SESSION["login"])){
 	$User=new User();
 	$User->loadFromDB(intval($_SESSION["login"]));
 	if(!$User->hasStatus(PersonStatus::getIntValue(PersonStatus::ADMINISTRATOR)))die("Vous n'avez pas de droit d'accès à cette page");
-}
+}*/
 
 ?>
 
