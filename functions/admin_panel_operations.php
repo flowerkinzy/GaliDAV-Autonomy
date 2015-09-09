@@ -145,7 +145,7 @@ if (isset($_POST['action']))
 			$aPerson->addStatus(new PersonStatus(PersonStatus::SPEAKER));
 		}
 
-		echo($aPerson->toHTML());
+		//echo($aPerson->toHTML());
 		header('Location: '.GALIDAV_PATH.'/admin_panel2.php');
 		//die;
 	}

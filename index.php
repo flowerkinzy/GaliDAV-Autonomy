@@ -16,7 +16,7 @@
 	<script src="scripts/course.js"></script>
 	<script src="scripts/timetablemenu.js"></script>
 	<script src="scripts/d3.v3.min.js" charset="utf-8"></script>
-	<title>Style2/Frame3</title>
+	<title>GaliDAV : gestion des emplois du temps</title>
 	
 </head>
 <body>

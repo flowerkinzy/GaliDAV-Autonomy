@@ -58,6 +58,7 @@ function CreateCalendar($userName, $calendarNameGiven, $default_timezone = NULL)
 	}
 	else
 	{
+	    
 		$params[':user_no']          = $principal->user_no();
 		$params[':parent_container'] = $principal->dav_name();
 		$params[':dav_etag']         = '-1';
@@ -100,7 +101,7 @@ function CreateCalendar($userName, $calendarNameGiven, $default_timezone = NULL)
 	return TRUE;
 }
 
-function getDAVPrincipalNoFromLogin($login)
+/*function getDAVPrincipalNoFromLogin($login)
 {
 	$DB     = new Database("davical_app", "davical");
 	$query  = "SELECT user_no FROM dav_principal WHERE username = '" . pg_escape_string($login) . "';";
@@ -118,7 +119,7 @@ function getDAVPrincipalNoFromLogin($login)
 
 		return ((int) $result['user_no']);
 	}
-}
+}*/
 
 function CreateUserAccount($userName, $fullName, $password, $email = NULL,  $privileges = NULL)
 {
@@ -129,14 +130,14 @@ function CreateUserAccount($userName, $fullName, $password, $email = NULL,  $pri
 	$param['email']       = $email;
 	$param['type_id']     = 1; // type Person
 	// $param['default_privileges'] = privilege_to_bits(array('all')) ; // ne compile pas
-	$aPerson                    = new DAVPrincipal($param);
+	//$aPerson                    = new DAVPrincipal($param);
 	$aPerson->password          = $password; // ne marche pas
 	$aPerson->privileges        = $privileges; // ne marche pas
 	$aPerson->Create($param);
 
 	if ($privileges)
 	{
-		$DB        = new Database("davical_app", "davical");
+		/*$DB        = new Database("davical_app", "davical");
 		$params2[] = privilege_to_bits($privileges);
 		$params2[] = $userName;
 		$query     = "UPDATE dav_principal SET default_privileges = $1 WHERE username = $2;";
@@ -146,7 +147,7 @@ function CreateUserAccount($userName, $fullName, $password, $email = NULL,  $pri
 		if (!$result)
 		{
 			$DB->showError();
-		}
+		}*/
 	}
 
 	return $aPerson;
@@ -160,7 +161,7 @@ function CreateGroupAccount($className, $password, $email = NULL, $privilege = N
 	$param['password']    = $password; // ne marche pas
 	$param['email']       = $email;
 	$param['type_id']     = 3; // type Groupe;
-	$aClass               = new DAVPrincipal($param);
+	//$aClass               = new DAVPrincipal($param);
 	$aClass->Create($param);
 
 	return $aClass;
