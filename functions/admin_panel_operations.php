@@ -14,7 +14,7 @@ require_once("classes/C_Teacher.php");
 require_once("classes/C_Secretary.php");
 
 require_once("config/path.php");
-
+require_once("queries.php");
 
 
 //require_once("classes/C_Head.php");

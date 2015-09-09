@@ -133,8 +133,8 @@ class Course
 									if ($aSpeaker->hasStatus(new PersonStatus(PersonStatus::SPEAKER))){
 										
 										$T=new Timetable();
-										$T->loadFromDB($aSpeaker->getTimetable());
-										$T->addCourse($newCourse);
+										$T->loadFromDB($aSpeaker->getPersonalTimetable());
+										$T->addCourse($this);
 									}
 
 								}
