@@ -15,8 +15,8 @@
 		<h2 type="log-welcome"> Welcome to GaliDAV </h2>
 		<form method="post" action="loginCheck.php" enctype="multipart/form-data">
 			<fieldset><legend> Log In </legend>
-				<label for="username"> Username:</label>  <input name="username" type="text" id="username" /><br /><br />
-				<label for="password"> Password:  </label><input type="text" name="password" id="password" /><br />
+				<label for="username"> Username:</label>  <input name="username" type="text" id="username" required autofocus /><br /><br />
+				<label for="password"> Password:  </label><input type="password" name="password" id="password" required /><br />
 			</fieldset>
 
 			<p><input type="submit" value="Connect" /></p>
