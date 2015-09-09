@@ -3,11 +3,10 @@
 	
 	createtimetablemenu();
 	$("#widget-zone-left").on("click","h3.option_group,li.option_group",function(){
-		//console.log("hover");
-		//console.log("id_timetable="+$(this).attr("id_timetable"));
+
 		CURRENT_GROUP_ID=parseInt($(this).attr("id"));
 		CURRENT_CALENDAR_ID=parseInt($(this).attr("id_timetable"));
-		console.log("id_timetable="+CURRENT_CALENDAR_ID+" / id_group="+CURRENT_GROUP_ID);
+		//console.log("id_timetable="+CURRENT_CALENDAR_ID+" / id_group="+CURRENT_GROUP_ID);
 		$("#name_timetable").html($(this).text());
 		$("div.course").remove();
 		$("#frame_timetable").show();

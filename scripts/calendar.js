@@ -542,7 +542,8 @@ function createFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM){
 	$.get("functions/lists.php",{action:"get_lists_subjects", id_group:CURRENT_GROUP_ID,id_selected:$(courseToModify).attr("id_subject")},function(data){
 		$(divSubject).append("<option value=0 >--");
 		$(divSubject).append(data);
-	});$("#footer-menu").on("click","#button_stop_modify",stopModification());
+	});
+	$("#footer-menu").on("click","#button_stop_modify",function(data){stopModification();});
 	$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
 	$(divSubject).parent().prepend("<p class='formlabel'>Changer la matière:</p>");
 	$(form).append($(divSubject).parent());

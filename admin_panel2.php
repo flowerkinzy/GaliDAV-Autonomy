@@ -7,6 +7,20 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 include_once("functions/error_handling.php");
 require_once("config/path.php");
+require_once("functions/queries.php");
+require_once("classes/C_User.php");
+
+if(!isset($_SESSION["login"])){
+	$result=Database::currentDB()->executeQuery(query_admins());
+	if($result && pg_fetch_assoc($result))header('Location: login.php');
+	//On accepte la requête s'il n'existe pas encore de compte admin
+	
+}else{
+	$User=new User();
+	$User->loadFromDB(intval($_SESSION["login"]));
+	if(!$User->hasStatus(PersonStatus::getIntValue(PersonStatus::ADMINISTRATOR)))die("Vous n'avez pas de droit d'accès à cette page");
+}
+
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
