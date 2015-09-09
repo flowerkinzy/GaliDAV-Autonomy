@@ -112,9 +112,9 @@ class Administrator extends Head
 	{
 		// first, the user is removed from dav_principal of davical and guser of galidav
 		$params[] = $aUser->login;
-		$query    = "REMOVE FROM dav_principal WHERE username = $1;";
-		$oneDatabase->executeQuery($query, $params);
-		$oneDatabase->close();
+		//$query    = "REMOVE FROM dav_principal WHERE username = $1;";
+		//$oneDatabase->executeQuery($query, $params);
+		//$oneDatabase->close();
 		$query = "DELETE FROM " . User::TABLENAME . " WHERE login = $1;";
 		Database::currentDB()->executeQuery($query, $params);
 
