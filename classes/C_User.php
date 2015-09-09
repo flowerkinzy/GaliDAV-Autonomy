@@ -58,7 +58,7 @@ class User extends Person
 				echo ("GaliDAV: Impossible de créer cet utilisateur dans la base");
 			}
 
-			$this->setPassword($newPassword);
+			$this->password=$newPassword;
 		}
 	}
 
