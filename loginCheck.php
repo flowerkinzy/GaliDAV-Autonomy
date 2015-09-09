@@ -19,16 +19,7 @@ else
 	$password = stripslashes($password);
 	$login = pg_escape_string($login);
 	$dbPassword = Database::currentDB()->executeQuery(query_login($login));
-<<<<<<< HEAD
-	//if($dbPassword)
-// 	if(pg_num_rows($dbPassword) == 1)
- 	{
 
-		if(password_verify($password, pg_fetch_result($dbPassword, "password")))
-		{
-			$$_SESSION['login']=$login;
-			header("location: index.php");
-=======
 
 	if(pg_num_rows($dbPassword) == 1)
 	{
@@ -37,7 +28,7 @@ else
 		{
 			$_SESSION['login']=$login;
 			header("Location: index.php");
->>>>>>> 6468fbe8c0c267ccfbb21f2532c100fff93725c0
+
 		}
 		else{
 			header("Location: login.php");
@@ -46,13 +37,9 @@ else
 	else{
 		header("Location: login.php");
 	}
-<<<<<<< HEAD
-	header("location: login.php");
-	$error = "Username or Password is invalid";
-//}
-=======
+
 	
 }
->>>>>>> 6468fbe8c0c267ccfbb21f2532c100fff93725c0
+
 
 ?>
