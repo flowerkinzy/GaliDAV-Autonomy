@@ -111,6 +111,10 @@ if(isset($_POST['action'])){
 				else $result=create_new_course(intval($_POST['begin']),intval($_POST['end']),intval($_POST['type']),NULL,NULL,intval($_POST['id_group']));
 			}
 
+// 			if(isset($_POST['repeat_until_date'])){
+// 				$end=intval($_POST['end']);
+// 				for($begin=intval($_POST['begin']);$begin<intval($_POST['repeat_until_date'])
+// 			}
 		echo $result;
 	}
 	
@@ -155,6 +159,19 @@ if(isset($_POST['action'])){
 		
 		}
 		echo $result;
+	}
+	
+	if($_POST['action']=='delete_course'){
+		if(isset($_POST['id']))
+		{
+			//$result="<pre>none</pre>";
+			$C=new Course();
+			$C->loadFromDB(intval($_POST['id']));
+			$C->removeFromDB();
+			//$result= get_timetable_courses_between(1,0,50*365*24*60*60);
+		
+		}
+		
 	}
 
 }

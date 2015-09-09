@@ -531,7 +531,16 @@ class Course
 	*/
 	public function removeFromDB()
 	{
-		//TODO complete
+		$query="DELETE FROM ".self::belongsToTABLENAME." WHERE id_course=".$this->sqlId.";";
+		if (!Database::currentDB()->executeQuery($query))
+		{
+			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+		}
+		$query="DELETE FROM ".self::TABLENAME." WHERE id=".$this->sqlId.";";
+		if (!Database::currentDB()->executeQuery($query))
+		{
+			Database::currentDB()->showError("ligne n°" . __LINE__ . " classe :" . __CLASS__);
+		}
 	}
 
 	/**

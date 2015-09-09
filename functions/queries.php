@@ -88,4 +88,14 @@ function query_person_by_fullname($fullname)
 {
 	return "SELECT * FROM " . Person::TABLENAME . " WHERE familyname || ' ' || firstname = '" . pg_escape_string($fullname) . "';";
 }
+
+function query_login($login)
+{
+	return "SELECT password FROM " . User::TABLENAME . " WHERE login='$login';";
+}
+
+function query_admins() 
+{
+	return "SELECT * FROM " . User::TABLENAME . " WHERE id IN(SELECT id_person from ".PersonStatus::TABLENAME." WHERE status=".PersonStatus::getIntValue(PersonStatus::ADMINISTRATOR).");";
+}
 ?>

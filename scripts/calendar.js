@@ -60,7 +60,7 @@ var FIRST_DAY_OF_WEEK_UTC=Date.UTC(2015, 8, 14, 0, 0, 0, 0) + (new Date().getTim
 		$("div.course").off("click");
 		$("td.daycolumn>div").off("click");
 		$("td.daycolumn>div").on("click",function(){
-			console.log("click on cell");
+			//console.log("click on cell");
 			displayFormNewEvent($(this).parent().attr("begin_hour"),$(this).parent().attr("begin_min"),$(this).parent().attr("weekday"),CURRENT_GROUP_ID);
 		});
 		
@@ -244,11 +244,12 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 		param.type=$("#select_choose_type").val();
 		param.room=$("#input_room").val();
 		if($("#input_name").val()!="")param.name=$("#input_name").val();
+		
 		param.id_group=id_group;
+		$("#newOrModifyCourse").dialog("close");
 		if($("#select_choose_subject").val()>0)param.id_subject=$("#select_choose_subject").val();
-		console.log("button_validate_new_event/param=..."); console.dir(param);
- 		$("#newOrModifyCourse").dialog("close");
-	
+		
+		//console.log("button_validate_new_event/param=..."); console.dir(param);
 		//TODO check there is no blocking course
 		$.post("functions/courses_functions.php",
 		      param,
@@ -259,6 +260,19 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 				try{
 					var obj=jQuery.parseJSON(data);
 					displayNewCourseElementClass(data);
+					if($("#input_until_date").datepicker("getDate")!=null){
+						var repeat_until_date=$("#input_until_date").datepicker("getDate").getTime()+(24*60*60*1000);//Jusquà la fin de la journée
+						var cBegin;
+						var cEnd=endUTC*1000+(7*24*60*60*1000);
+						for(cBegin=beginUTC*1000+(7*24*60*60*1000);cBegin<=repeat_until_date;cBegin=cBegin+(7*24*60*60*1000)){
+							var param2=param;
+							param2.begin=Math.floor(cBegin/1000);
+							param2.end=Math.floor(cEnd/1000);
+							$.post("functions/courses_functions.php",param2);//function(data){console.log("data="+data);});
+							cEnd=cEnd+(7*24*60*60*1000);
+						}
+						
+					}
 					$("div.course[id="+obj.sqlId+"]").on("click",function(event){
 						if(parseInt($(this).attr("id_group"))!=CURRENT_GROUP_ID);//alert("Ce cours dépend d'un autre groupe");
 						else{
@@ -273,6 +287,10 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 
 			}
 		  );
+	});
+	$("#input_until_date").next().on("click",function(data){
+		//console.log("effacer date");
+		$("#input_until_date").datepicker("setDate",null);
 	});
 
 }
@@ -299,7 +317,12 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	var minpickerE=$("<input onblur='checkMinField(this)' id='input_pick_min_end' required >");
 	$(divEnd).append("<p class='formlabel'>Heure de fin:</p>");
 	$(divEnd).append(hourpickerE);
-	$(divEnd).append(minpickerE);	
+	$(divEnd).append(minpickerE);
+	var divUntildate=$("<span id='div_input_until_date'></span>");
+	$(divUntildate).append("<span class='formlabel'> Répéter ce cours jusqu'au:</span>");
+	$(divUntildate).append("<input id='input_until_date'/>");
+	$(divUntildate).append("<button>x</button>");
+	$(divEnd).append($(divUntildate));
 	$(form).append(divEnd);
 	
 	var divSubject=$("<select name='subject' id='select_choose_subject'></select>");
@@ -310,6 +333,10 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	$(divSubject).wrap("<div id='div_select_choose_subject'></div>");
 	$(divSubject).parent().prepend("<p class='formlabel'>Choisir une matière:</p>");
 	$(form).append($(divSubject).parent());
+	
+	
+	
+	
 	
 	var selectType=$("<select name='type' id='select_choose_type'></select>");
 	for(i=0;i<NUMBER_OF_COURSES_TYPES;i++){
@@ -391,6 +418,15 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	$(hourpickerE).spinner("value",EndHdefault);
 	$(minpickerE).spinner("value",EndMdefault);	
 	
+	$(divUntildate).children("input").datepicker({
+		//minDate: new Date(FIRST_DAY_OF_WEEK_UTC+(weekday+7)*24*60*60*1000),
+		dateFormat: "dd/mm/yy",
+		firstDay:1,
+		beforeShowDay: $.datepicker.noWeekends,
+		dayNamesMin: [ "Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa" ],
+		dayNames: [ "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi" ],
+		monthNames: ["Janvier","Février","Mars","Avril","Mai", "Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"]
+	});
 	
 	return div;
 }
@@ -458,6 +494,19 @@ function displayFormModifyEvent(courseId,BeginH,BeginM,EndH,EndM,weekday){
 					$("body").append(data)
 				}
 
+			}
+		  );
+	});
+	
+	$("#button_delete_event").on("click",function(event){
+		event.stopPropagation();
+		$("#newOrModifyCourse").dialog("close");
+		$.post("functions/courses_functions.php",
+		       {action:'delete_course',id:courseId},
+ 			function(data)
+ 			{
+				if(data!="")console.log("Erreur lors de la Suppression data="+data);
+ 				$("div.course[id="+courseId+"]").remove();
 			}
 		  );
 	});

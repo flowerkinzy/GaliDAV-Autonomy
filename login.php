@@ -12,7 +12,7 @@
 <body>
 	<div id="logbox">
 		<h2 type="log-welcome"> Welcome to GaliDAV </h2>
-		<form method="post" action="#" enctype="multipart/form-data">
+		<form method="post" action="loginCheck.php" enctype="multipart/form-data">
 			<fieldset><legend> Log In </legend>
 				<label for="username"> Username:</label>  <input name="username" type="text" id="username" /><br /><br />
 				<label for="password"> Password:  </label><input type="text" name="password" id="password" /><br />
