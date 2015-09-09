@@ -1,5 +1,5 @@
 <div class="col-md-2" style="padding-top:6px; paddign-bottom:6px;">
-	<i class="fa fa-user"></i> <?php echo $_SESSION["login"] ?>
+	<i class="fa fa-user"></i> <?php echo($_SESSION['user_first_name']." ".$_SESSION['user_family_name']); ?>
 </div>
 <a class="btn col-md-1"  id="button_modify_timetable" >
 	<i class="fa fa-edit"></i> Modifier
