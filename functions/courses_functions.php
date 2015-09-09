@@ -111,6 +111,10 @@ if(isset($_POST['action'])){
 				else $result=create_new_course(intval($_POST['begin']),intval($_POST['end']),intval($_POST['type']),NULL,NULL,intval($_POST['id_group']));
 			}
 
+// 			if(isset($_POST['repeat_until_date'])){
+// 				$end=intval($_POST['end']);
+// 				for($begin=intval($_POST['begin']);$begin<intval($_POST['repeat_until_date'])
+// 			}
 		echo $result;
 	}
 	

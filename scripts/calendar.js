@@ -244,11 +244,12 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 		param.type=$("#select_choose_type").val();
 		param.room=$("#input_room").val();
 		if($("#input_name").val()!="")param.name=$("#input_name").val();
+		
 		param.id_group=id_group;
+		$("#newOrModifyCourse").dialog("close");
 		if($("#select_choose_subject").val()>0)param.id_subject=$("#select_choose_subject").val();
-		console.log("button_validate_new_event/param=..."); console.dir(param);
- 		$("#newOrModifyCourse").dialog("close");
-	
+		
+		//console.log("button_validate_new_event/param=..."); console.dir(param);
 		//TODO check there is no blocking course
 		$.post("functions/courses_functions.php",
 		      param,
@@ -259,6 +260,19 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 				try{
 					var obj=jQuery.parseJSON(data);
 					displayNewCourseElementClass(data);
+					if($("#input_until_date").datepicker("getDate")!=null){
+						var repeat_until_date=$("#input_until_date").datepicker("getDate").getTime()+(24*60*60*1000);//Jusquà la fin de la journée
+						var cBegin;
+						var cEnd=endUTC*1000+(7*24*60*60*1000);
+						for(cBegin=beginUTC*1000+(7*24*60*60*1000);cBegin<=repeat_until_date;cBegin=cBegin+(7*24*60*60*1000)){
+							var param2=param;
+							param2.begin=Math.floor(cBegin/1000);
+							param2.end=Math.floor(cEnd/1000);
+							$.post("functions/courses_functions.php",param2);//function(data){console.log("data="+data);});
+							cEnd=cEnd+(7*24*60*60*1000);
+						}
+						
+					}
 					$("div.course[id="+obj.sqlId+"]").on("click",function(event){
 						if(parseInt($(this).attr("id_group"))!=CURRENT_GROUP_ID);//alert("Ce cours dépend d'un autre groupe");
 						else{
@@ -275,7 +289,7 @@ function displayFormNewEvent(BeginH,BeginM,weekday,id_group){
 		  );
 	});
 	$("#input_until_date").next().on("click",function(data){
-		console.log("effacer date");
+		//console.log("effacer date");
 		$("#input_until_date").datepicker("setDate",null);
 	});
 
@@ -405,7 +419,7 @@ function createFormNewEvent(BeginH,BeginM,weekday){
 	$(minpickerE).spinner("value",EndMdefault);	
 	
 	$(divUntildate).children("input").datepicker({
-		minDate: new Date(FIRST_DAY_OF_WEEK_UTC+(weekday+7)*24*60*60*1000),
+		//minDate: new Date(FIRST_DAY_OF_WEEK_UTC+(weekday+7)*24*60*60*1000),
 		dateFormat: "dd/mm/yy",
 		firstDay:1,
 		beforeShowDay: $.datepicker.noWeekends,

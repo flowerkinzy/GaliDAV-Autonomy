@@ -93,4 +93,9 @@ function query_login($login, $password)
 {
 	return "SELECT * FROM " . User::TABLENAME . " WHERE login='$login' ;"/*AND password='$password';"*/;
 }
+
+function query_admins() 
+{
+	return "SELECT * FROM " . User::TABLENAME . " WHERE id IN(SELECT id_person from ".PersonStatus::TABLENAME." WHERE status=".PersonStatus::getIntValue(PersonStatus::ADMINISTRATOR).");";
+}
 ?>
