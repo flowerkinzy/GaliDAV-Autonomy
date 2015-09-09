@@ -10,6 +10,7 @@ require_once("config/path.php");
 require_once("functions/queries.php");
 require_once("classes/C_User.php");
 
+session_start();
 /*if(!isset($_SESSION["login"])){
 	$result=Database::currentDB()->executeQuery(query_admins());
 	if($result && pg_fetch_assoc($result))header('Location: login.php');

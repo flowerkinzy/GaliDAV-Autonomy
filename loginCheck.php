@@ -19,6 +19,9 @@ else
 	{
 		if(password_verify($password, pg_fetch_result($dbPassword, "password")))
 		{
+			session_destroy();
+			session_start();
+			$_SESSION = array();
 			$_SESSION['login']=$login;
 			header("Location: index.php");
 		}
